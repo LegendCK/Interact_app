@@ -42,7 +42,9 @@ class ButtonComponent: UIView {
         image: UIImage? = nil,
         imagePlacement: NSDirectionalRectEdge = .leading, // .leading or .trailing
         imagePadding: CGFloat = 8,
-        contentInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+        contentInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20),
+        borderColor: UIColor? = nil,
+        borderWidth: CGFloat = 0
     ) {
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = backgroundColor
@@ -67,6 +69,13 @@ class ButtonComponent: UIView {
         button.configuration = config
         button.layer.cornerRadius = cornerRadius
         button.clipsToBounds = true
+        
+        if let borderColor = borderColor {
+                button.layer.borderColor = borderColor.cgColor
+                button.layer.borderWidth = borderWidth
+            } else {
+                button.layer.borderWidth = 0
+            }
     }
 
     
