@@ -10,6 +10,14 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignupParticipantViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
+                <outlet property="confirmPasswordTextField" destination="hIr-xp-Fjp" id="AFQ-Bx-bo8"/>
+                <outlet property="createPasswordTextField" destination="YAA-Vj-25C" id="EQp-TP-8hK"/>
+                <outlet property="emailAddressTextField" destination="z8T-Lb-zR3" id="feK-Oe-toy"/>
+                <outlet property="firstNameTextField" destination="xol-YF-N8s" id="BxL-4U-qjc"/>
+                <outlet property="lastNameTextField" destination="WuM-Gj-DDZ" id="9tt-zY-Hhv"/>
+                <outlet property="middleNameTextField" destination="5n9-yv-EQH" id="JJT-fD-sKA"/>
+                <outlet property="mobileNumberTextField" destination="WVd-f5-Wm5" id="ym1-Q7-LaM"/>
+                <outlet property="verifyEmailButton" destination="stg-B0-ePs" id="IyS-EI-sNJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -102,14 +110,13 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="NIN-u7-mrS">
                             <rect key="frame" x="0.0" y="493.66666666666669" width="353" height="74.666666666666686"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2dQ-cP-ud1">
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="stg-B0-ePs" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="44" id="XV3-lx-ndG"/>
+                                        <constraint firstAttribute="height" constant="44" id="aAH-ia-r1f"/>
                                     </constraints>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Verify Email"/>
-                                </button>
+                                </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4b-21-I35">
                                     <rect key="frame" x="0.0" y="58.999999999999993" width="353" height="15.666666666666664"/>
                                     <attributedString key="attributedText">

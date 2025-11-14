@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoleSelectionViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
-                <outlet property="getStartedButton" destination="UtJ-bF-jo9" id="fzr-hU-eeP"/>
+                <outlet property="getStartButton" destination="tf0-Mg-Wcv" id="DfH-TM-w1M"/>
                 <outlet property="organizerSignupCard" destination="74L-M7-hpx" id="ErI-b9-8Lk"/>
                 <outlet property="participantSignupCard" destination="Dt5-R7-iCY" id="voS-Vc-Pjo"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -130,17 +130,13 @@
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="qOt-8c-YZe">
                     <rect key="frame" x="20" y="709.33333333333337" width="353" height="74.666666666666629"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UtJ-bF-jo9">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tf0-Mg-Wcv" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="44" id="j8a-6c-VFH"/>
+                                <constraint firstAttribute="height" constant="44" id="46k-1S-8bN"/>
                             </constraints>
-                            <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="filled" title="Get started"/>
-                            <connections>
-                                <action selector="getStartedTapped:" destination="-1" eventType="touchUpInside" id="gNF-HF-tVb"/>
-                            </connections>
-                        </button>
+                        </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EaS-WN-Seq">
                             <rect key="frame" x="0.0" y="58.999999999999993" width="353" height="15.666666666666664"/>
                             <attributedString key="attributedText">

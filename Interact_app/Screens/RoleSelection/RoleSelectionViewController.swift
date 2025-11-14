@@ -11,8 +11,8 @@ class RoleSelectionViewController: UIViewController {
 
     @IBOutlet weak var organizerSignupCard: UIView!
     @IBOutlet weak var participantSignupCard: UIView!
-    @IBOutlet weak var getStartedButton: UIButton!
-
+    @IBOutlet weak var getStartButton: ButtonComponent!
+    
     enum Role {
             case organizer
             case participant
@@ -37,8 +37,28 @@ class RoleSelectionViewController: UIViewController {
             organizerSignupCard.layer.borderWidth = 0
             participantSignupCard.layer.borderWidth = 0
             
-            getStartedButton.isEnabled = false
-            getStartedButton.alpha = 0.5
+            getStartButton.button.isEnabled = false
+            getStartButton.configure(
+                title: "Get started",
+                imagePlacement: .trailing
+                                       
+            )
+            getStartButton.button.isEnabled = false
+            getStartButton.alpha = 0.5
+            
+            getStartButton.onTap = { [weak self] in
+                    guard let self = self else { return }
+                    guard let role = self.selectedRole else { return }
+
+                    switch role {
+                    case .organizer:
+                        let organizerVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
+                        self.navigationController?.pushViewController(organizerVC, animated: true)
+                    case .participant:
+                        let participantVC = SignupParticipantViewController(nibName: "SignupParticipantViewController", bundle: nil)
+                        self.navigationController?.pushViewController(participantVC, animated: true)
+                    }
+                }
         }
         
         private func setupGestures() {
@@ -79,26 +99,10 @@ class RoleSelectionViewController: UIViewController {
             }
             
             // Enable "Get Started"
-            getStartedButton.isEnabled = true
-            getStartedButton.alpha = 1.0
+            getStartButton.button.isEnabled = true
+            getStartButton.alpha = 1.0
         }
-
-        // MARK: - Navigation
-        
-    @IBAction func getStartedTapped(_ sender: UIButton) {
-        guard let role = selectedRole else { return }
-        
-        switch role {
-        case .organizer:
-            let organizerVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
-            navigationController?.pushViewController(organizerVC, animated: true)
-            
-        case .participant:
-            let participantVC = SignupParticipantViewController(nibName: "SignupParticipantViewController", bundle: nil)
-            navigationController?.pushViewController(participantVC, animated: true)
-        }
-        
-        
+    
         /*
          // MARK: - Navigation
          
@@ -108,5 +112,4 @@ class RoleSelectionViewController: UIViewController {
          // Pass the selected object to the new view controller.
          }
          */
-    }
 }

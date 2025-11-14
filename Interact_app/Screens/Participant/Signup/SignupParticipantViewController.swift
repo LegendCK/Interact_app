@@ -9,9 +9,18 @@ import UIKit
 
 class SignupParticipantViewController: UIViewController {
 
+    @IBOutlet weak var firstNameTextField: UITextField!
+    @IBOutlet weak var middleNameTextField: UITextField!
+    @IBOutlet weak var lastNameTextField: UITextField!
+    @IBOutlet weak var mobileNumberTextField: UITextField!
+    @IBOutlet weak var emailAddressTextField: UITextField!
+    @IBOutlet weak var createPasswordTextField: UITextField!
+    @IBOutlet weak var confirmPasswordTextField: UITextField!
+    @IBOutlet weak var verifyEmailButton: ButtonComponent!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        verifyEmailButton.configure(title: "Verify Email")
         // Do any additional setup after loading the view.
     }
 
