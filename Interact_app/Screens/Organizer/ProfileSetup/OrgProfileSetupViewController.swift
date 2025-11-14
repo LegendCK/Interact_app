@@ -35,10 +35,16 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         aboutOrgView.layer.borderColor = UIColor.systemGray4.cgColor
         saveButton.configure(title: "Save & Continue")
         saveButton.onTap = { [weak self] in
-            guard let self = self else { return }
-
-            let homeVC = TestHomeViewController(nibName: "TestHomeViewController", bundle: nil)
-            self.navigationController?.setViewControllers([homeVC], animated: true)
+            guard self != nil else { return }
+            
+            let tabBar = MainTabBarController()
+            
+            // Switch root to tab bar
+            if let sceneDelegate = UIApplication.shared.connectedScenes
+                .first?.delegate as? SceneDelegate {
+                
+                sceneDelegate.changeRootViewController(tabBar)
+            }
         }
     }
 
