@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VerificationCard" customModule="Interact_UIKit" customModuleProvider="target">
+            <connections>
+                <outlet property="verifyButton" destination="Tyk-8S-lfA" id="TXT-Sr-3zF"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="461" height="344"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Host With Confidence" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DyU-V5-h9O">
+                    <rect key="frame" x="20" y="138" width="341" height="24"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get verified as an organizer and start hosting impactful hackathons with Interact." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KF3-W3-a2X">
+                    <rect key="frame" x="20" y="170" width="291" height="61"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="YJt-rH-1ZC">
+                    <rect key="frame" x="311" y="138" width="130" height="100"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="130" id="dh7-Mm-JGB"/>
+                        <constraint firstAttribute="height" constant="100" id="uAu-Is-Q4V"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tyk-8S-lfA" customClass="ButtonComponent" customModule="Interact_UIKit" customModuleProvider="target">
+                    <rect key="frame" x="20" y="258" width="421" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="x5H-Z6-IWg"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="Tyk-8S-lfA" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="1Hi-f6-Rtc"/>
+                <constraint firstItem="KF3-W3-a2X" firstAttribute="top" secondItem="DyU-V5-h9O" secondAttribute="bottom" constant="8" id="BIJ-Ka-wpR"/>
+                <constraint firstItem="Tyk-8S-lfA" firstAttribute="top" secondItem="YJt-rH-1ZC" secondAttribute="bottom" constant="20" id="Gwq-PO-1FO"/>
+                <constraint firstItem="DyU-V5-h9O" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="VcP-9r-oRv"/>
+                <constraint firstItem="YJt-rH-1ZC" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="ZRw-3A-c3o"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="YJt-rH-1ZC" secondAttribute="trailing" constant="20" id="gPY-1U-Ase"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Tyk-8S-lfA" secondAttribute="trailing" constant="20" id="ogJ-nl-yry"/>
+                <constraint firstItem="KF3-W3-a2X" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="s3a-gB-dKs"/>
+                <constraint firstItem="DyU-V5-h9O" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="tNh-BV-Ngb"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="KF3-W3-a2X" secondAttribute="trailing" constant="150" id="yYe-JH-GFf"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="DyU-V5-h9O" secondAttribute="trailing" constant="100" id="z1W-2g-xpx"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-22.137404580152669" y="-61.267605633802823"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Splash" width="100" height="100"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
