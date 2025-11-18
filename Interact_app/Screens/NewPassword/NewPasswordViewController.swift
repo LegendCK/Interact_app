@@ -9,9 +9,18 @@ import UIKit
 
 class NewPasswordViewController: UIViewController {
 
+    @IBOutlet weak var backToLoginButton: ButtonComponent!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        backToLoginButton.configure(title: "Back to Login")
+        
+        backToLoginButton.onTap = {
+            self.goToLoginScreen()
+        }
 
+        
         // Do any additional setup after loading the view.
     }
 

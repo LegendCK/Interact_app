@@ -9,10 +9,29 @@ import UIKit
 
 class ForgotPasswordViewController: UIViewController {
 
+    @IBOutlet weak var backToLoginLable: UILabel!
+    @IBOutlet weak var sendResetLinkButton: ButtonComponent!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sendResetLinkButton.configure(
+            title: "Send reset link"
+        )
+        
+        sendResetLinkButton.onTap = {
+            let resetPasswordVC = NewPasswordViewController(nibName: "NewPasswordViewController", bundle: nil)
+            self.navigationController?.pushViewController(resetPasswordVC, animated: true)
+        }
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(backToLoginTapped))
+            backToLoginLable.isUserInteractionEnabled = true
+            backToLoginLable.addGestureRecognizer(tap)
 
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func backToLoginTapped() {
+        goToLoginScreen()
     }
 
 
