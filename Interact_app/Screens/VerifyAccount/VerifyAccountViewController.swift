@@ -57,7 +57,7 @@ class VerifyAccountViewController: UIViewController {
 
     // MARK: - Timer Logic
     private func startTimer() {
-        counter = 5
+        counter = 1
         canResend = false
 
         timer?.invalidate()
@@ -81,7 +81,7 @@ class VerifyAccountViewController: UIViewController {
 
     private func updateCountdownText() {
         infoLabel.attributedText = nil
-        infoLabel.text = "Didn’t get the email? Try again in \(counter)s"
+        infoLabel.text = "Didn’t get the verification link? Try again in \(counter)s"
         infoLabel.textColor = .gray
     }
 
@@ -93,7 +93,7 @@ class VerifyAccountViewController: UIViewController {
         verifyButton.alpha = 1.0
 
         // Create underlined "Resend" text
-        let base = "Didn’t get the email? "
+        let base = "Didn’t get the verification link? "
         let resend = "Resend"
 
         let attributed = NSMutableAttributedString(
