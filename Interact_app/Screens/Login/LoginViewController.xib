@@ -12,6 +12,7 @@
             <connections>
                 <outlet property="emailAddressErrorLabel" destination="H0L-PV-ubW" id="fDo-xM-fTQ"/>
                 <outlet property="emailAddressTextField" destination="hfT-kh-ivp" id="KgT-2P-VWA"/>
+                <outlet property="forgetPasswordButton" destination="aoQ-cm-YHe" id="n9T-CU-xxI"/>
                 <outlet property="loginButton" destination="ghd-7p-zbv" id="dgJ-l4-fm2"/>
                 <outlet property="loginWithAppleButton" destination="5un-UI-AMz" id="NUY-nf-t2L"/>
                 <outlet property="loginWithGoogleButton" destination="tMW-5H-cTX" id="bBa-Y8-rCt"/>
@@ -53,7 +54,7 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Mla-Kx-2mN">
                                     <rect key="frame" x="0.0" y="75.666666666666657" width="353" height="62.333333333333343"/>
                                     <subviews>
-                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email Address" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hfT-kh-ivp">
+                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hfT-kh-ivp">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="25d-U2-tP8"/>
@@ -75,7 +76,7 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="gCp-Bb-qBu">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="62.333333333333336"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bAy-BZ-AMr">
+                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bAy-BZ-AMr">
                                                     <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="qOd-Fz-fX9"/>
@@ -98,6 +99,9 @@
                                                 <fontDescription key="titleFontDescription" type="system" pointSize="13"/>
                                                 <color key="baseForegroundColor" systemColor="systemBlueColor"/>
                                             </buttonConfiguration>
+                                            <connections>
+                                                <action selector="forgetPasswordOnTap:" destination="-1" eventType="touchUpInside" id="hdW-em-EfV"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                 </stackView>

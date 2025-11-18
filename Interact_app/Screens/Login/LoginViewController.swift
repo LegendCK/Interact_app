@@ -130,14 +130,72 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginWithAppleButton: ButtonComponent!
     @IBOutlet weak var loginWithGoogleButton: ButtonComponent!
 
+    @IBOutlet weak var forgetPasswordButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setupPasswordToggle()
         setupButtons()
         setupMainTitle()
         setupSignUpLabel()
         setupTextFields()
     }
+    
+    private func setupPasswordToggle() {
+        let eyeButton = UIButton(type: .system)
+
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "eye.slash.fill")     // initial image (hidden)
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 14, weight: .regular)
+
+        // Add internal padding so the icon is not touching the border
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
+
+        eyeButton.configuration = config
+        eyeButton.tintColor = .systemGray
+
+        // Action
+        eyeButton.addTarget(self, action: #selector(didTapToggleEye(_:)), for: .touchUpInside)
+
+        // Assign to text field
+        passwordTextField.rightView = eyeButton
+        passwordTextField.rightViewMode = .always
+
+        passwordTextField.isSecureTextEntry = true
+    }
+
+
+    @objc private func didTapToggleEye(_ sender: UIButton) {
+        guard var config = sender.configuration else { return }
+
+        let isShowingPassword = passwordTextField.isSecureTextEntry == false
+
+        // Toggle secure entry
+        let wasFirstResponder = passwordTextField.isFirstResponder
+        let selectedRange = passwordTextField.selectedTextRange
+
+        passwordTextField.isSecureTextEntry.toggle()
+
+        // Avoid cursor jump
+        let currentText = passwordTextField.text
+        passwordTextField.text = nil
+        passwordTextField.text = currentText
+        if let range = selectedRange { passwordTextField.selectedTextRange = range }
+        if wasFirstResponder { passwordTextField.becomeFirstResponder() }
+
+        // Swap image
+        config.image = UIImage(
+            systemName: isShowingPassword ? "eye.slash.fill" : "eye.fill"
+        )
+        sender.configuration = config
+    }
+
+    
+    @IBAction func forgetPasswordOnTap(_ sender: Any) {
+        let forgotPasswordVC = ForgotPasswordViewController(nibName: "ForgotPasswordViewController", bundle: nil)
+        navigationController?.pushViewController(forgotPasswordVC, animated: true)
+    }
+    
 
     private func setupButtons() {
         loginButton.configure(
