@@ -10,9 +10,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoleSelectionViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
+                <outlet property="alreadyHaveAccLabel" destination="EaS-WN-Seq" id="eXK-Y2-UEZ"/>
                 <outlet property="getStartButton" destination="tf0-Mg-Wcv" id="DfH-TM-w1M"/>
                 <outlet property="organizerSignupCard" destination="74L-M7-hpx" id="ErI-b9-8Lk"/>
                 <outlet property="participantSignupCard" destination="Dt5-R7-iCY" id="voS-Vc-Pjo"/>
+                <outlet property="screenTitleLabel" destination="XYa-eb-4Rj" id="1Pv-5V-2Xp"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

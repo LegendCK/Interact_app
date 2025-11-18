@@ -9,9 +9,11 @@ import UIKit
 
 class RoleSelectionViewController: UIViewController {
 
+    @IBOutlet weak var screenTitleLabel: UILabel!
     @IBOutlet weak var organizerSignupCard: UIView!
     @IBOutlet weak var participantSignupCard: UIView!
     @IBOutlet weak var getStartButton: ButtonComponent!
+    @IBOutlet weak var alreadyHaveAccLabel: UILabel!
     
     enum Role {
             case organizer
@@ -25,9 +27,36 @@ class RoleSelectionViewController: UIViewController {
             
             setupUI()
             setupGestures()
+            styleScreenTitle() 
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(backToLoginTapped))
+            alreadyHaveAccLabel.isUserInteractionEnabled = true
+            alreadyHaveAccLabel.addGestureRecognizer(tap)
         }
+    
+    @objc func backToLoginTapped() {
+        goToLoginScreen()
+    }
 
         // MARK: - Setup
+    
+    private func styleScreenTitle() {
+        let fullText = "How will you use Interact?"
+        let coloredPart = "Interact?"
+
+        let attributedString = NSMutableAttributedString(string: fullText)
+
+        if let range = fullText.range(of: coloredPart) {
+            let nsRange = NSRange(range, in: fullText)
+            
+            attributedString.addAttribute(.foregroundColor,
+                                          value: UIColor.systemBlue,
+                                          range: nsRange)
+        }
+
+        screenTitleLabel.attributedText = attributedString
+    }
+
         
         private func setupUI() {
             // Initial card styling

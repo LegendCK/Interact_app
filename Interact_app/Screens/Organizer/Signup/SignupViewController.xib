@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignupViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
+                <outlet property="alreadyHaveAccLabel" destination="RSr-Be-5XI" id="VDI-9a-n93"/>
                 <outlet property="confirmPasswordTextField" destination="fCw-MU-c6F" id="n5T-xi-zIp"/>
                 <outlet property="createPasswordTextField" destination="hg1-bu-Y9T" id="wND-u7-T7L"/>
                 <outlet property="mobileNumberTextField" destination="cGI-s0-heJ" id="8Fd-GH-haa"/>
@@ -47,7 +48,7 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="fYZ-jV-HaG">
                             <rect key="frame" x="0.0" y="75.666666666666657" width="353" height="280"/>
                             <subviews>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Organization Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1cu-rL-PoO">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your organization name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1cu-rL-PoO">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="azy-6g-bdn"/>
@@ -55,7 +56,7 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Organization Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z7M-bc-NV3">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter email address" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z7M-bc-NV3">
                                     <rect key="frame" x="0.0" y="59" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="ozd-Hb-qF4"/>
@@ -63,7 +64,7 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="+91 Enter Mobile" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cGI-s0-heJ">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="+91 Enter mobile number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cGI-s0-heJ">
                                     <rect key="frame" x="0.0" y="118.00000000000003" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="R7R-z3-Nut"/>
@@ -71,7 +72,7 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hg1-bu-Y9T">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create a strong password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hg1-bu-Y9T">
                                     <rect key="frame" x="0.0" y="177.00000000000003" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="DRF-tf-inQ"/>
@@ -79,7 +80,7 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fCw-MU-c6F">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Re-enter password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fCw-MU-c6F">
                                     <rect key="frame" x="0.0" y="236" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="9So-BK-1pC"/>
