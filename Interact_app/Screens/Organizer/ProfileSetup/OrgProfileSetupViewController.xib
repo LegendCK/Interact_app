@@ -17,6 +17,7 @@
                 <outlet property="orgTypeTextField" destination="I0e-Xx-qfK" id="SRM-e9-YmT"/>
                 <outlet property="saveButton" destination="nQL-HA-CoF" id="qKG-Qv-r8L"/>
                 <outlet property="socialHandleTextField" destination="7rU-J5-KQP" id="Jua-gG-jH0"/>
+                <outlet property="termsAndConditionCheckBoxButton" destination="v76-DA-NZ9" id="gbt-ee-dut"/>
                 <outlet property="usernameTextField" destination="lef-cI-J3W" id="ypz-SM-iio"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -27,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="e2j-UC-sJZ">
-                    <rect key="frame" x="20" y="118" width="353" height="606.33333333333337"/>
+                    <rect key="frame" x="20" y="118" width="353" height="712.33333333333337"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Woj-ch-uDk">
                             <rect key="frame" x="0.0" y="0.0" width="353" height="55.666666666666664"/>
@@ -47,7 +48,7 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="0hm-6N-t1g">
-                            <rect key="frame" x="0.0" y="75.666666666666629" width="353" height="436"/>
+                            <rect key="frame" x="0.0" y="75.666666666666657" width="353" height="471.33333333333337"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="7WO-Q0-Kvl">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="85"/>
@@ -89,7 +90,7 @@
                                         </label>
                                     </subviews>
                                 </stackView>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lef-cI-J3W">
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Choose a unique username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lef-cI-J3W">
                                     <rect key="frame" x="0.0" y="100.00000000000003" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="xiq-fo-B5b"/>
@@ -97,20 +98,20 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Describe your organization briefly" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Al4-2i-AML">
+                                    <rect key="frame" x="0.0" y="159.00000000000003" width="353" height="20.333333333333343"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" systemColor="systemGray3Color"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0iL-rf-UCg">
-                                    <rect key="frame" x="0.0" y="159.00000000000003" width="353" height="99.999999999999972"/>
+                                    <rect key="frame" x="0.0" y="194.33333333333334" width="353" height="100.00000000000003"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="m3r-MN-YZc">
                                             <rect key="frame" x="8" y="8" width="337" height="84"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About organization" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Al4-2i-AML">
-                                                    <rect key="frame" x="0.0" y="0.0" width="337" height="20.333333333333332"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" systemColor="systemGray3Color"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="QLs-Zp-3fx">
-                                                    <rect key="frame" x="0.0" y="24.333333333333311" width="337" height="59.666666666666657"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="337" height="84"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <color key="textColor" systemColor="labelColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -128,24 +129,24 @@
                                         <constraint firstAttribute="bottom" secondItem="m3r-MN-YZc" secondAttribute="bottom" constant="8" id="jyB-D1-Flm"/>
                                     </constraints>
                                 </view>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Organization Type" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I0e-Xx-qfK">
-                                    <rect key="frame" x="0.0" y="274" width="353" height="44"/>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Your organization type (e.g.,College Club)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I0e-Xx-qfK">
+                                    <rect key="frame" x="0.0" y="309.33333333333337" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="KsV-7Z-xnd"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Location" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4s-Ko-y65">
-                                    <rect key="frame" x="0.0" y="333" width="353" height="44"/>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter city of operation" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E4s-Ko-y65">
+                                    <rect key="frame" x="0.0" y="368.33333333333337" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="ikP-KL-8qh"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Social Handles" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7rU-J5-KQP">
-                                    <rect key="frame" x="0.0" y="392" width="353" height="44"/>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Add Instagram handle (optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7rU-J5-KQP">
+                                    <rect key="frame" x="0.0" y="427.33333333333337" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="U2X-K7-BYP"/>
                                     </constraints>
@@ -154,31 +155,79 @@
                                 </textField>
                             </subviews>
                         </stackView>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="1q2-fC-aYi">
-                            <rect key="frame" x="0.0" y="531.66666666666663" width="353" height="74.666666666666629"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nQL-HA-CoF" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="567" width="353" height="44"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="bVx-mf-qDW"/>
+                            </constraints>
+                        </view>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="nMg-Xa-xms">
+                            <rect key="frame" x="0.0" y="631" width="353" height="81.333333333333371"/>
                             <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nQL-HA-CoF" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
-                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="44" id="bVx-mf-qDW"/>
-                                    </constraints>
-                                </view>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QuW-D9-Onx">
-                                    <rect key="frame" x="0.0" y="58.999999999999993" width="353" height="15.666666666666664"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="KUX-7R-dLF">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="28"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v76-DA-NZ9">
+                                            <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="28" id="N47-3j-mqe"/>
+                                                <constraint firstAttribute="height" constant="28" id="dL6-Xc-yCP"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" image="square" catalog="system"/>
+                                            <connections>
+                                                <action selector="termsAndConditionCheckBoxTapped:" destination="-1" eventType="touchUpInside" id="MnT-GS-EKJ"/>
+                                            </connections>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I agree to the following terms with Interact." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yp1-WA-b54">
+                                            <rect key="frame" x="32" y="0.0" width="321" height="28"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vmt-fl-KrX">
+                                    <rect key="frame" x="0.0" y="30.000000000000004" width="353" height="51.333333333333343"/>
                                     <attributedString key="attributedText">
-                                        <fragment content="Already have an account? ">
+                                        <fragment>
+                                            <string key="content">All details provided are true and represent my organization accurately. 
+I‘ll use Interact only for genuine events and community purposes.
+I allow Interact to display my org name and logo.
+By continuing, you agree to Interact’s </string>
                                             <attributes>
-                                                <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <font key="NSFont" metaFont="system"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                <color key="NSColor" red="0.6000976562" green="0.6000976562" blue="0.6176757812" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <font key="NSFont" size="11" name="SFPro-Regular"/>
+                                                <real key="NSKern" value="0.0"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="leftToRight" defaultTabInterval="36" tighteningFactorForTruncation="0.0">
+                                                    <tabStops/>
+                                                </paragraphStyle>
+                                                <color key="NSStrokeColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <real key="NSStrokeWidth" value="0.0"/>
                                             </attributes>
                                         </fragment>
-                                        <fragment content="Login">
+                                        <fragment content="Terms of Service">
                                             <attributes>
-                                                <color key="NSColor" red="0.23137254901960785" green="0.5249023438" blue="0.9677734375" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                <font key="NSFont" metaFont="system"/>
-                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                <font key="NSFont" size="11" name="SFPro-Regular"/>
+                                                <real key="NSKern" value="0.0"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="leftToRight" defaultTabInterval="36" tighteningFactorForTruncation="0.0">
+                                                    <tabStops/>
+                                                </paragraphStyle>
+                                                <color key="NSStrokeColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <real key="NSStrokeWidth" value="0.0"/>
+                                                <real key="NSUnderline" value="1"/>
+                                            </attributes>
+                                        </fragment>
+                                        <fragment content=".">
+                                            <attributes>
+                                                <font key="NSFont" size="11" name="SFPro-Regular"/>
+                                                <real key="NSKern" value="0.0"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="leftToRight" defaultTabInterval="36" tighteningFactorForTruncation="0.0">
+                                                    <tabStops/>
+                                                </paragraphStyle>
+                                                <color key="NSStrokeColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <real key="NSStrokeWidth" value="0.0"/>
                                             </attributes>
                                         </fragment>
                                     </attributedString>
@@ -202,6 +251,7 @@
     <resources>
         <image name="building.2.crop.circle.fill" catalog="system" width="128" height="123"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="square" catalog="system" width="128" height="114"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
