@@ -12,9 +12,17 @@
 //  Created by admin56 on 07/11/25.
 //
 
+//
+//  VerifyAccountViewController.swift
+//  Interact_app
+//
+
 import UIKit
 
 class VerifyAccountViewController: UIViewController {
+
+    // ⬅ Role passed from SignupViewController or SignupParticipantViewController
+    var userRole: UserRole?
 
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var verifyButton: ButtonComponent!
@@ -31,23 +39,19 @@ class VerifyAccountViewController: UIViewController {
     }
 
     private func setupUI() {
-        // Configure the Verify button
         verifyButton.configure(
             title: "I've Verified",
             backgroundColor: .systemBlue,
             font: .systemFont(ofSize: 17, weight: .semibold)
         )
 
-        // Disable it initially
         verifyButton.button.isEnabled = false
         verifyButton.alpha = 0.5
 
-        // On tap callback
         verifyButton.onTap = { [weak self] in
             self?.verifiedTapped()
         }
 
-        // Label tap gesture for Resend
         let tap = UITapGestureRecognizer(target: self, action: #selector(infoLabelTapped))
         infoLabel.isUserInteractionEnabled = false
         infoLabel.addGestureRecognizer(tap)
@@ -80,7 +84,6 @@ class VerifyAccountViewController: UIViewController {
     }
 
     private func updateCountdownText() {
-        infoLabel.attributedText = nil
         infoLabel.text = "Didn’t get the verification link? Try again in \(counter)s"
         infoLabel.textColor = .gray
     }
@@ -88,11 +91,9 @@ class VerifyAccountViewController: UIViewController {
     private func showResendText() {
         canResend = true
 
-        // Enable the custom button
         verifyButton.button.isEnabled = true
         verifyButton.alpha = 1.0
 
-        // Create underlined "Resend" text
         let base = "Didn’t get the verification link? "
         let resend = "Resend"
 
@@ -119,12 +120,11 @@ class VerifyAccountViewController: UIViewController {
         infoLabel.isUserInteractionEnabled = true
     }
 
-    // MARK: - Resend Email
+    // MARK: - Resend
     @objc private func infoLabelTapped() {
         guard canResend else { return }
         print("Resend tapped")
 
-        // Disable while timer resets
         verifyButton.button.isEnabled = false
         verifyButton.alpha = 0.5
 
@@ -132,20 +132,39 @@ class VerifyAccountViewController: UIViewController {
 
         startTimer()
 
-        // TODO: call resend API
+        // TODO: resend API
     }
 
-    // MARK: - Verified Action
+    // MARK: - Verified
     private func verifiedTapped() {
         print("I've Verified tapped")
         navigateToSetupProfile()
     }
 
+    // MARK: - Role-based Navigation
     private func navigateToSetupProfile() {
-        let orgVC = OrgProfileSetupViewController(
-            nibName: "OrgProfileSetupViewController",
-            bundle: nil
-        )
-        navigationController?.pushViewController(orgVC, animated: true)
+        guard let role = userRole else {
+            print("ERROR: userRole missing!")
+            return
+        }
+
+        switch role {
+
+        case .organizer:
+            let vc = OrgProfileSetupViewController(
+                nibName: "OrgProfileSetupViewController",
+                bundle: nil
+            )
+            vc.userRole = .organizer
+            navigationController?.pushViewController(vc, animated: true)
+
+        case .participant:
+            let vc = ParticipantProfileSetupViewController(
+                nibName: "ParticipantProfileSetupViewController",
+                bundle: nil
+            )
+            vc.userRole = .participant
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

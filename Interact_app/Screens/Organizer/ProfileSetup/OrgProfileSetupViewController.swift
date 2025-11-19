@@ -3,10 +3,18 @@
 //  Interact_app
 //
 
+//
+//  OrgProfileSetupViewController.swift
+//  Interact_app
+//
+
 import UIKit
 import PhotosUI
 
 class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
+
+    // Role passed from VerifyAccountViewController
+    var userRole: UserRole?
 
     @IBOutlet weak var addLogo: UIImageView!
     @IBOutlet weak var addLogoButton: UIButton!
@@ -30,26 +38,21 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         configureAddLogoButton()
     }
 
+    // MARK: - T&C Checkbox
     @IBAction func termsAndConditionCheckBoxTapped(_ sender: Any) {
-
         let termsVC = TermsAndConditionViewController(
             nibName: "TermsAndConditionViewController",
             bundle: nil
         )
 
-        // Callback after Accept
         termsVC.onAccept = { [weak self] in
             guard let self else { return }
             
-            // Tick checkbox
             self.termsAndConditionCheckBoxButton.isSelected = true
-            
-            // Enable save button
             self.setSaveButtonEnabled(true)
         }
 
         termsVC.modalPresentationStyle = .pageSheet
-
         if let sheet = termsVC.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.prefersGrabberVisible = true
@@ -59,8 +62,8 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         present(termsVC, animated: true)
     }
 
+    // MARK: - UI Setup
     private func configureUI() {
-        
         setupTextFields()
         
         aboutOrgView.layer.cornerRadius = 10
@@ -69,18 +72,11 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         
         saveButton.configure(title: "Save & Continue")
 
-        // Disable save button until T&C accepted
         setSaveButtonEnabled(false)
 
         saveButton.onTap = { [weak self] in
-            guard self != nil else { return }
-            
-            let tabBar = MainTabBarController()
-            
-            if let sceneDelegate = UIApplication.shared.connectedScenes
-                .first?.delegate as? SceneDelegate {
-                sceneDelegate.changeRootViewController(tabBar)
-            }
+            guard let self else { return }
+            self.completeSetup()
         }
     }
 
@@ -89,6 +85,7 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         saveButton.alpha = enabled ? 1.0 : 0.5
     }
 
+    // MARK: - Logo Picker
     private func configureAddLogo() {
         addLogo.layer.cornerRadius = addLogo.frame.size.width / 2
         addLogo.clipsToBounds = true
@@ -108,8 +105,27 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         picker.delegate = self
         present(picker, animated: true)
     }
+
+    // MARK: - Final Save
+    private func completeSetup() {
+        guard let role = userRole else { return }
+
+        // Save role permanently
+        UserDefaults.standard.set(role.rawValue, forKey: "UserRole")
+
+        // Load correct home
+        let homeVC: UIViewController =
+            (role == .organizer)
+            ? MainTabBarController()
+            : ParticipantMainTabBarController()
+
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.changeRootViewController(homeVC)
+        }
+    }
 }
 
+// MARK: - PHPicker Delegate
 extension OrgProfileSetupViewController: PHPickerViewControllerDelegate {
 
     func picker(_ picker: PHPickerViewController,
@@ -130,27 +146,26 @@ extension OrgProfileSetupViewController: PHPickerViewControllerDelegate {
             }
         }
     }
-    
+
     private func setupTextFields() {
-        let textFields = [
+        let fields = [
             usernameTextField,
             orgTypeTextField,
             locationTextField,
             socialHandleTextField
         ]
-        
-        for textField in textFields {
-            guard let field = textField else { continue }
-            field.delegate = self
-            
-            field.borderStyle = .none
-            field.layer.borderColor = UIColor.systemGray4.cgColor
-            field.layer.borderWidth = 1
-            field.layer.cornerRadius = 10
-            
-            let leftPadding = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.height))
-            field.leftView = leftPadding
-            field.leftViewMode = .always
+
+        for field in fields {
+            guard let f = field else { continue }
+            f.delegate = self
+            f.borderStyle = .none
+            f.layer.borderColor = UIColor.systemGray4.cgColor
+            f.layer.borderWidth = 1
+            f.layer.cornerRadius = 10
+
+            let leftPadding = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: f.frame.height))
+            f.leftView = leftPadding
+            f.leftViewMode = .always
         }
     }
 }

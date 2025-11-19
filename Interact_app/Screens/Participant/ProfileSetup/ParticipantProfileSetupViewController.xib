@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ParticipantProfileSetupViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
+                <outlet property="saveButton" destination="Vvp-dZ-Fs6" id="Xol-FC-VBA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

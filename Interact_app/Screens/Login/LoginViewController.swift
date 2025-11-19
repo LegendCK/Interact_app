@@ -317,8 +317,37 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
 
         print("Login button tapped — Valid Input")
-        // TODO: API call here
+
+        let email = emailAddressTextField.text?.lowercased() ?? ""
+
+        // ORGANIZER
+        if email == "organizer@gmail.com" {
+            UserDefaults.standard.set(UserRole.organizer.rawValue, forKey: "UserRole")
+
+            let organizerTab = MainTabBarController()
+            setRoot(organizerTab)
+
+        // PARTICIPANT
+        } else if email == "participant@gmail.com" {
+            UserDefaults.standard.set(UserRole.participant.rawValue, forKey: "UserRole")
+
+            let participantTab = ParticipantMainTabBarController()
+            setRoot(participantTab)
+
+        } else {
+            emailAddressErrorLabel.text = "Account not found"
+            emailAddressErrorLabel.isHidden = false
+            setupErrorState(for: emailAddressTextField)
+        }
+
     }
+
+    private func setRoot(_ vc: UIViewController) {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.changeRootViewController(vc)
+        }
+    }
+
 
     // MARK: - Shake Animation
     private func shakeAnimation() {
