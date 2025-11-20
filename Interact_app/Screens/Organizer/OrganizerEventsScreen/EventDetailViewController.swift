@@ -36,15 +36,49 @@ class EventDetailViewController: UIViewController {
     
     @IBOutlet weak var whatsappGrpButton: ButtonComponent!
     
+    @IBOutlet weak var announceWinnersButton: ButtonComponent!
+    
+    @IBOutlet weak var winnersContainerView: UIView!
+    
+    @IBOutlet weak var firstPrizeLabel: UILabel!
+    @IBOutlet weak var firstPrizeIcon: UIImageView!
+    
+    @IBOutlet weak var secondPrizeLabel: UILabel!
+    @IBOutlet weak var secondPrizeIcon: UIImageView!
+    
+    @IBOutlet weak var thirdPrizeLabel: UILabel!
+    @IBOutlet weak var thirdPrizeIcon: UIImageView!
+    
     // MARK: - Properties
-        var event: UserEvent!
+    var event: UserEvent!
+    
+    private let goldColor = UIColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0)
+    private let silverColor = UIColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1.0)
+    private let bronzeColor = UIColor(red: 0.80, green: 0.50, blue: 0.20, alpha: 1.0)
         
         // MARK: - Lifecycle
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            setupButtons()
-            setupUI()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupButtons()
+        setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshEventData()
+        configureButtonVisibility()
+        setupWinnersDisplay()
+    }
+
+    private func refreshEventData() {
+        // Reload the event to get updated winnersAnnounced status
+        if let eventId = event.id {
+            if let updatedEvent = CoreDataManager.shared.fetchEvent(by: eventId) {
+                event = updatedEvent
+            }
         }
+    }
+
         
         // MARK: - Setup
         private func setupButtons() {
@@ -81,6 +115,21 @@ class EventDetailViewController: UIViewController {
                 let rsvpVC = RSVPViewController(nibName: "RSVPViewController", bundle: nil)
                 rsvpVC.event = self.event
                 self.navigationController?.pushViewController(rsvpVC, animated: true)
+            }
+            
+            announceWinnersButton.configure(
+                title: "Announce Winners",
+                backgroundColor: .systemBlue,
+            )
+            
+            announceWinnersButton.onTap = { [weak self] in
+                print("Announce Winners Button Clicked")
+                
+                guard let self = self else { return }
+                
+                // Use the custom initializer
+                let winnersVC = WinnersSelectionViewController(event: self.event)
+                self.navigationController?.pushViewController(winnersVC, animated: true)
             }
             
             awaitingVerificationButton.configure(
@@ -184,11 +233,11 @@ class EventDetailViewController: UIViewController {
             }
         }
         
-        // ✅ UPDATED: Button visibility logic for new status system
         private func configureButtonVisibility() {
             let status = getEventStatus()
             
-            // ✅ EXACTLY matches your requirements:
+            announceWinnersButton.isHidden = event.winnersAnnounced
+            
             switch status {
             case .pending:
                 // Both buttons hidden for pending events
@@ -242,6 +291,37 @@ class EventDetailViewController: UIViewController {
                 }
             }
         }
+    
+    private func setupWinnersDisplay() {
+        guard let eventId = event.id else { return }
+        
+        let winners = CoreDataManager.shared.getWinners(for: eventId)
+        let hasWinners = !winners.isEmpty && event.winnersAnnounced
+        
+        winnersContainerView.isHidden = !hasWinners
+        
+        if hasWinners {
+            populateWinners(winners)
+        }
+    }
+
+    private func populateWinners(_ winners: [Team]) {
+        for winner in winners {
+            switch winner.prizeRank {
+            case 1:
+                firstPrizeLabel.text = "\(winner.teamName ?? "") - \(winner.teamLeader ?? "")"
+                firstPrizeIcon.tintColor = goldColor
+            case 2:
+                secondPrizeLabel.text = "\(winner.teamName ?? "") - \(winner.teamLeader ?? "")"
+                secondPrizeIcon.tintColor = silverColor
+            case 3:
+                thirdPrizeLabel.text = "\(winner.teamName ?? "") - \(winner.teamLeader ?? "")"
+                thirdPrizeIcon.tintColor = bronzeColor
+            default:
+                break
+            }
+        }
+    }
         
         // MARK: - Alert Helper
         private func showAlert(title: String, message: String) {
