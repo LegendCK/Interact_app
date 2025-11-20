@@ -536,7 +536,9 @@ extension CoreDataManager {
     
     // Create 50 dummy teams for an event
     private func createDummyTeams(for eventId: UUID) {
-        let dummyData = generateDummyTeamsData()
+        guard let event = fetchEvent(by: eventId) else { return }
+        
+        let dummyData = generateDummyTeamsData(teamSize: event.teamSize)
         
         for teamData in dummyData {
             _ = createTeam(
@@ -549,7 +551,7 @@ extension CoreDataManager {
     }
     
     // Generate 50 dummy teams using your existing participant data
-    private func generateDummyTeamsData() -> [(teamName: String, teamLeader: String, memberCount: Int16)] {
+    private func generateDummyTeamsData(teamSize: Int16) -> [(teamName: String, teamLeader: String, memberCount: Int16)] {
         let participantData = generateDummyParticipantsData()
         
         // Use first 50 participants as team leaders
@@ -573,7 +575,7 @@ extension CoreDataManager {
         for i in 0..<50 {
             let teamName = teamNames[i]
             let teamLeader = teamLeaders[i].name ?? "Unknown Leader"
-            let memberCount = Int16.random(in: 2...5) 
+            let memberCount = teamSize
             
             teams.append((teamName: teamName, teamLeader: teamLeader, memberCount: memberCount))
         }
