@@ -20,8 +20,11 @@ class WinnersSelectionViewController: UIViewController {
     // MARK: - Properties
     var event: UserEvent!
     private var teams: [Team] = []
-    private var selectedTeams: [Int: Team] = [:] // [rank: team]
+    private var selectedTeams: [Int: Team] = [:]
+    private var filteredTeams: [Team] = []
     private var publishButton: UIBarButtonItem!
+    private var isSearching = false
+    private let searchController = UISearchController(searchResultsController: nil)
     
     // MARK: - Initialization
     init(event: UserEvent) {
@@ -40,6 +43,18 @@ class WinnersSelectionViewController: UIViewController {
         setupNavigationBar()
         loadTeams()
         setupEmptyState()
+        setupSearchController()
+    }
+    
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search teams by name"
+        searchController.searchBar.delegate = self
+        
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     // MARK: - Setup Methods
@@ -71,13 +86,34 @@ class WinnersSelectionViewController: UIViewController {
     private func loadTeams() {
         guard let eventId = event.id else { return }
         teams = CoreDataManager.shared.getTeams(for: eventId)
+        filteredTeams = teams
         collectionView.reloadData()
         updateEmptyState()
         updateNavigationSubtitle()
     }
     
     private func updateEmptyState() {
-        emptyStateView.isHidden = !teams.isEmpty
+        let hasData = isSearching ? !filteredTeams.isEmpty : !teams.isEmpty
+        emptyStateView.isHidden = hasData
+        
+        if isSearching && filteredTeams.isEmpty && !searchController.searchBar.text!.isEmpty {
+            emptyStateLabel.text = "No teams found for \"\(searchController.searchBar.text!)\""
+        } else {
+            emptyStateLabel.text = "No teams available"
+        }
+    }
+    
+    private func filterTeams(for searchText: String) {
+        if searchText.isEmpty {
+            filteredTeams = teams
+        } else {
+            filteredTeams = teams.filter { team in
+                guard let teamName = team.teamName else { return false }
+                return teamName.lowercased().contains(searchText.lowercased())
+            }
+        }
+        collectionView.reloadData()
+        updateEmptyState()
     }
     
     private func setupNavigationBar() {
@@ -252,13 +288,13 @@ class WinnersSelectionViewController: UIViewController {
 extension WinnersSelectionViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return teams.count
+        return isSearching ? filteredTeams.count : teams.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TeamCardCell", for: indexPath) as! TeamCardCell
         
-        let team = teams[indexPath.item]
+        let team = isSearching ? filteredTeams[indexPath.item] : teams[indexPath.item]
         let prizeRank = getPrizeRank(for: team)
         
         cell.configure(with: team, prizeRank: prizeRank)
@@ -266,7 +302,7 @@ extension WinnersSelectionViewController: UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let team = teams[indexPath.item]
+        let team = isSearching ? filteredTeams[indexPath.item] : teams[indexPath.item]
         handleTeamSelection(team)
     }
     
@@ -274,5 +310,24 @@ extension WinnersSelectionViewController: UICollectionViewDataSource, UICollecti
         let padding: CGFloat = 16
         let collectionViewWidth = collectionView.frame.width - (padding * 2)
         return CGSize(width: collectionViewWidth, height: 100) 
+    }
+}
+
+// MARK: - UISearchResultsUpdating
+extension WinnersSelectionViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchText = searchController.searchBar.text ?? ""
+        isSearching = !searchText.isEmpty
+        filterTeams(for: searchText)
+    }
+}
+
+// MARK: - UISearchBarDelegate
+extension WinnersSelectionViewController: UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        isSearching = false
+        filteredTeams = teams
+        collectionView.reloadData()
+        updateEmptyState()
     }
 }
