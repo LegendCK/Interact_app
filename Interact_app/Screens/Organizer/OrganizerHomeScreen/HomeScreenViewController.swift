@@ -79,7 +79,7 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         // Call this once when app launches
 //        CoreDataManager.shared.populateDummyParticipantsForAllEvents()
 //        CoreDataManager.shared.populateDummyTeamsForAllEvents()
-//        let eventId = UUID(uuidString: "13580723-1CE2-4CC5-AF40-DF2FFFD587F5")!
+//        let eventId = UUID(uuidString: "603200C2-B61A-4690-B4B0-885054E19762")!
 //        CoreDataManager.shared.deleteEventAndParticipants(by: eventId)
         
         loadOngoingEvents()

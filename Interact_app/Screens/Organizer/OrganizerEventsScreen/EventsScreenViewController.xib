@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventsScreenViewController" customModule="Interact_UIKit" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventsScreenViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="EQv-Qe-9TM" id="pIO-VP-9en"/>
                 <outlet property="fallbackView" destination="omb-LQ-sIZ" id="Cq7-Zw-j2S"/>
@@ -45,7 +45,7 @@
                         <segment title="Past"/>
                     </segments>
                 </segmentedControl>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="EQv-Qe-9TM">
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="EQv-Qe-9TM">
                     <rect key="frame" x="0.0" y="219" width="393" height="565"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="CDv-MH-FZc">
@@ -55,7 +55,7 @@
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     </collectionViewFlowLayout>
                 </collectionView>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="omb-LQ-sIZ" customClass="FallBackView" customModule="Interact_UIKit" customModuleProvider="target">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="omb-LQ-sIZ" customClass="FallBackView" customModule="Interact_app" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="219" width="393" height="565"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>

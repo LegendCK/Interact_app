@@ -208,7 +208,7 @@ class EventDetailViewController: UIViewController {
                 let startTime = dateFormatter.string(from: startDate)
                 let endTime = dateFormatter.string(from: endDate)
                 
-                return "\(startDay)–\(endDay), \(year) · \(startTime) – \(endTime)"
+                return "\(startDay),\(year) - \(startTime) · \(endDay),\(year) – \(endTime)"
             }
         }
         
@@ -244,6 +244,7 @@ class EventDetailViewController: UIViewController {
                 viewRegistrationsButton.isHidden = true
                 viewRSVPButton.isHidden = true
                 awaitingVerificationButton.isHidden = false
+                announceWinnersButton.isHidden = true
             case .upcoming:
                 // Both buttons visible for upcoming events
                 viewRegistrationsButton.isHidden = false

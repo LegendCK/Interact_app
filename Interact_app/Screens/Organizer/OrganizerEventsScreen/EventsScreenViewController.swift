@@ -340,7 +340,7 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
                 let startTime = dateFormatter.string(from: startDate)
                 let endTime = dateFormatter.string(from: endDate)
                 
-                return "\(dateString) · \(startTime) – \(endTime)"
+                return "\(dateString) · \(startTime) - \(endTime)"
             } else {
                 // Different days: "Nov 15-16, 2024"
                 dateFormatter.dateFormat = "MMM d"
@@ -350,7 +350,7 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
                 dateFormatter.dateFormat = "yyyy"
                 let year = dateFormatter.string(from: startDate)
                 
-                return "\(startDay)–\(endDay), \(year)"
+                return "\(startDay) - \(endDay), \(year)"
             }
         }
         
