@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ParticipantCardCell" customModule="Interact_UIKit" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wev-g3-5K7">
+                        <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Aashvi Swaroop" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ER-fe-PMU">
+                                <rect key="frame" x="10" y="10" width="165" height="27"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="aashviswaroop1@gmail.com" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7tG-DH-5W9">
+                                <rect key="frame" x="10" y="42" width="224" height="21"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20th Nov, 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nne-iM-6MS">
+                                <rect key="frame" x="10" y="68" width="106" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Team Coderzz" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ciq-L5-YAg">
+                                <rect key="frame" x="290" y="10" width="117" height="21"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" systemColor="linkColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7tG-DH-5W9" firstAttribute="top" secondItem="4ER-fe-PMU" secondAttribute="bottom" constant="5" id="AKf-Kk-AVT"/>
+                            <constraint firstItem="ciq-L5-YAg" firstAttribute="top" secondItem="wev-g3-5K7" secondAttribute="top" constant="10" id="K7r-6b-Lal"/>
+                            <constraint firstItem="7tG-DH-5W9" firstAttribute="leading" secondItem="wev-g3-5K7" secondAttribute="leading" constant="10" id="N8I-C8-3qB"/>
+                            <constraint firstItem="4ER-fe-PMU" firstAttribute="leading" secondItem="wev-g3-5K7" secondAttribute="leading" constant="10" id="eDs-tW-LzV"/>
+                            <constraint firstItem="Nne-iM-6MS" firstAttribute="leading" secondItem="wev-g3-5K7" secondAttribute="leading" constant="10" id="emK-4e-7r4"/>
+                            <constraint firstItem="4ER-fe-PMU" firstAttribute="top" secondItem="wev-g3-5K7" secondAttribute="top" constant="10" id="sg4-Ja-zdK"/>
+                            <constraint firstItem="Nne-iM-6MS" firstAttribute="top" secondItem="7tG-DH-5W9" secondAttribute="bottom" constant="5" id="uRp-bj-710"/>
+                            <constraint firstAttribute="trailing" secondItem="ciq-L5-YAg" secondAttribute="trailing" constant="10" id="vIi-y5-udt"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="wev-g3-5K7" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="3UE-5x-B5G"/>
+                <constraint firstAttribute="bottom" secondItem="wev-g3-5K7" secondAttribute="bottom" id="dtN-1d-5CA"/>
+                <constraint firstAttribute="trailing" secondItem="wev-g3-5K7" secondAttribute="trailing" id="eDq-Af-M4d"/>
+                <constraint firstItem="wev-g3-5K7" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="qKq-mA-ir9"/>
+            </constraints>
+            <size key="customSize" width="417" height="100"/>
+            <connections>
+                <outlet property="cardView" destination="wev-g3-5K7" id="oVO-FC-32O"/>
+                <outlet property="emailLabel" destination="7tG-DH-5W9" id="dCj-ZV-0vW"/>
+                <outlet property="nameLabel" destination="4ER-fe-PMU" id="vU2-Fe-Feb"/>
+                <outlet property="registrationDateLabel" destination="Nne-iM-6MS" id="ryA-tn-Fjz"/>
+                <outlet property="teamLabel" destination="ciq-L5-YAg" id="pgY-gQ-yk1"/>
+            </connections>
+            <point key="canvasLocation" x="60.305343511450381" y="150"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
