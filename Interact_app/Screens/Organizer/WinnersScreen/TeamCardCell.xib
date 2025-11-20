@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="TeamCardCell" customModule="Interact_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IKz-6U-8rr">
+                        <rect key="frame" x="0.0" y="0.0" width="417" height="100"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Team Coderzz" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LYG-AX-1CO">
+                                <rect key="frame" x="10" y="10.000000000000002" width="397" height="21.666666666666671"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <color key="textColor" systemColor="linkColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Team Leader - Aashvi Swaroop" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GTk-lS-Rf8">
+                                <rect key="frame" x="10" y="36.666666666666664" width="397" height="17"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4 members" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s52-LF-61V">
+                                <rect key="frame" x="10" y="58.666666666666664" width="64" height="14.333333333333336"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" systemColor="systemGrayColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-Ie-7fd">
+                                <rect key="frame" x="257" y="10" width="150" height="35"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First Prize" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2nq-rB-s6k">
+                                        <rect key="frame" x="33" y="5" width="84" height="25"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="4Qw-YY-ytn"/>
+                                    <constraint firstItem="2nq-rB-s6k" firstAttribute="centerY" secondItem="1ke-Ie-7fd" secondAttribute="centerY" id="MTY-XL-ztL"/>
+                                    <constraint firstItem="2nq-rB-s6k" firstAttribute="centerX" secondItem="1ke-Ie-7fd" secondAttribute="centerX" id="Pmc-sd-0cG"/>
+                                    <constraint firstItem="2nq-rB-s6k" firstAttribute="top" secondItem="1ke-Ie-7fd" secondAttribute="top" constant="5" id="YHK-b0-xdo"/>
+                                    <constraint firstAttribute="width" constant="150" id="b6h-kd-e5f"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="GTk-lS-Rf8" secondAttribute="trailing" constant="10" id="0RS-Lt-W63"/>
+                            <constraint firstItem="GTk-lS-Rf8" firstAttribute="top" secondItem="LYG-AX-1CO" secondAttribute="bottom" constant="5" id="5bg-Dt-gby"/>
+                            <constraint firstItem="1ke-Ie-7fd" firstAttribute="top" secondItem="IKz-6U-8rr" secondAttribute="top" constant="10" id="Fao-Qt-DPC"/>
+                            <constraint firstItem="GTk-lS-Rf8" firstAttribute="leading" secondItem="IKz-6U-8rr" secondAttribute="leading" constant="10" id="Zn5-gI-6JE"/>
+                            <constraint firstItem="s52-LF-61V" firstAttribute="leading" secondItem="IKz-6U-8rr" secondAttribute="leading" constant="10" id="dSv-i2-V3P"/>
+                            <constraint firstAttribute="trailing" secondItem="LYG-AX-1CO" secondAttribute="trailing" constant="10" id="flI-e0-7bV"/>
+                            <constraint firstItem="LYG-AX-1CO" firstAttribute="leading" secondItem="IKz-6U-8rr" secondAttribute="leading" constant="10" id="gk2-Fo-WCC"/>
+                            <constraint firstItem="LYG-AX-1CO" firstAttribute="top" secondItem="IKz-6U-8rr" secondAttribute="top" constant="10" id="ian-8v-une"/>
+                            <constraint firstItem="s52-LF-61V" firstAttribute="top" secondItem="GTk-lS-Rf8" secondAttribute="bottom" constant="5" id="jaV-AB-zFP"/>
+                            <constraint firstAttribute="trailing" secondItem="1ke-Ie-7fd" secondAttribute="trailing" constant="10" id="me4-Bj-yRH"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="IKz-6U-8rr" secondAttribute="trailing" id="A85-bp-Rjd"/>
+                <constraint firstItem="IKz-6U-8rr" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="BHF-p0-Tcb"/>
+                <constraint firstItem="IKz-6U-8rr" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bmW-8a-kYh"/>
+                <constraint firstAttribute="bottom" secondItem="IKz-6U-8rr" secondAttribute="bottom" id="dT5-b7-leP"/>
+            </constraints>
+            <connections>
+                <outlet property="containerView" destination="IKz-6U-8rr" id="a8f-DI-Xc4"/>
+                <outlet property="memberCountLabel" destination="s52-LF-61V" id="S24-pJ-A1K"/>
+                <outlet property="prizeBadgeContainer" destination="1ke-Ie-7fd" id="Ae6-fj-Va2"/>
+                <outlet property="prizeBadgeLabel" destination="2nq-rB-s6k" id="Bah-Sp-0Xh"/>
+                <outlet property="teamLeaderLabel" destination="GTk-lS-Rf8" id="aeG-uu-cOq"/>
+                <outlet property="teamNameLabel" destination="LYG-AX-1CO" id="XoI-0g-9EX"/>
+            </connections>
+            <point key="canvasLocation" x="138.1679389312977" y="153.52112676056339"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

@@ -77,7 +77,8 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         setupSeeAllButton()
         
         // Call this once when app launches
-        CoreDataManager.shared.populateDummyParticipantsForAllEvents()
+//        CoreDataManager.shared.populateDummyParticipantsForAllEvents()
+//        CoreDataManager.shared.populateDummyTeamsForAllEvents()
 //        let eventId = UUID(uuidString: "13580723-1CE2-4CC5-AF40-DF2FFFD587F5")!
 //        CoreDataManager.shared.deleteEventAndParticipants(by: eventId)
         
