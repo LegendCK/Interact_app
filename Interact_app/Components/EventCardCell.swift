@@ -19,6 +19,7 @@ class EventCardCell: UICollectionViewCell {
     @IBOutlet weak var venueLabel: UILabel!
     
     @IBOutlet weak var shareButton: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         eventImageView.layer.cornerRadius = 8
@@ -43,5 +44,36 @@ class EventCardCell: UICollectionViewCell {
 
         // Initialization code
     }
+    
+    @IBAction func shareButtonAction(_ sender: Any) {
+        
+    }
+    
+    
+    // Add to EventCardCell class
+//    func configureStatusBadge(text: String, color: UIColor) {
+//        // Remove existing status badge if any
+//        viewWithTag(999)?.removeFromSuperview()
+//        
+//        let badge = UILabel()
+//        badge.tag = 999
+//        badge.text = text
+//        badge.textColor = .white
+//        badge.font = UIFont.systemFont(ofSize: 11, weight: .semibold)
+//        badge.backgroundColor = color
+//        badge.textAlignment = .center
+//        badge.layer.cornerRadius = 5
+//        badge.clipsToBounds = true
+//        
+//        badge.translatesAutoresizingMaskIntoConstraints = false
+//        addSubview(badge)
+//        
+//        NSLayoutConstraint.activate([
+//            badge.topAnchor.constraint(equalTo: eventImageView.topAnchor, constant: 8),
+//            badge.trailingAnchor.constraint(equalTo: eventImageView.trailingAnchor, constant: -8),
+//            badge.heightAnchor.constraint(equalToConstant: 25),
+//            badge.widthAnchor.constraint(equalToConstant: 120)
+//        ])
+//    }
 
 }

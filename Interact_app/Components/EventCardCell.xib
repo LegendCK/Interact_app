@@ -27,7 +27,7 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="si9-qR-0rV"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -57,6 +57,9 @@
                         </constraints>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="square.and.arrow.up" catalog="system"/>
+                        <connections>
+                            <action selector="shareButtonAction:" destination="gTV-IL-0wX" eventType="touchUpInside" id="Tc7-r4-0Rc"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>
@@ -80,7 +83,7 @@
             <connections>
                 <outlet property="dateLabel" destination="vD2-mt-rem" id="rnI-eh-w8v"/>
                 <outlet property="eventImageView" destination="zB1-vg-qCZ" id="DjJ-hx-gDg"/>
-                <outlet property="shareButton" destination="ug1-cH-yPx" id="myu-Fu-mlJ"/>
+                <outlet property="shareButton" destination="ug1-cH-yPx" id="Y7f-sI-OKF"/>
                 <outlet property="titleLabel" destination="kbP-9J-imj" id="xEx-bK-vZV"/>
                 <outlet property="venueLabel" destination="PF4-HT-FFE" id="Z3G-PY-W7H"/>
             </connections>
