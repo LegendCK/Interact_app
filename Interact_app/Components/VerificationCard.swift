@@ -8,16 +8,6 @@
 import UIKit
 
 class VerificationCard: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-    
-    @IBOutlet weak var verifyButton: ButtonComponent!
     
     // MARK: - Init Methods
         override init(frame: CGRect) {
@@ -29,7 +19,7 @@ class VerificationCard: UIView {
             super.init(coder: coder)
             commonInit()
         }
-
+    
         // MARK: - Common Init (XIB Loader)
         private func commonInit() {
             let nibName = String(describing: type(of: self))
@@ -46,11 +36,6 @@ class VerificationCard: UIView {
             DispatchQueue.main.async {
                 self.applyGradientBackground(to: contentView)
             }
-
-            // Configure button once the view is loaded
-            DispatchQueue.main.async {
-                self.configureButton()
-            }
         }
 
         // MARK: - Gradient Setup
@@ -61,11 +46,11 @@ class VerificationCard: UIView {
             let gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.bounds
             gradientLayer.colors = [
-                UIColor(red: 0.79, green: 0.91, blue: 1.0, alpha: 1.0).cgColor, // #C9E8FF
-                UIColor(red: 1.0, green: 0.96, blue: 0.85, alpha: 1.0).cgColor  // #FFF6D9
+                UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
+                UIColor.systemYellow.withAlphaComponent(0.3).cgColor
             ]
-            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-            gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+            gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
             gradientLayer.cornerRadius = 16
 
             view.layer.insertSublayer(gradientLayer, at: 0)
@@ -79,19 +64,4 @@ class VerificationCard: UIView {
                 gradientLayer.frame = bounds
             }
         }
-
-        // MARK: - Button Configuration
-        private func configureButton() {
-            verifyButton.configure(
-                title: "Complete Verification",
-                backgroundColor: .black,
-                image: UIImage(systemName: "arrow.right"),
-                imagePlacement: .trailing
-            )
-
-            verifyButton.onTap = {
-                print("Verify Button tapped")
-            }
-        }
-
 }
