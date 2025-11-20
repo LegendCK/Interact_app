@@ -11,6 +11,15 @@
         <attribute name="registeredAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="teamName" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="Team" representedClassName="Team" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="eventId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="memberCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="prizeRank" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="teamLeader" optional="YES" attributeType="String"/>
+        <attribute name="teamName" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="UserEvent" representedClassName="UserEvent" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -27,5 +36,7 @@
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="teamSize" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="whatsappGroupLink" optional="YES" attributeType="String"/>
+        <attribute name="winnersAnnounced" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="winnersAnnouncedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
 </model>

@@ -81,10 +81,17 @@ extension CoreDataManager {
 
         do {
             try context.save()
-            print("✅ Event saved successfully: \(eventName)")
+            print("Event saved successfully: \(eventName)")
+            if let eventId = newEvent.id {
+                    createDummyParticipants(for: eventId)
+                    print("Added 50 participants for new event: \(eventName)")
+                        
+                    createDummyTeams(for: eventId)
+                    print("Added 50 teams for new event: \(eventName)")
+                }
             return true
         } catch {
-            print("❌ Failed to save event: \(error.localizedDescription)")
+            print("Failed to save event: \(error.localizedDescription)")
             return false
         }
     }
@@ -403,5 +410,197 @@ extension CoreDataManager {
         let foodCount = participants.filter { $0.hasFood }.count
         
         return (attendedCount, participants.count, foodCount)
+    }
+}
+
+
+// MARK: - Team Management
+extension CoreDataManager {
+    
+    // Create a new team
+    func createTeam(eventId: UUID, teamName: String, teamLeader: String, memberCount: Int16) -> Bool {
+        let context = persistentContainer.viewContext
+        let team = Team(context: context)
+        
+        team.id = UUID()
+        team.teamName = teamName
+        team.teamLeader = teamLeader
+        team.memberCount = memberCount
+        team.eventId = eventId
+        team.prizeRank = 0 // 0 = no prize
+        team.createdAt = Date()
+        
+        do {
+            try context.save()
+            return true
+        } catch {
+            print("Failed to create team: \(error)")
+            return false
+        }
+    }
+    
+    // Get all teams for a specific event
+    func getTeams(for eventId: UUID) -> [Team] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<Team> = Team.fetchRequest()
+        
+        fetchRequest.predicate = NSPredicate(format: "eventId == %@", eventId as CVarArg)
+        
+        let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch teams: \(error)")
+            return []
+        }
+    }
+    
+    // Get winners for an event (teams with prizeRank > 0)
+    func getWinners(for eventId: UUID) -> [Team] {
+        let teams = getTeams(for: eventId)
+        return teams.filter { $0.prizeRank > 0 }
+            .sorted { $0.prizeRank < $1.prizeRank } // Sort by rank (1st, 2nd, 3rd)
+    }
+    
+    // Update team prize rank
+    func updateTeamPrizeRank(teamId: UUID, rank: Int16) -> Bool {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<Team> = Team.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", teamId as CVarArg)
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            let teams = try context.fetch(fetchRequest)
+            guard let team = teams.first else {
+                print("Team not found with ID: \(teamId)")
+                return false
+            }
+            
+            team.prizeRank = rank
+            
+            try context.save()
+            print("Updated prize rank to \(rank) for team: \(team.teamName ?? "Unknown")")
+            return true
+        } catch {
+            print("Failed to update team prize rank: \(error)")
+            return false
+        }
+    }
+    
+    // Publish winners for an event
+    func publishWinners(for eventId: UUID, winners: [UUID: Int16]) -> Bool {
+        // First reset all teams to no prize
+        let allTeams = getTeams(for: eventId)
+        for team in allTeams {
+            team.prizeRank = 0
+        }
+        
+        // Then assign new prize ranks
+        for (teamId, rank) in winners {
+            _ = updateTeamPrizeRank(teamId: teamId, rank: rank)
+        }
+        
+        // Update event winners announced status
+        if let event = fetchEvent(by: eventId) {
+            event.winnersAnnounced = true
+            event.winnersAnnouncedAt = Date()
+        }
+        
+        do {
+            try context.save()
+            print("Published winners for event: \(eventId)")
+            return true
+        } catch {
+            print("Failed to publish winners: \(error)")
+            return false
+        }
+    }
+    
+    // Populate dummy teams for all events
+    func populateDummyTeamsForAllEvents() {
+        let allEvents = fetchAllEvents()
+        
+        for event in allEvents {
+            guard let eventId = event.id else { continue }
+            
+            // Check if teams already exist for this event
+            let existingTeams = getTeams(for: eventId)
+            if existingTeams.isEmpty {
+                createDummyTeams(for: eventId)
+                print("Added 50 teams for: \(event.eventName ?? "Unnamed Event")")
+            }
+        }
+    }
+    
+    // Create 50 dummy teams for an event
+    private func createDummyTeams(for eventId: UUID) {
+        let dummyData = generateDummyTeamsData()
+        
+        for teamData in dummyData {
+            _ = createTeam(
+                eventId: eventId,
+                teamName: teamData.teamName,
+                teamLeader: teamData.teamLeader,
+                memberCount: teamData.memberCount
+            )
+        }
+    }
+    
+    // Generate 50 dummy teams using your existing participant data
+    private func generateDummyTeamsData() -> [(teamName: String, teamLeader: String, memberCount: Int16)] {
+        let participantData = generateDummyParticipantsData()
+        
+        // Use first 50 participants as team leaders
+        let teamLeaders = Array(participantData.prefix(50))
+        
+        let teamNames = [
+            "Alpha Warriors", "Code Crusaders", "Tech Titans", "Innovation Squad", "Digital Dreamers",
+            "Byte Builders", "Logic Legends", "Pixel Pioneers", "Data Dynamos", "Cloud Crew",
+            "App Architects", "Web Wizards", "AI Avengers", "Mobile Mavericks", "Code Commanders",
+            "Tech Tribe", "Debug Dynasty", "Future Founders", "Startup Squad", "Innovation Nation",
+            "Cyber Champions", "Digital Doers", "App Alliance", "Web Warriors", "Cloud Collective",
+            "Data Defenders", "Tech Titans 2.0", "Code Collective", "Digital Dynasty", "Innovation Inc",
+            "App Army", "Web Wizards 2.0", "Cloud Commandos", "Data Drivers", "Tech Troopers",
+            "Code Corps", "Digital Defenders", "Innovation Institute", "App Academy", "Web Workers",
+            "Cloud Corps", "Data Division", "Tech Team", "Digital Division", "Innovation Force",
+            "App Association", "Web Wing", "Cloud Club", "Data Department", "Tech Masters"
+        ]
+        
+        var teams: [(teamName: String, teamLeader: String, memberCount: Int16)] = []
+        
+        for i in 0..<50 {
+            let teamName = teamNames[i]
+            let teamLeader = teamLeaders[i].name ?? "Unknown Leader"
+            let memberCount = Int16.random(in: 2...5) 
+            
+            teams.append((teamName: teamName, teamLeader: teamLeader, memberCount: memberCount))
+        }
+        
+        return teams
+    }
+    
+    // Reset winners for an event (for testing)
+    func resetWinners(for eventId: UUID) -> Bool {
+        let teams = getTeams(for: eventId)
+        
+        for team in teams {
+            team.prizeRank = 0
+        }
+        
+        if let event = fetchEvent(by: eventId) {
+            event.winnersAnnounced = false
+            event.winnersAnnouncedAt = nil
+        }
+        
+        do {
+            try context.save()
+            print("Reset winners for event: \(eventId)")
+            return true
+        } catch {
+            print("Failed to reset winners: \(error)")
+            return false
+        }
     }
 }
