@@ -5,14 +5,16 @@
 //  Created by admin73 on 10/11/25.
 //
 
-//
-//  EventDetailViewController.swift
-//  Interact-UIKit
-//
-//  Created by admin73 on 10/11/25.
-//
 
 import UIKit
+
+import CoreData
+
+enum EventStatus {
+    case pending
+    case upcoming
+    case past
+}
 
 class EventDetailViewController: UIViewController {
 
@@ -30,85 +32,221 @@ class EventDetailViewController: UIViewController {
     
     @IBOutlet weak var viewRSVPButton: ButtonComponent!
     
-   
+    @IBOutlet weak var awaitingVerificationButton: ButtonComponent!
+    
     @IBOutlet weak var whatsappGrpButton: ButtonComponent!
     
-    var event: EventsScreenViewController.Event!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // MARK: - Properties
+        var event: UserEvent!
         
-        viewRegistrationsButton.configure(
-            title: "View Registrations",
-            backgroundColor: .systemBlue,
-            image: UIImage(systemName: "list.bullet.clipboard"),
-            imagePlacement: .leading
-        )
-        
-        viewRegistrationsButton.onTap = {
-            print("Scan QR Button tapped")
-        }
-       
-        viewRSVPButton.configure(
-            title: " View RSVP",
-            backgroundColor: .systemYellow,
-            image: UIImage(systemName: "calendar.badge.checkmark"),
-            imagePlacement: .leading
-        )
-        
-        viewRSVPButton.onTap = {
-            print("Scan QR Button tapped")
+        // MARK: - Lifecycle
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            setupButtons()
+            setupUI()
         }
         
-        whatsappGrpButton.configure(
-            title: "Join Whatsapp Group",
-            backgroundColor: .systemGreen,
-            image: UIImage(systemName: "bubble"),
-            imagePlacement: .leading
-        )
+        // MARK: - Setup
+        private func setupButtons() {
+            // View Registrations Button
+            viewRegistrationsButton.configure(
+                title: "View Registrations",
+                backgroundColor: .systemBlue,
+            )
+            
+            viewRegistrationsButton.onTap = { [weak self] in
+                print("View Registrations tapped for: \(self?.event.eventName ?? "Unknown Event")")
+                
+                guard let self = self else { return }
+                
+                // ✅ For XIB-based ViewController
+                let registrationsVC = RegistrationsListViewController(nibName: "RegistrationsListViewController", bundle: nil)
+                registrationsVC.event = self.event
+                self.navigationController?.pushViewController(registrationsVC, animated: true)
+            }
+           
+            // View RSVP Button
+            viewRSVPButton.configure(
+                title: "View RSVP",
+                backgroundColor: .systemBlue,
+            )
+            
+            // In your setupButtons() method, update the RSVP button:
+            viewRSVPButton.onTap = { [weak self] in
+                print("View RSVP tapped for: \(self?.event.eventName ?? "Unknown Event")")
+                
+                guard let self = self else { return }
+                
+                // Navigate to RSVP View Controller
+                let rsvpVC = RSVPViewController(nibName: "RSVPViewController", bundle: nil)
+                rsvpVC.event = self.event
+                self.navigationController?.pushViewController(rsvpVC, animated: true)
+            }
+            
+            awaitingVerificationButton.configure(
+                title: "Awaiting Verification",
+                backgroundColor: .lightGray,
+            )
+            
+            awaitingVerificationButton.onTap = {
+                print("Awaiting Verification Clicked")
+            }
+            
+            // WhatsApp Group Button
+            whatsappGrpButton.configure(
+                title: "Join WhatsApp Group",
+                backgroundColor: .systemGreen,
+            )
+            
+            whatsappGrpButton.onTap = { [weak self] in
+                self?.openWhatsAppGroup()
+            }
+        }
         
-        whatsappGrpButton.onTap = { [weak self] in
-            // 1. Check if self exists and if the URL is available and valid
-            guard let self = self,
-                  let url = self.event.whatsappGrpLink else { // Access the URL directly
-                print("Error: WhatsApp group link is missing or invalid for this event.")
+        private func setupUI() {
+            // Set event image
+            if let imageData = event.posterImageData, let image = UIImage(data: imageData) {
+                eventImageView.image = image
+            } else {
+                eventImageView.image = UIImage(named: "events") ?? UIImage(systemName: "photo")
+            }
+            
+            // Set event details
+            titleLabel.text = event.eventName ?? "Unnamed Event"
+            venueLabel.text = event.location ?? "No location specified"
+            descriptionLabel.text = event.eventDescription ?? "No description available"
+            
+            // Format and set date
+            dateLabel.text = formatEventDates()
+            
+            configureButtonVisibility()
+            
+            // Style the image view
+            eventImageView.layer.cornerRadius = 12
+            eventImageView.clipsToBounds = true
+            eventImageView.contentMode = .scaleAspectFill
+        }
+        
+        // MARK: - Date Formatting
+        private func formatEventDates() -> String {
+            guard let startDate = event.startDate,
+                  let endDate = event.endDate else {
+                return "Date not specified"
+            }
+            
+            let dateFormatter = DateFormatter()
+            
+            // If same day, show: "Nov 15, 2024 · 9:00 AM - 5:00 PM"
+            if Calendar.current.isDate(startDate, inSameDayAs: endDate) {
+                dateFormatter.dateFormat = "E, d MMM yyyy"
+                let dateString = dateFormatter.string(from: startDate)
+                
+                dateFormatter.dateFormat = "h:mm a"
+                let startTime = dateFormatter.string(from: startDate)
+                let endTime = dateFormatter.string(from: endDate)
+                
+                return "\(dateString) · \(startTime) – \(endTime)"
+            } else {
+                // Different days: "Nov 15-16, 2024 · 9:00 AM"
+                dateFormatter.dateFormat = "MMM d"
+                let startDay = dateFormatter.string(from: startDate)
+                let endDay = dateFormatter.string(from: endDate)
+                
+                dateFormatter.dateFormat = "yyyy"
+                let year = dateFormatter.string(from: startDate)
+                
+                dateFormatter.dateFormat = "h:mm a"
+                let startTime = dateFormatter.string(from: startDate)
+                let endTime = dateFormatter.string(from: endDate)
+                
+                return "\(startDay)–\(endDay), \(year) · \(startTime) – \(endTime)"
+            }
+        }
+        
+        // MARK: - Event Status Calculation
+        private func getEventStatus() -> EventStatus {
+            let now = Date()
+            
+            guard let endDate = event.endDate else {
+                return .pending // If dates are missing, treat as pending
+            }
+            
+            // First check if event is approved
+            if !event.isApproved {
+                return .pending
+            }
+            
+            // Check event timeline for approved events
+            if now < endDate {
+                return .upcoming
+            } else {
+                return .past
+            }
+        }
+        
+        // ✅ UPDATED: Button visibility logic for new status system
+        private func configureButtonVisibility() {
+            let status = getEventStatus()
+            
+            // ✅ EXACTLY matches your requirements:
+            switch status {
+            case .pending:
+                // Both buttons hidden for pending events
+                viewRegistrationsButton.isHidden = true
+                viewRSVPButton.isHidden = true
+                awaitingVerificationButton.isHidden = false
+            case .upcoming:
+                // Both buttons visible for upcoming events
+                viewRegistrationsButton.isHidden = false
+                viewRSVPButton.isHidden = false
+                awaitingVerificationButton.isHidden = true
+            case .past:
+                // Both buttons hidden for past events
+                viewRegistrationsButton.isHidden = true
+                viewRSVPButton.isHidden = true
+                awaitingVerificationButton.isHidden = true
+            }
+            
+            // Always show WhatsApp button if link is available
+            whatsappGrpButton.isHidden = (event.whatsappGroupLink?.isEmpty ?? true)
+            
+            // Debug print to verify status
+            print("Event Status: \(status)")
+            print("Event isApproved: \(event.isApproved)")
+            print("Registrations Button Hidden: \(viewRegistrationsButton.isHidden)")
+            print("RSVP Button Hidden: \(viewRSVPButton.isHidden)")
+            print("WhatsApp Button Hidden: \(whatsappGrpButton.isHidden)")
+        }
+        
+        // MARK: - WhatsApp Group Handling
+        private func openWhatsAppGroup() {
+            guard let whatsappLinkString = event.whatsappGroupLink,
+                  !whatsappLinkString.isEmpty,
+                  let url = URL(string: whatsappLinkString) else {
+                
+                showAlert(title: "No WhatsApp Group", message: "No WhatsApp group link available for this event.")
                 return
             }
             
-            // 2. Open the URL externally
+            // Validate URL format
+            guard UIApplication.shared.canOpenURL(url) else {
+                showAlert(title: "Invalid Link", message: "The WhatsApp group link appears to be invalid.")
+                return
+            }
+            
             UIApplication.shared.open(url, options: [:]) { success in
                 if success {
                     print("Successfully opened WhatsApp group link: \(url.absoluteString)")
                 } else {
-                    print("Failed to open WhatsApp group link.")
+                    self.showAlert(title: "Cannot Open Link", message: "Unable to open the WhatsApp group link. Please check if WhatsApp is installed.")
                 }
             }
         }
         
-        setupUI()
-    }
-
-    private func setupUI() {
-//        title = "Event Details"
-        eventImageView.image = event.image
-        titleLabel.text = event.title
-        dateLabel.text = event.datetime
-        venueLabel.text = event.venue
-        descriptionLabel.text = event.description
-
-        // Button visibility logic
-        switch event.status {
-        case .past:
-            viewRegistrationsButton.isHidden = true
-            viewRSVPButton.isHidden = true
-        case .upcoming:
-            viewRegistrationsButton.isHidden = false
-            viewRSVPButton.isHidden = true
-        case .ongoing:
-            viewRegistrationsButton.isHidden = false
-            viewRSVPButton.isHidden = false
+        // MARK: - Alert Helper
+        private func showAlert(title: String, message: String) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
         }
-
-        
-    }
 }
