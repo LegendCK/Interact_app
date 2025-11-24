@@ -46,8 +46,10 @@ class VerificationCard: UIView {
             let gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.bounds
             gradientLayer.colors = [
-                UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
-                UIColor.systemYellow.withAlphaComponent(0.3).cgColor
+//                UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
+//                UIColor.systemYellow.withAlphaComponent(0.3).cgColor
+                  UIColor(hex: "#007AFF").withAlphaComponent(0.3).cgColor,
+                  UIColor(hex: "#34C759").withAlphaComponent(0.3).cgColor
             ]
             gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
             gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
@@ -65,3 +67,4 @@ class VerificationCard: UIView {
             }
         }
 }
+
