@@ -425,9 +425,9 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
         }
         
         private func showEventDetails(event: UserEvent) {
-            // Create your EventDetailViewController and pass the UserEvent
             let detailVC = EventDetailViewController()
             detailVC.event = event
+            detailVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(detailVC, animated: true)
         }
 

@@ -347,6 +347,7 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     private func showEventDetails(event: UserEvent) {
         let detailVC = EventDetailViewController()
         detailVC.event = event
+        detailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }

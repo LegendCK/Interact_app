@@ -8,9 +8,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OngoingEventCard" customModule="Interact_UIKit" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OngoingEventCard" customModule="Interact_app" customModuleProvider="target"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="OngoingEventCard" id="gTV-IL-0wX" customClass="OngoingEventCard" customModule="Interact_UIKit" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="OngoingEventCard" id="gTV-IL-0wX" customClass="OngoingEventCard" customModule="Interact_app" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="336" height="218"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -105,7 +105,7 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vwP-pK-2Vt" customClass="ButtonComponent" customModule="Interact_UIKit" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vwP-pK-2Vt" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
                                 <rect key="frame" x="20" y="158.66666666666666" width="296" height="44"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -142,6 +142,7 @@
                 <outlet property="eventName" destination="SEn-15-K9J" id="7gn-Sm-XRL"/>
                 <outlet property="eventState" destination="Fiu-gu-QwR" id="RSU-IQ-UMm"/>
                 <outlet property="hoursLeft" destination="uwE-Xy-Qay" id="Bb0-DX-Zed"/>
+                <outlet property="hoursToStartOrEndLabel" destination="c2l-5d-wbu" id="0jx-LS-8q3"/>
                 <outlet property="registrationsCount" destination="j4G-yg-iZA" id="bDU-tJ-8Np"/>
                 <outlet property="viewEventButton" destination="vwP-pK-2Vt" id="ehW-bx-Vbj"/>
             </connections>
