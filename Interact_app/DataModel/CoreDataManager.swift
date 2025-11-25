@@ -33,10 +33,10 @@ class CoreDataManager {
         if context.hasChanges {
             do {
                 try context.save()
-                print("✅ Context saved successfully")
+                print("Context saved successfully")
             } catch {
                 let nserror = error as NSError
-                print("❌ Unresolved error \(nserror), \(nserror.userInfo)")
+                print("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
@@ -84,10 +84,10 @@ extension CoreDataManager {
             print("Event saved successfully: \(eventName)")
             if let eventId = newEvent.id {
                     createDummyParticipants(for: eventId)
-                    print("Added 50 participants for new event: \(eventName)")
                         
                     createDummyTeams(for: eventId)
-                    print("Added 50 teams for new event: \(eventName)")
+                
+                    setRegistrationCount(for: eventId, count: 50)
                 }
             return true
         } catch {
@@ -109,10 +109,10 @@ extension CoreDataManager {
         
         do {
             let events = try context.fetch(fetchRequest)
-            print("✅ Fetched \(events.count) events")
+            print("Fetched \(events.count) events")
             return events
         } catch {
-            print("❌ Failed to fetch events: \(error)")
+            print("Failed to fetch events: \(error)")
             return []
         }
     }
@@ -128,7 +128,7 @@ extension CoreDataManager {
             let events = try context.fetch(fetchRequest)
             return events.first
         } catch {
-            print("❌ Failed to fetch event by ID: \(error)")
+            print("Failed to fetch event by ID: \(error)")
             return nil
         }
     }
@@ -136,7 +136,7 @@ extension CoreDataManager {
     // MARK: - Set Registration Count
         func setRegistrationCount(for eventId: UUID, count: Int16) -> Bool {
             guard let event = fetchEvent(by: eventId) else {
-                print("❌ Event not found with ID: \(eventId)")
+                print("Event not found with ID: \(eventId)")
                 return false
             }
             
@@ -144,10 +144,10 @@ extension CoreDataManager {
             
             do {
                 try context.save()
-                print("✅ Set registration count to \(count) for: \(event.eventName ?? "Unnamed")")
+                print("Set registration count to \(count) for: \(event.eventName ?? "Unnamed")")
                 return true
             } catch {
-                print("❌ Failed to set registration count: \(error)")
+                print("Failed to set registration count: \(error)")
                 return false
             }
         }
@@ -159,10 +159,10 @@ extension CoreDataManager {
         
         do {
             try context.save()
-            print("✅ Event deleted successfully")
+            print("Event deleted successfully")
             return true
         } catch {
-            print("❌ Failed to delete event: \(error)")
+            print("Failed to delete event: \(error)")
             return false
         }
     }
@@ -190,11 +190,11 @@ extension CoreDataManager {
             // Save context
             try context.save()
             
-            print("🗑️ Deleted event + all participants linked to eventId: \(eventId)")
+            print("Deleted event + all participants linked to eventId: \(eventId)")
             return true
             
         } catch {
-            print("❌ Failed to delete event + participants: \(error)")
+            print("Failed to delete event + participants: \(error)")
             return false
         }
     }
@@ -226,7 +226,7 @@ extension CoreDataManager {
             try context.save()
             return true
         } catch {
-            print("❌ Failed to create participant: \(error)")
+            print("Failed to create participant: \(error)")
             return false
         }
     }
@@ -244,7 +244,7 @@ extension CoreDataManager {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("❌ Failed to fetch participants: \(error)")
+            print("Failed to fetch participants: \(error)")
             return []
         }
     }
@@ -265,7 +265,7 @@ extension CoreDataManager {
             let existingParticipants = getParticipants(for: eventId)
             if existingParticipants.isEmpty {
                 createDummyParticipants(for: eventId)
-                print("✅ Added 50 participants for: \(event.eventName ?? "Unnamed Event")")
+                print("Added 50 participants for: \(event.eventName ?? "Unnamed Event")")
             }
         }
     }

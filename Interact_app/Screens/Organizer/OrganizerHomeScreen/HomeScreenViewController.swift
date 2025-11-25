@@ -79,7 +79,7 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         // Call this once when app launches
 //        CoreDataManager.shared.populateDummyParticipantsForAllEvents()
 //        CoreDataManager.shared.populateDummyTeamsForAllEvents()
-//        let eventId = UUID(uuidString: "603200C2-B61A-4690-B4B0-885054E19762")!
+//        let eventId = UUID(uuidString: "37F7FDFC-CDF5-4BF4-85E8-26145726FD03")!
 //        CoreDataManager.shared.deleteEventAndParticipants(by: eventId)
         
         loadOngoingEvents()
@@ -347,6 +347,7 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     private func showEventDetails(event: UserEvent) {
         let detailVC = EventDetailViewController()
         detailVC.event = event
+        detailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }

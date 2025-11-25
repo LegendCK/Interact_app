@@ -13,11 +13,13 @@ class FallBackView: UIView {
     
     @IBOutlet weak var fallBackMessage: UILabel!
     
-    @IBOutlet weak var createEventButton: UIButton!
+    @IBOutlet weak var createNewEventButton: ButtonComponent!
     
-    var onCreateEventTapped: (() -> Void)? 
+    @IBOutlet weak var createEventLabel: UILabel!
     
-    override init(frame: CGRect) {
+    var onCreateEventTapped: (() -> Void)?
+        
+        override init(frame: CGRect) {
             super.init(frame: frame)
             commonInit()
         }
@@ -31,23 +33,26 @@ class FallBackView: UIView {
             let bundle = Bundle(for: type(of: self))
             let nib = UINib(nibName: "FallBackView", bundle: bundle)
             let contentView = nib.instantiate(withOwner: self, options: nil).first as! UIView
-            
             contentView.frame = bounds
             contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             addSubview(contentView)
         }
         
-    func configure(message: String, showButton: Bool = false) {
+        func configure(message: String, showButton: Bool = false) {
             fallBackMessage.text = message
-            createEventButton.isHidden = !showButton
+            createNewEventButton.isHidden = !showButton
+            createEventLabel.isHidden = !showButton
             
             if showButton {
-                createEventButton.addTarget(self, action: #selector(createEventButtonTapped), for: .touchUpInside)
+                createNewEventButton.configure(
+                    title: "Create Event",
+                    titleColor: .white,
+                    backgroundColor: .systemBlue,
+                )
+                
+                createNewEventButton.onTap = { [weak self] in
+                    self?.onCreateEventTapped?()
+                }
             }
         }
-        
-        @objc private func createEventButtonTapped() {
-            onCreateEventTapped?()
-        }
-    
 }

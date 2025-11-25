@@ -19,6 +19,8 @@ class OngoingEventCard: UICollectionViewCell {
     
     @IBOutlet weak var hoursLeft: UILabel!
   
+    @IBOutlet weak var hoursToStartOrEndLabel: UILabel!
+    
     @IBOutlet weak var eventState: UILabel!
 
     @IBOutlet weak var registrationsCount: UILabel!
@@ -54,8 +56,10 @@ class OngoingEventCard: UICollectionViewCell {
 
         let gradient = CAGradientLayer()
         gradient.colors = [
-            UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
-            UIColor.systemYellow.withAlphaComponent(0.3).cgColor
+//            UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
+//            UIColor.systemCyan.withAlphaComponent(0.3).cgColor
+              UIColor(hex: "#007AFF").withAlphaComponent(0.3).cgColor,
+              UIColor(hex: "#34C759").withAlphaComponent(0.3).cgColor
         ]
         gradient.startPoint = CGPoint(x: 0.5, y: 0)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)
@@ -81,21 +85,27 @@ class OngoingEventCard: UICollectionViewCell {
         hoursLeft.text = timeText
         eventState.text = status
     }
-    
+
     private func calculateCardDetails(for event: UserEvent) -> (timeText: String, status: String) {
         let now = Date()
         guard let startDate = event.startDate, let endDate = event.endDate else {
+            hoursToStartOrEndLabel.text = "TBD"
             return ("Time TBD", "Scheduled")
         }
         
         if now < startDate {
             let hoursToStart = Int(startDate.timeIntervalSince(now) / 3600)
+            hoursToStartOrEndLabel.text = "To Start"
             return ("\(hoursToStart) Hrs", "RSVP")
         } else {
             let hoursToEnd = Int(endDate.timeIntervalSince(now) / 3600)
-            return hoursToEnd > 4 ?
-                ("\(hoursToEnd) Hrs", "Live Now") :
-                ("\(hoursToEnd) Hrs", "Ending Soon")
+            hoursToStartOrEndLabel.text = "Left"
+            
+            if hoursToEnd > 4 {
+                return ("\(hoursToEnd) Hrs", "Live Now")
+            } else {
+                return ("\(hoursToEnd) Hrs", "Ending Soon")
+            }
         }
     }
     
@@ -112,5 +122,24 @@ class OngoingEventCard: UICollectionViewCell {
         layer.shadowOffset = CGSize(width: 0, height: 2)
         layer.shadowRadius = 6
         layer.shadowOpacity = 0.1
+    }
+}
+
+extension UIColor {
+    convenience init(hex: String, alpha: CGFloat = 1.0) {
+        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if hexString.hasPrefix("#") {
+            hexString.remove(at: hexString.startIndex)
+        }
+        
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexString).scanHexInt64(&rgbValue)
+        
+        let red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(rgbValue & 0x0000FF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }

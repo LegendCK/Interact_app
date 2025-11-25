@@ -8,9 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FallBackView" customModule="Interact_UIKit" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FallBackView" customModule="Interact_app" customModuleProvider="target">
             <connections>
-                <outlet property="createEventButton" destination="ioR-bG-Pxz" id="t3l-9a-SX8"/>
+                <outlet property="createEventLabel" destination="WED-lt-WHg" id="Qsa-Ph-MDv"/>
+                <outlet property="createNewEventButton" destination="63f-Xy-p5I" id="UrJ-74-bWx"/>
                 <outlet property="fallBackImage" destination="XuP-L0-0wi" id="VrO-av-7wc"/>
                 <outlet property="fallBackMessage" destination="NBp-EE-nuu" id="whZ-ja-cyU"/>
             </connections>
@@ -23,27 +24,34 @@
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fallback" translatesAutoresizingMaskIntoConstraints="NO" id="XuP-L0-0wi">
                     <rect key="frame" x="80" y="268" width="233" height="160"/>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Upcoming Events" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NBp-EE-nuu">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Upcoming Events" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NBp-EE-nuu">
                     <rect key="frame" x="115.00000000000001" y="453" width="163.33333333333337" height="20.333333333333314"/>
                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ioR-bG-Pxz">
-                    <rect key="frame" x="134" y="493.33333333333326" width="125" height="44"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="63f-Xy-p5I" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
+                    <rect key="frame" x="121.66666666666669" y="510.33333333333326" width="150" height="50"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="44" id="Oqg-8n-q4g"/>
-                        <constraint firstAttribute="width" constant="125" id="Pwr-kM-dNb"/>
+                        <constraint firstAttribute="width" constant="150" id="8ga-VD-LAc"/>
+                        <constraint firstAttribute="height" constant="50" id="Ihp-EK-jxb"/>
                     </constraints>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="filled" title="Create Event"/>
-                </button>
+                </view>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create an event to get started!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WED-lt-WHg">
+                    <rect key="frame" x="97.666666666666671" y="483.33333333333331" width="197.66666666666663" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="ioR-bG-Pxz" firstAttribute="top" secondItem="NBp-EE-nuu" secondAttribute="bottom" constant="20" id="8yl-BR-6Wv"/>
-                <constraint firstItem="ioR-bG-Pxz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="LYD-YG-L97"/>
+                <constraint firstItem="63f-Xy-p5I" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="2eV-uc-3GZ"/>
+                <constraint firstItem="63f-Xy-p5I" firstAttribute="top" secondItem="WED-lt-WHg" secondAttribute="bottom" constant="10" id="TWn-wI-gUS"/>
+                <constraint firstItem="WED-lt-WHg" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Y9D-rl-vQd"/>
+                <constraint firstItem="WED-lt-WHg" firstAttribute="top" secondItem="NBp-EE-nuu" secondAttribute="bottom" constant="10" id="c0W-dt-cKh"/>
                 <constraint firstItem="NBp-EE-nuu" firstAttribute="top" secondItem="XuP-L0-0wi" secondAttribute="bottom" constant="25" id="iSE-2U-tpf"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="XuP-L0-0wi" secondAttribute="trailing" constant="80" id="ukW-5Z-x9A"/>
                 <constraint firstItem="XuP-L0-0wi" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="150" id="urg-hR-SEc"/>

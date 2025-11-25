@@ -235,8 +235,11 @@ class EventDetailViewController: UIViewController {
         
         private func configureButtonVisibility() {
             let status = getEventStatus()
+            let now = Date()
             
-            announceWinnersButton.isHidden = event.winnersAnnounced
+            let isEventStarted = event.startDate != nil && now > event.startDate!
+            let shouldShowAnnounceWinners = isEventStarted && !event.winnersAnnounced
+            announceWinnersButton.isHidden = !shouldShowAnnounceWinners
             
             switch status {
             case .pending:

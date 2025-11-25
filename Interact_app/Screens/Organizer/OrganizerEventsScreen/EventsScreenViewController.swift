@@ -253,14 +253,14 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
     private func updateFallbackMessage() {
         switch currentSegmentIndex {
         case 1: // Upcoming
-            fallbackView.configure(message: "No upcoming events found", showButton: true)
+            fallbackView.configure(message: "No upcoming events", showButton: true)
             fallbackView.onCreateEventTapped = { [weak self] in
                 self?.showCreateEventModal()
             }
         case 2: // Pending
             fallbackView.configure(message: "No pending events awaiting approval")
         case 3: // Past
-            fallbackView.configure(message: "No past events found")
+            fallbackView.configure(message: "No past events")
         default: // All
             fallbackView.configure(message: "No events found")
         }
@@ -425,9 +425,9 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
         }
         
         private func showEventDetails(event: UserEvent) {
-            // Create your EventDetailViewController and pass the UserEvent
             let detailVC = EventDetailViewController()
             detailVC.event = event
+            detailVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(detailVC, animated: true)
         }
 
