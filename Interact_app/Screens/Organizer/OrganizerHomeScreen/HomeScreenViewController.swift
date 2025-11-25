@@ -44,21 +44,21 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     
     let events: [Event] = [
         Event(
-            image: UIImage(named: "events2"),
+            image: UIImage(named: "events"),
             title: "Ossome Hacks 2.0",
             datetime: "Fri, 31 Oct 2025 · 9:00 am – 6:00 pm",
             venue: "SRMIST KTR, Chennai",
             status: .active
         ),
         Event(
-            image: UIImage(named: "events2"),
+            image: UIImage(named: "events"),
             title: "AI Innovation Summit 2025",
             datetime: "Mon, 21 Jul 2025 · 10:00 am – 5:00 pm",
             venue: "Chennai Trade Center",
             status: .ended
         ),
         Event(
-            image: UIImage(named: "events2"),
+            image: UIImage(named: "events"),
             title: "HackFest 2026",
             datetime: "Fri, 15 Jan 2026 · 9:00 am – 9:00 pm",
             venue: "Bangalore Tech Park",

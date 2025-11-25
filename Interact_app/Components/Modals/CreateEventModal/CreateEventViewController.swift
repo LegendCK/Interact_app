@@ -402,7 +402,7 @@ class CreateEventViewController: UIViewController, UIImagePickerControllerDelega
 
         // Call this after saving to verify
         private func debugAfterSave() {
-            print("🔄 Checking saved data...")
+            print("Checking saved data...")
             printAllEvents()
         }
             

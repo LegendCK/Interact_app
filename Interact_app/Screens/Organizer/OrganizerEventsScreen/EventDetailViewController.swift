@@ -93,7 +93,7 @@ class EventDetailViewController: UIViewController {
                 
                 guard let self = self else { return }
                 
-                // ✅ For XIB-based ViewController
+                // For XIB-based ViewController
                 let registrationsVC = RegistrationsListViewController(nibName: "RegistrationsListViewController", bundle: nil)
                 registrationsVC.event = self.event
                 self.navigationController?.pushViewController(registrationsVC, animated: true)

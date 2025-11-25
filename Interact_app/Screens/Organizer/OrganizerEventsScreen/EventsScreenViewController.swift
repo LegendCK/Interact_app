@@ -244,7 +244,7 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
             }
             
             // Debug print
-            print("🔍 Filtered events: \(filteredEvents.count)")
+            print("Filtered events: \(filteredEvents.count)")
 //            filteredEvents.forEach { event in
 //                print("   - \(event.eventName ?? "Unnamed"): \(getEventStatusString(for: event))")
 //            }
@@ -362,8 +362,8 @@ class EventsScreenViewController: UIViewController, UICollectionViewDataSource, 
             let shareText = """
             Check out this event: \(eventName)
             
-            📍 Location: \(location)
-            📝 Description: \(description)
+            Location: \(location)
+            Description: \(description)
             
             Shared via Interact App
             """
