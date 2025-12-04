@@ -56,8 +56,8 @@ class OngoingEventCard: UICollectionViewCell {
 
         let gradient = CAGradientLayer()
         gradient.colors = [
-            UIColor.systemBlue.withAlphaComponent(0.3).cgColor,
-            UIColor.systemYellow.withAlphaComponent(0.3).cgColor
+            UIColor.systemBlue.withAlphaComponent(0.25).cgColor,
+            UIColor.systemYellow.withAlphaComponent(0.25).cgColor
         ]
         gradient.startPoint = CGPoint(x: 0.5, y: 0)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)

@@ -16,6 +16,8 @@ class RSVPViewController: UIViewController {
     
     @IBOutlet weak var emptyStateLabel: UILabel!
     
+    @IBOutlet weak var statsView: UIView!
+    
     @IBOutlet weak var statsLabel: UILabel!
     
     // MARK: - Properties
@@ -72,7 +74,10 @@ class RSVPViewController: UIViewController {
             layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         }
         
-        collectionView.backgroundColor = .systemGroupedBackground
+        collectionView.backgroundColor = UIColor(hex: "#007AFF").withAlphaComponent(0.1)
+//        collectionView.layer.cornerRadius = 16
+//        collectionView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//        collectionView.layer.masksToBounds = true
     }
     
     private func loadParticipants() {
@@ -122,6 +127,7 @@ class RSVPViewController: UIViewController {
         statsLabel.text = "Present: \(stats.attended)/\(stats.total) • Food: \(stats.foodTaken)"
         statsLabel.textAlignment = .center
         statsLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        statsView.backgroundColor = UIColor(hex: "#D1DCEF")
     }
 }
 

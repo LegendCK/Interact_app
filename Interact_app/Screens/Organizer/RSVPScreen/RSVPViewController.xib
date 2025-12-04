@@ -8,12 +8,13 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSVPViewController" customModule="Interact_UIKit" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSVPViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="Ph0-3y-nod" id="fZ6-Yd-g68"/>
                 <outlet property="emptyStateLabel" destination="Ltq-xw-DUD" id="QoZ-h9-ibW"/>
                 <outlet property="emptyStateView" destination="vRW-uu-2eD" id="nDw-Uz-5WC"/>
                 <outlet property="statsLabel" destination="UYC-nv-bw6" id="Aum-nW-61e"/>
+                <outlet property="statsView" destination="6gM-Yg-yC9" id="Ljv-Wg-PqT"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -22,14 +23,24 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UYC-nv-bw6">
-                    <rect key="frame" x="0.0" y="118" width="393" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6gM-Yg-yC9">
+                    <rect key="frame" x="0.0" y="118" width="393" height="25"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UYC-nv-bw6">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="25" id="eDu-Yc-PfF"/>
+                    </constraints>
+                </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Ph0-3y-nod">
-                    <rect key="frame" x="0.0" y="144" width="393" height="640"/>
+                    <rect key="frame" x="0.0" y="143" width="393" height="641"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="K7h-qg-yjg">
                         <size key="itemSize" width="128" height="128"/>
@@ -57,12 +68,12 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="Ph0-3y-nod" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="4Wz-Mx-OTP"/>
-                <constraint firstItem="Ph0-3y-nod" firstAttribute="top" secondItem="UYC-nv-bw6" secondAttribute="bottom" constant="5" id="4wD-w6-wNq"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="UYC-nv-bw6" secondAttribute="trailing" id="EEf-nN-3Qz"/>
+                <constraint firstItem="6gM-Yg-yC9" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Axf-JY-WhJ"/>
+                <constraint firstItem="6gM-Yg-yC9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="BZu-l7-hsX"/>
+                <constraint firstItem="Ph0-3y-nod" firstAttribute="top" secondItem="6gM-Yg-yC9" secondAttribute="bottom" id="Clh-bV-KvD"/>
                 <constraint firstItem="Ph0-3y-nod" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Hd0-uH-lnt"/>
-                <constraint firstItem="UYC-nv-bw6" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="QMC-zA-0UR"/>
-                <constraint firstItem="UYC-nv-bw6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Wca-kn-EXy"/>
                 <constraint firstItem="Ph0-3y-nod" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="fEr-EB-ayq"/>
+                <constraint firstItem="6gM-Yg-yC9" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="kRi-kE-cOU"/>
             </constraints>
             <point key="canvasLocation" x="138.1679389312977" y="153.52112676056339"/>
         </view>

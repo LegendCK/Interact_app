@@ -1,121 +1,3 @@
-////
-////  LoginViewController.swift
-////  Interact_app
-////
-////  Created by admin56 on 07/11/25.
-////
-//
-//import UIKit
-//
-//class LoginViewController: UIViewController {
-//
-//    @IBOutlet weak var textLabel1: UILabel!
-//    @IBOutlet weak var signUpLabel: UILabel!
-//    @IBOutlet weak var emailAddressTextField: UITextField!
-//    @IBOutlet weak var emailAddressErrorLabel: UILabel!
-//    @IBOutlet weak var passwordTextField: UITextField!
-//    @IBOutlet weak var passwordErrorLabel: UILabel!
-//    @IBOutlet weak var loginButton: ButtonComponent!
-//    @IBOutlet weak var loginWithAppleButton: ButtonComponent!
-//    @IBOutlet weak var loginWithGoogleButton: ButtonComponent!
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        loginButton.configure(
-//            title: "Login",
-//            backgroundColor: .systemBlue,
-//        )
-//        
-//        loginButton.onTap = {
-//            print("Login Button Tapped")
-//        }
-//        
-//        loginWithAppleButton.configure(
-//            title: "Continue with Apple",
-//            backgroundColor: .black,
-//            font: .systemFont(ofSize: 17, weight: .semibold),
-//            image: UIImage(systemName: "apple.logo"),
-//        )
-//        
-//        loginWithGoogleButton.configure(
-//            title: "Continue with Google",
-//            titleColor: .black,
-//            backgroundColor: .white,
-//            font: .systemFont(ofSize: 17, weight: .semibold),
-//            image: UIImage(named: "googleIcon"),
-//            borderColor: UIColor.systemGray4,
-//            borderWidth: 1,
-//        )
-//
-//        
-//        setupMainTitle()
-//        setupSignUpLabel()
-//        emailAddressTextField.layer.borderColor = UIColor.gray.cgColor
-//        emailAddressTextField.layer.borderWidth = 1
-//        emailAddressTextField.layer.cornerRadius = 10
-//    }
-//    
-//    // MARK: - Setup Title Label ("Log in to Interact")
-//    private func setupMainTitle() {
-//        let fullText = "Log in to Interact"
-//        let blueWord = "Interact"
-//        
-//        let attributedString = NSMutableAttributedString(string: fullText)
-//        
-//        if let range = fullText.range(of: blueWord) {
-//            let nsRange = NSRange(range, in: fullText)
-//            let blueColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1.0)
-//            attributedString.addAttribute(.foregroundColor, value: blueColor, range: nsRange)
-//        }
-//        
-//        textLabel1.attributedText = attributedString
-//    }
-//    
-//    // MARK: - Setup Sign Up Label ("Don’t have an account? Sign up")
-//    private func setupSignUpLabel() {
-////        let fullText = "Don’t have an account? Sign up"
-////        let blueWord = "Sign up"
-////        
-////        let attributedString = NSMutableAttributedString(string: fullText)
-////        
-////        if let range = fullText.range(of: blueWord) {
-////            let nsRange = NSRange(range, in: fullText)
-////            let blueColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1.0)
-////            
-////            attributedString.addAttribute(.foregroundColor, value: blueColor, range: nsRange)
-////        }
-////        
-////        signUpLabel.attributedText = attributedString
-//        
-//        // Make it tappable
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(signUpTapped))
-//        signUpLabel.isUserInteractionEnabled = true
-//        signUpLabel.addGestureRecognizer(tap)
-//    }
-//    
-//    // MARK: - Actions
-//    @objc private func signUpTapped() {
-//        // Navigate to Role Selection Screen (or directly signup)
-//        print("Sign Up tapped!")
-//           let roleVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
-//           
-//           // Option 1: If using NavigationController
-//           navigationController?.pushViewController(roleVC, animated: true)
-//    }
-//    
-//    /*
-//    // MARK: - Navigation
-//
-//    // In a storyboard-based application, you will often want to do a little preparation before navigation
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        // Get the new view controller using segue.destination.
-//        // Pass the selected object to the new view controller.
-//    }
-//    */
-//}
-
-
 import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
@@ -312,7 +194,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         view.endEditing(true)
 
         if !validateInputs(showErrors: true) {
-            shakeAnimation()
+//            shakeAnimation()
             return
         }
 
@@ -350,15 +232,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
 
     // MARK: - Shake Animation
-    private func shakeAnimation() {
-        let animation = CABasicAnimation(keyPath: "position")
-        animation.duration = 0.05
-        animation.repeatCount = 3
-        animation.autoreverses = true
-        animation.fromValue = CGPoint(x: view.center.x - 8, y: view.center.y)
-        animation.toValue = CGPoint(x: view.center.x + 8, y: view.center.y)
-        view.layer.add(animation, forKey: "position")
-    }
+//    private func shakeAnimation() {
+//        let animation = CABasicAnimation(keyPath: "position")
+//        animation.duration = 0.05
+//        animation.repeatCount = 3
+//        animation.autoreverses = true
+//        animation.fromValue = CGPoint(x: view.center.x - 8, y: view.center.y)
+//        animation.toValue = CGPoint(x: view.center.x + 8, y: view.center.y)
+//        view.layer.add(animation, forKey: "position")
+//    }
 
     private func setupMainTitle() {
         let fullText = "Log in to Interact"

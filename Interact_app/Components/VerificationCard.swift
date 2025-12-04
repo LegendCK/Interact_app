@@ -46,8 +46,8 @@ class VerificationCard: UIView {
             let gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.bounds
             gradientLayer.colors = [
-                UIColor.systemBlue.withAlphaComponent(0.1).cgColor,
-                UIColor.systemYellow.withAlphaComponent(0.1).cgColor
+                UIColor.systemBlue.withAlphaComponent(0.25).cgColor,
+                UIColor.systemYellow.withAlphaComponent(0.25).cgColor
 //                  UIColor(hex: "#007AFF").withAlphaComponent(0.3).cgColor,
 //                  UIColor(hex: "#34C759").withAlphaComponent(0.3).cgColor
             ]

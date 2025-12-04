@@ -69,7 +69,11 @@ class RegistrationsListViewController: UIViewController {
             layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
         }
         
-        collectionView.backgroundColor = .systemGroupedBackground
+        collectionView.backgroundColor = UIColor(hex: "#007AFF").withAlphaComponent(0.1)
+        collectionView.layer.cornerRadius = 16
+        collectionView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        collectionView.layer.masksToBounds = true
+
     }
     
     private func loadParticipants() {

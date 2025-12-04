@@ -103,8 +103,8 @@ class RSVPCell: UICollectionViewCell {
         // Update attendance button
         if isAttended {
             attendanceButton.setImage(UIImage(systemName: "checkmark.square.fill"), for: .normal)
-            attendanceButton.tintColor = .systemGreen
-            attendanceLabel.textColor = .systemGreen
+            attendanceButton.tintColor = .systemBlue
+            attendanceLabel.textColor = .systemBlue
         } else {
             attendanceButton.setImage(UIImage(systemName: "square"), for: .normal)
             attendanceButton.tintColor = .systemGray
