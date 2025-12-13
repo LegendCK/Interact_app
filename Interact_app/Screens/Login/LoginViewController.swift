@@ -1,4 +1,10 @@
+//
+//  LoginViewController.swift
+//  Interact_app
+//
+
 import UIKit
+import AuthenticationServices
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
 
@@ -11,83 +17,72 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginButton: ButtonComponent!
     @IBOutlet weak var loginWithAppleButton: ButtonComponent!
     @IBOutlet weak var loginWithGoogleButton: ButtonComponent!
-
     @IBOutlet weak var forgetPasswordButton: UIButton!
+
+    // Access auth manager
+    var authManager: AuthManager? {
+        if let scene = UIApplication.shared.connectedScenes.first,
+           let delegate = scene.delegate as? SceneDelegate {
+            return delegate.authManager
+        }
+        return nil
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupPasswordToggle()
         setupButtons()
         setupMainTitle()
         setupSignUpLabel()
         setupTextFields()
     }
-    
+
+    // MARK: - Password Toggle
     private func setupPasswordToggle() {
         let eyeButton = UIButton(type: .system)
 
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "eye.slash.fill")     // initial image (hidden)
+        config.image = UIImage(systemName: "eye.slash.fill")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 14, weight: .regular)
-
-        // Add internal padding so the icon is not touching the border
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
 
         eyeButton.configuration = config
         eyeButton.tintColor = .systemGray
-
-        // Action
         eyeButton.addTarget(self, action: #selector(didTapToggleEye(_:)), for: .touchUpInside)
 
-        // Assign to text field
         passwordTextField.rightView = eyeButton
         passwordTextField.rightViewMode = .always
-
         passwordTextField.isSecureTextEntry = true
     }
 
-
     @objc private func didTapToggleEye(_ sender: UIButton) {
         guard var config = sender.configuration else { return }
+        let wasShowing = !passwordTextField.isSecureTextEntry
 
-        let isShowingPassword = passwordTextField.isSecureTextEntry == false
-
-        // Toggle secure entry
-        let wasFirstResponder = passwordTextField.isFirstResponder
         let selectedRange = passwordTextField.selectedTextRange
-
         passwordTextField.isSecureTextEntry.toggle()
 
-        // Avoid cursor jump
-        let currentText = passwordTextField.text
-        passwordTextField.text = nil
-        passwordTextField.text = currentText
-        if let range = selectedRange { passwordTextField.selectedTextRange = range }
-        if wasFirstResponder { passwordTextField.becomeFirstResponder() }
+        // Fix cursor jump
+        let txt = passwordTextField.text
+        passwordTextField.text = ""
+        passwordTextField.text = txt
+        if let rng = selectedRange { passwordTextField.selectedTextRange = rng }
 
-        // Swap image
-        config.image = UIImage(
-            systemName: isShowingPassword ? "eye.slash.fill" : "eye.fill"
-        )
+        config.image = UIImage(systemName: wasShowing ? "eye.slash.fill" : "eye.fill")
         sender.configuration = config
     }
 
-    
+    // MARK: - Forgot Password
     @IBAction func forgetPasswordOnTap(_ sender: Any) {
-        let forgotPasswordVC = ForgotPasswordViewController(nibName: "ForgotPasswordViewController", bundle: nil)
-        navigationController?.pushViewController(forgotPasswordVC, animated: true)
+        let vc = ForgotPasswordViewController(nibName: "ForgotPasswordViewController", bundle: nil)
+        navigationController?.pushViewController(vc, animated: true)
     }
-    
 
+    // MARK: - Buttons Setup
     private func setupButtons() {
-        loginButton.configure(
-            title: "Login",
-            backgroundColor: .systemBlue
-        )
-
-        loginButton.onTap = { [weak self] in
-            self?.loginTapped()
-        }
+        loginButton.configure(title: "Login", backgroundColor: .systemBlue)
+        loginButton.onTap = { [weak self] in self?.loginTapped() }
 
         loginWithAppleButton.configure(
             title: "Continue with Apple",
@@ -105,157 +100,166 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             borderColor: UIColor.systemGray4,
             borderWidth: 1
         )
+
+        loginWithGoogleButton.onTap = { [weak self] in self?.loginWithGoogleTapped() }
     }
 
+    // MARK: - Google Login
+    private func loginWithGoogleTapped() {
+        guard let auth = authManager else {
+            presentAlert(title: "Internal Error", message: "Auth manager not available.")
+            return
+        }
+
+        loginWithGoogleButton.button.isEnabled = false
+
+        auth.signInWithGoogle(
+            redirectTo: "interact://auth/callback",
+            presentationContext: self
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.loginWithGoogleButton.button.isEnabled = true
+
+                switch result {
+                case .success(_):
+                    print("Google login SUCCESS")
+
+                    // If role is already saved → go to home
+                    if let saved = UserDefaults.standard.string(forKey: "UserRole"),
+                       let role = UserRole(rawValue: saved) {
+                        self?.routeToHome(role: role)
+                    } else {
+                        // No role → go to onboarding role selection
+                        let roleVC = RoleSelectionViewController(nibName:"RoleSelectionViewController", bundle:nil)
+                        self?.navigationController?.pushViewController(roleVC, animated:true)
+                    }
+
+                case .failure(let error):
+                    print("Google login failed:", error)
+                    self?.presentAlert(title: "Google Login Failed", message: error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    // MARK: - Text Fields Setup
     private func setupTextFields() {
         emailAddressErrorLabel.isHidden = true
         passwordErrorLabel.isHidden = true
 
-        setupNormalState(for: emailAddressTextField)
-        setupNormalState(for: passwordTextField)
+        let fields = [emailAddressTextField, passwordTextField]
 
-        passwordTextField.isSecureTextEntry = true
+        for tf in fields {
+            tf?.delegate = self
+            tf?.borderStyle = .none
+            tf?.layer.borderColor = UIColor.systemGray4.cgColor
+            tf?.layer.borderWidth = 1
+            tf?.layer.cornerRadius = 10
 
-        emailAddressTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        passwordTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-        
-        let textFields = [
-            emailAddressTextField,
-            passwordTextField,
-        ]
-        
-        for textField in textFields {
-            guard let field = textField else { continue }
-            field.delegate = self
-            
-            field.borderStyle = .none
-            field.layer.borderColor = UIColor.systemGray4.cgColor
-            field.layer.borderWidth = 1
-            field.layer.cornerRadius = 10
-            
-            let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.height))
-            field.leftView = leftPaddingView
-            field.leftViewMode = .always
+            let padding = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 40))
+            tf?.leftView = padding
+            tf?.leftViewMode = .always
+
+            tf?.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         }
     }
 
-    private func setupNormalState(for textField: UITextField) {
-        textField.layer.borderColor = UIColor.gray.cgColor
-        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 10
-    }
-
-    private func setupErrorState(for textField: UITextField) {
-        textField.layer.borderColor = UIColor.systemRed.cgColor
-        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 10
-    }
-
-    // MARK: - Live Validation
-    @objc private func textFieldDidChange() {
-        validateInputs(showErrors: false)
-    }
+    @objc private func textFieldDidChange() { validateInputs(showErrors: false) }
 
     @discardableResult
     private func validateInputs(showErrors: Bool) -> Bool {
-        var isValid = true
+        var valid = true
 
-        // Validate Email
         if let email = emailAddressTextField.text, email.isValidEmail() {
             emailAddressErrorLabel.isHidden = true
-            setupNormalState(for: emailAddressTextField)
+            emailAddressTextField.layer.borderColor = UIColor.systemGray4.cgColor
         } else {
-            isValid = false
+            valid = false
             if showErrors {
-                emailAddressErrorLabel.text = "Please enter a valid email address"
+                emailAddressErrorLabel.text = "Please enter a valid email"
                 emailAddressErrorLabel.isHidden = false
-                setupErrorState(for: emailAddressTextField)
+                emailAddressTextField.layer.borderColor = UIColor.systemRed.cgColor
             }
         }
 
-        // Validate Password
-        if let password = passwordTextField.text, password.count >= 6 {
+        if let pass = passwordTextField.text, pass.count >= 6 {
             passwordErrorLabel.isHidden = true
-            setupNormalState(for: passwordTextField)
+            passwordTextField.layer.borderColor = UIColor.systemGray4.cgColor
         } else {
-            isValid = false
+            valid = false
             if showErrors {
                 passwordErrorLabel.text = "Password must be at least 6 characters"
                 passwordErrorLabel.isHidden = false
-                setupErrorState(for: passwordTextField)
+                passwordTextField.layer.borderColor = UIColor.systemRed.cgColor
             }
         }
 
-        return isValid
+        return valid
     }
 
-    // MARK: - Login Action
+    // MARK: - Email/Password Login
     private func loginTapped() {
         view.endEditing(true)
 
-        if !validateInputs(showErrors: true) {
-//            shakeAnimation()
+        guard validateInputs(showErrors: true) else { return }
+        guard let auth = authManager else {
+            presentAlert(title: "Internal error", message: "Auth Manager missing")
             return
         }
 
-        print("Login button tapped — Valid Input")
+        let email = emailAddressTextField.text!.lowercased()
+        let password = passwordTextField.text!
 
-        let email = emailAddressTextField.text?.lowercased() ?? ""
+        loginButton.button.isEnabled = false
 
-        // ORGANIZER
-        if email == "organizer@gmail.com" {
-            UserDefaults.standard.set(UserRole.organizer.rawValue, forKey: "UserRole")
+        auth.signIn(email: email, password: password) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.loginButton.button.isEnabled = true
 
-            let organizerTab = MainTabBarController()
-            setRoot(organizerTab)
+                switch result {
+                case .success(_):
+                    if let saved = UserDefaults.standard.string(forKey: "UserRole"),
+                       let role = UserRole(rawValue: saved) {
+                        self?.routeToHome(role: role)
+                    } else {
+                        let roleVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
+                        self?.navigationController?.pushViewController(roleVC, animated: true)
+                    }
 
-        // PARTICIPANT
-        } else if email == "participant@gmail.com" {
-            UserDefaults.standard.set(UserRole.participant.rawValue, forKey: "UserRole")
-
-            let participantTab = ParticipantMainTabBarController()
-            setRoot(participantTab)
-
-        } else {
-            emailAddressErrorLabel.text = "Account not found"
-            emailAddressErrorLabel.isHidden = false
-            setupErrorState(for: emailAddressTextField)
+                case .failure(let error):
+                    self?.presentAlert(title: "Login Failed", message: error.localizedDescription)
+                }
+            }
         }
+    }
 
+    // MARK: - Routing
+    private func routeToHome(role: UserRole) {
+        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            switch role {
+            case .organizer:
+                scene.changeRootViewController(MainTabBarController())
+            case .participant:
+                scene.changeRootViewController(ParticipantMainTabBarController())
+            }
+        }
     }
 
     private func setRoot(_ vc: UIViewController) {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.changeRootViewController(vc)
+        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            scene.changeRootViewController(vc)
         }
     }
 
-
-    // MARK: - Shake Animation
-//    private func shakeAnimation() {
-//        let animation = CABasicAnimation(keyPath: "position")
-//        animation.duration = 0.05
-//        animation.repeatCount = 3
-//        animation.autoreverses = true
-//        animation.fromValue = CGPoint(x: view.center.x - 8, y: view.center.y)
-//        animation.toValue = CGPoint(x: view.center.x + 8, y: view.center.y)
-//        view.layer.add(animation, forKey: "position")
-//    }
-
+    // MARK: - Labels
     private func setupMainTitle() {
-        let fullText = "Log in to Interact"
-        let blueWord = "Interact"
-
-        let attributedString = NSMutableAttributedString(string: fullText)
-
-        if let range = fullText.range(of: blueWord) {
-            let nsRange = NSRange(range, in: fullText)
-            attributedString.addAttribute(.foregroundColor,
-                                          value: UIColor.systemBlue,
-                                          range: nsRange)
+        let text = "Log in to Interact"
+        let colored = NSMutableAttributedString(string: text)
+        if let range = text.range(of: "Interact") {
+            let ns = NSRange(range, in: text)
+            colored.addAttribute(.foregroundColor, value: UIColor.systemBlue, range: ns)
         }
-
-        textLabel1.attributedText = attributedString
+        textLabel1.attributedText = colored
     }
 
     private func setupSignUpLabel() {
@@ -265,15 +269,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
 
     @objc private func signUpTapped() {
-        print("Sign Up tapped!")
-        let roleVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
-        navigationController?.pushViewController(roleVC, animated: true)
+        let signupVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
+        navigationController?.pushViewController(signupVC, animated: true)
+    }
+
+    // MARK: - Alerts
+    private func presentAlert(title: String, message: String) {
+        let a = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        a.addAction(UIAlertAction(title: "OK", style: .default))
+        present(a, animated: true)
     }
 }
 
+// MARK: - Email validation
 extension String {
     func isValidEmail() -> Bool {
-        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: self)
+        let reg = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        return NSPredicate(format: "SELF MATCHES %@", reg).evaluate(with: self)
     }
 }

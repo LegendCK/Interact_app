@@ -29,30 +29,30 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="ZNH-Tm-pWc">
-                    <rect key="frame" x="20" y="118" width="353" height="525.33333333333337"/>
+                    <rect key="frame" x="20" y="118" width="353" height="523"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="IhE-aw-l6I">
-                            <rect key="frame" x="0.0" y="0.0" width="353" height="324"/>
+                            <rect key="frame" x="0.0" y="0.0" width="353" height="321.66666666666669"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="9zf-AR-YZV">
-                                    <rect key="frame" x="0.0" y="0.0" width="353" height="55.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="53.333333333333336"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log in to Interact" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8su-TF-n0W">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to Interact" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8su-TF-n0W">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="33.666666666666664"/>
                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="28"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome back! Please enter your details." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tie-5w-eJW">
-                                            <rect key="frame" x="0.0" y="37.666666666666657" width="353" height="18"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <rect key="frame" x="0.0" y="37.666666666666657" width="353" height="15.666666666666664"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Mla-Kx-2mN">
-                                    <rect key="frame" x="0.0" y="75.666666666666657" width="353" height="62.333333333333343"/>
+                                    <rect key="frame" x="0.0" y="73.333333333333343" width="353" height="62.333333333333343"/>
                                     <subviews>
                                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hfT-kh-ivp">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
@@ -71,7 +71,7 @@
                                     </subviews>
                                 </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mp6-uj-j9K">
-                                    <rect key="frame" x="0.0" y="158" width="353" height="102"/>
+                                    <rect key="frame" x="0.0" y="155.66666666666669" width="353" height="102"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="gCp-Bb-qBu">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="62.333333333333336"/>
@@ -106,7 +106,7 @@
                                     </subviews>
                                 </stackView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ghd-7p-zbv" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="280" width="353" height="44"/>
+                                    <rect key="frame" x="0.0" y="277.66666666666669" width="353" height="44"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="uUX-TT-wD9"/>
@@ -114,14 +114,14 @@
                                 </view>
                             </subviews>
                         </stackView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or Login with" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydX-gW-vdM">
-                            <rect key="frame" x="0.0" y="349" width="353" height="15.666666666666686"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydX-gW-vdM">
+                            <rect key="frame" x="0.0" y="346.66666666666669" width="353" height="15.666666666666686"/>
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                             <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.61960784310000006" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="eSB-Tw-I7R">
-                            <rect key="frame" x="0.0" y="389.66666666666669" width="353" height="135.66666666666669"/>
+                            <rect key="frame" x="0.0" y="387.33333333333331" width="353" height="135.66666666666669"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="92A-QY-rzM">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="100"/>
@@ -134,7 +134,7 @@
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tMW-5H-cTX" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="55.999999999999943" width="353" height="44"/>
+                                            <rect key="frame" x="0.0" y="56.000000000000057" width="353" height="44"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="wtC-fd-O9E"/>
@@ -143,7 +143,7 @@
                                     </subviews>
                                 </stackView>
                                 <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c2O-QK-4Gm">
-                                    <rect key="frame" x="0.0" y="119.99999999999994" width="353" height="15.666666666666657"/>
+                                    <rect key="frame" x="0.0" y="120.00000000000006" width="353" height="15.666666666666657"/>
                                     <gestureRecognizers/>
                                     <attributedString key="attributedText">
                                         <fragment content="Don’t have an account? ">
@@ -183,7 +183,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBlueColor">
-            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.53333333333333333" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
