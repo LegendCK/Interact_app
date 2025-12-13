@@ -22,7 +22,6 @@ import UIKit
 class VerifyAccountViewController: UIViewController {
 
     // ⬅ Role passed from SignupViewController or SignupParticipantViewController
-    var userRole: UserRole?
 
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var verifyButton: ButtonComponent!
@@ -138,33 +137,11 @@ class VerifyAccountViewController: UIViewController {
     // MARK: - Verified
     private func verifiedTapped() {
         print("I've Verified tapped")
-        navigateToSetupProfile()
+        let verifyVC = RoleSelectionViewController(
+            nibName: "RoleSelectionViewController",
+            bundle: nil
+        )
+        self.navigationController?.pushViewController(verifyVC, animated: true)
     }
 
-    // MARK: - Role-based Navigation
-    private func navigateToSetupProfile() {
-        guard let role = userRole else {
-            print("ERROR: userRole missing!")
-            return
-        }
-
-        switch role {
-
-        case .organizer:
-            let vc = OrgProfileSetupViewController(
-                nibName: "OrgProfileSetupViewController",
-                bundle: nil
-            )
-            vc.userRole = .organizer
-            navigationController?.pushViewController(vc, animated: true)
-
-        case .participant:
-            let vc = ParticipantProfileSetupViewController(
-                nibName: "ParticipantProfileSetupViewController",
-                bundle: nil
-            )
-            vc.userRole = .participant
-            navigationController?.pushViewController(vc, animated: true)
-        }
-    }
 }

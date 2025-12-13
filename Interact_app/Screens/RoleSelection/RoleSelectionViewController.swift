@@ -67,12 +67,12 @@ class RoleSelectionViewController: UIViewController {
             switch role {
 
             case .organizer:
-                let vc = SignupViewController(nibName: "SignupViewController", bundle: nil)
+                let vc = OrgProfileSetupViewController(nibName: "OrgProfileSetupViewController", bundle: nil)
                 vc.userRole = .organizer
                 self.navigationController?.pushViewController(vc, animated: true)
 
             case .participant:
-                let vc = SignupParticipantViewController(nibName: "SignupParticipantViewController", bundle: nil)
+                let vc = ParticipantProfileSetupViewController(nibName: "ParticipantProfileSetupViewController", bundle: nil)
                 vc.userRole = .participant
                 self.navigationController?.pushViewController(vc, animated: true)
             }
