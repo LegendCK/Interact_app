@@ -16,13 +16,58 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    // Expose authManager to the app so controllers can retrieve it (or inject)
+    var authManager: AuthManager?
+
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
+
+        // Initialize Supabase services (fail gracefully)
+        do {
+            let config = try SupabaseConfig()
+            let client = SupabaseClient(config: config)
+            let keychain = KeychainService()
+            self.authManager = AuthManager(client: client, keychain: keychain)
+        } catch {
+            // If config fails, fall through and show error UI below
+            print("Supabase config error: \(error)")
+        }
+
         window = UIWindow(windowScene: windowScene)
 
+        // If the app was launched via a URL (cold start), handle it after services are ready.
+        if let incoming = connectionOptions.urlContexts.first?.url {
+            // forward to auth manager and then finish UI setup in the completion
+            print("Launched from URL:", incoming.absoluteString)
+            authManager?.handleRedirect(url: incoming) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(_):
+                        // If redirect produced a valid session, route user accordingly
+                        self?.routeAfterSignIn()
+                    case .failure(let err):
+                        // Log error and continue to normal initial flow
+                        print("HandleRedirect at launch failed:", err.localizedDescription)
+                        self?.setupInitialRootNormally()
+                    }
+                }
+            }
+        } else {
+            // Normal startup flow
+            setupInitialRootNormally()
+        }
+
+        window?.makeKeyAndVisible()
+
+        // Add hidden dev reset gesture
+        addDevResetGesture()
+    }
+
+    // MARK: - Default initial root setup (keeps your original logic)
+    private func setupInitialRootNormally() {
         // Decide initial root based on saved role
         if let savedRoleString = UserDefaults.standard.string(forKey: "UserRole"),
            let savedRole = UserRole(rawValue: savedRoleString) {
@@ -47,11 +92,50 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let nav = UINavigationController(rootViewController: onboardingVC)
             window?.rootViewController = nav
         }
+    }
 
-        window?.makeKeyAndVisible()
+    // MARK: - Handle incoming deep links (forward to AuthManager)
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let ctx = URLContexts.first else { return }
+        let url = ctx.url
+        print("SceneDelegate received URL:", url.absoluteString)
 
-        // Add hidden dev reset gesture
-        addDevResetGesture()
+        // Forward to auth manager and upon success route into the app
+        authManager?.handleRedirect(url: url) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self?.routeAfterSignIn()
+                case .failure(let err):
+                    print("handleRedirect failed:", err.localizedDescription)
+                    // Optionally show an alert or ignore
+                }
+            }
+        }
+    }
+
+    // MARK: - Routing after sign-in
+    /// Called when we have a valid persisted session (from OAuth redirect or sign-in).
+    /// If the user already has a saved role, we set home; otherwise show role selection to continue onboarding.
+    private func routeAfterSignIn() {
+        // If role already saved, go straight to the appropriate home
+        if let savedRoleString = UserDefaults.standard.string(forKey: "UserRole"),
+           let savedRole = UserRole(rawValue: savedRoleString) {
+            switch savedRole {
+            case .organizer:
+                let organizerHome = MainTabBarController()
+                changeRootViewController(organizerHome)
+            case .participant:
+                let participantHome = ParticipantMainTabBarController()
+                changeRootViewController(participantHome)
+            }
+            return
+        }
+
+        // No saved role — push RoleSelection so user picks org/participant and finishes profile
+        let roleSelection = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
+        let nav = UINavigationController(rootViewController: roleSelection)
+        changeRootViewController(nav)
     }
 
     // MARK: - Hidden Developer Reset
@@ -85,7 +169,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - Smooth Root Change
     func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
         guard let window = self.window else { return }
-        // If already the same type, just animate to it to avoid flash
+        // replace root
         window.rootViewController = vc
 
         if animated {
