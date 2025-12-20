@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ParticipantEventCard" customModule="Interact_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="270"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="270"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uso-xK-G7V">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="270"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="events2" translatesAutoresizingMaskIntoConstraints="NO" id="j71-5a-6dp">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="4aR-S1-n1O"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ossome Hacks 2.0" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A4r-bg-u8Q">
+                                <rect key="frame" x="10" y="155" width="270" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="0qb-uk-8Ey"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fri, 31 Oct 2025 · 9:00 am – 6:00 pm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlE-op-MzY">
+                                <rect key="frame" x="10" y="184" width="300" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="18" id="mdO-5u-nbd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SRMIST KTR, Chennai, Tamil Nadu" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0K9-wU-Eyf">
+                                <rect key="frame" x="10" y="207" width="300" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="18" id="4oN-8S-l3b"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" systemColor="systemGrayColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DxP-bq-EQu">
+                                <rect key="frame" x="285" y="155" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="0Yj-so-OCa"/>
+                                    <constraint firstAttribute="height" constant="25" id="pIt-nQ-YJ4"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="square.and.arrow.up" catalog="system"/>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RzM-8O-Pgh" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
+                                <rect key="frame" x="10" y="230" width="300" height="44"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="2yG-s3-AM8"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="DxP-bq-EQu" firstAttribute="leading" secondItem="A4r-bg-u8Q" secondAttribute="trailing" constant="5" id="9sx-im-De2"/>
+                            <constraint firstAttribute="trailing" secondItem="j71-5a-6dp" secondAttribute="trailing" id="CPt-mj-m9g"/>
+                            <constraint firstItem="0K9-wU-Eyf" firstAttribute="leading" secondItem="uso-xK-G7V" secondAttribute="leading" constant="10" id="Cu8-lG-bkf"/>
+                            <constraint firstItem="DxP-bq-EQu" firstAttribute="top" secondItem="j71-5a-6dp" secondAttribute="bottom" constant="5" id="En3-jf-gmf"/>
+                            <constraint firstItem="RzM-8O-Pgh" firstAttribute="top" secondItem="0K9-wU-Eyf" secondAttribute="bottom" constant="5" id="GKe-GB-Yeu"/>
+                            <constraint firstItem="0K9-wU-Eyf" firstAttribute="top" secondItem="rlE-op-MzY" secondAttribute="bottom" constant="5" id="Irg-bW-v0z"/>
+                            <constraint firstItem="rlE-op-MzY" firstAttribute="leading" secondItem="uso-xK-G7V" secondAttribute="leading" constant="10" id="LXx-z0-OAB"/>
+                            <constraint firstItem="rlE-op-MzY" firstAttribute="top" secondItem="A4r-bg-u8Q" secondAttribute="bottom" constant="5" id="UJM-MK-zao"/>
+                            <constraint firstAttribute="trailing" secondItem="DxP-bq-EQu" secondAttribute="trailing" constant="10" id="Zvo-vs-S0j"/>
+                            <constraint firstItem="j71-5a-6dp" firstAttribute="top" secondItem="uso-xK-G7V" secondAttribute="top" id="Zw6-P3-QeW"/>
+                            <constraint firstItem="A4r-bg-u8Q" firstAttribute="leading" secondItem="uso-xK-G7V" secondAttribute="leading" constant="10" id="eHn-yL-3nI"/>
+                            <constraint firstItem="RzM-8O-Pgh" firstAttribute="leading" secondItem="uso-xK-G7V" secondAttribute="leading" constant="10" id="eY7-cZ-3Bv"/>
+                            <constraint firstItem="j71-5a-6dp" firstAttribute="leading" secondItem="uso-xK-G7V" secondAttribute="leading" id="nMk-v6-zbx"/>
+                            <constraint firstAttribute="trailing" secondItem="rlE-op-MzY" secondAttribute="trailing" constant="10" id="sHx-5g-gwC"/>
+                            <constraint firstItem="A4r-bg-u8Q" firstAttribute="top" secondItem="j71-5a-6dp" secondAttribute="bottom" constant="5" id="vop-0X-eBr"/>
+                            <constraint firstAttribute="trailing" secondItem="0K9-wU-Eyf" secondAttribute="trailing" constant="10" id="xC2-I9-WaF"/>
+                            <constraint firstAttribute="trailing" secondItem="RzM-8O-Pgh" secondAttribute="trailing" constant="10" id="xw1-zF-flf"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="uso-xK-G7V" secondAttribute="bottom" id="E2k-eb-7VQ"/>
+                <constraint firstItem="uso-xK-G7V" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="JJv-St-Xk4"/>
+                <constraint firstItem="uso-xK-G7V" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Ock-Fw-Nia"/>
+                <constraint firstAttribute="trailing" secondItem="uso-xK-G7V" secondAttribute="trailing" id="PdM-bf-auP"/>
+            </constraints>
+            <size key="customSize" width="265" height="224"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                    <integer key="value" value="16"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="containerView" destination="uso-xK-G7V" id="wLq-gv-qER"/>
+                <outlet property="eventDate" destination="rlE-op-MzY" id="7Tf-RM-aUH"/>
+                <outlet property="eventImage" destination="j71-5a-6dp" id="cEu-59-GRF"/>
+                <outlet property="eventLocation" destination="0K9-wU-Eyf" id="Mxb-iG-cgw"/>
+                <outlet property="eventTitle" destination="A4r-bg-u8Q" id="aYC-vT-bbQ"/>
+                <outlet property="registerButton" destination="RzM-8O-Pgh" id="8qd-o3-eNT"/>
+                <outlet property="shareButton" destination="DxP-bq-EQu" id="WEa-Oj-6HF"/>
+            </connections>
+            <point key="canvasLocation" x="251.90839694656486" y="195.07042253521126"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="events2" width="282" height="120"/>
+        <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
