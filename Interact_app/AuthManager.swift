@@ -138,6 +138,42 @@ public final class AuthManager {
         }.resume()
     }
 
+    // MARK: - Check Email Verified
+    public func checkEmailVerified(completion: @escaping (Result<Bool, Error>) -> Void) {
+        getUser { result in
+            switch result {
+            case .success(let userObj):
+                // Check if email_confirmed_at exists and is not null
+                if let confirmedAt = userObj["email_confirmed_at"] as? String, !confirmedAt.isEmpty {
+                    completion(.success(true))
+                } else {
+                    completion(.success(false))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    // MARK: - Resend Verification Email
+    public func resendVerificationEmail(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let request = client.makeResendVerificationRequest(email: email)
+        
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err { completion(.failure(err)); return }
+            
+            guard let http = resp as? HTTPURLResponse else {
+                completion(.failure(Self.makeError("Invalid response"))); return
+            }
+            
+            if 200 ... 299 ~= http.statusCode {
+                completion(.success(()))
+            } else {
+                completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
+            }
+        }.resume()
+    }
+
     // MARK: - Reset Password
     public func resetPassword(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
 
@@ -278,53 +314,91 @@ public final class AuthManager {
         }.resume()
     }
 
-    // MARK: - Create ORG Profile
-    public func createOrgProfile(
-        payload: [String: Any],
-        maxRetries: Int = 3,
-        completion: @escaping (Result<[String: Any], Error>) -> Void
-    ) {
+    // MARK: - Fetch Profile from Supabase
+    public func fetchProfile(completion: @escaping (Result<[String: Any]?, Error>) -> Void) {
+        guard let session = currentSession else {
+            completion(.failure(Self.makeError("No active session")))
+            return
+        }
 
-        insertProfile(
-            payload: payload,
-            table: "org_profiles",
-            defaultRole: "organizer",
-            isParticipant: false,
-            maxRetries: maxRetries,
-            completion: completion
-        )
+        guard let userId = Self.extractUserId(fromAccessToken: session.accessToken) else {
+            completion(.failure(Self.makeError("Unable to decode user ID")))
+            return
+        }
+
+        let request = client.makeGetProfileRequest(userId: userId, accessToken: session.accessToken)
+
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err { completion(.failure(err)); return }
+
+            guard let http = resp as? HTTPURLResponse, let data else {
+                completion(.failure(Self.makeError("Invalid response"))); return
+            }
+
+            if 200 ... 299 ~= http.statusCode {
+                // PostgREST returns array of rows
+                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                    // Return first row or nil if empty
+                    completion(.success(arr.first))
+                } else {
+                    completion(.failure(Self.makeError("Profile decode failed")))
+                }
+            } else {
+                completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
+            }
+        }.resume()
     }
 
-    // MARK: - Create PARTICIPANT Profile
-    public func createParticipantProfile(
-        payload: [String: Any],
-        maxRetries: Int = 3,
-        completion: @escaping (Result<[String: Any], Error>) -> Void
-    ) {
+    // MARK: - Update Profile Role
+    public func updateProfileRole(role: String, completion: @escaping (Result<[String: Any], Error>) -> Void) {
+        guard let session = currentSession else {
+            completion(.failure(Self.makeError("No active session")))
+            return
+        }
 
-        insertProfile(
-            payload: payload,
-            table: "participant_profiles",
-            defaultRole: "participant",
-            isParticipant: true,
-            maxRetries: maxRetries,
-            completion: completion
-        )
+        guard let userId = Self.extractUserId(fromAccessToken: session.accessToken) else {
+            completion(.failure(Self.makeError("Unable to decode user ID")))
+            return
+        }
+
+        let payload: [String: Any] = ["role": role]
+        
+        guard let json = try? JSONSerialization.data(withJSONObject: payload) else {
+            completion(.failure(Self.makeError("Invalid JSON body")))
+            return
+        }
+
+        let request = client.makeUpdateProfileRequest(userId: userId, body: json, accessToken: session.accessToken)
+
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err { completion(.failure(err)); return }
+
+            guard let http = resp as? HTTPURLResponse, let data else {
+                completion(.failure(Self.makeError("Invalid response"))); return
+            }
+
+            if 200 ... 299 ~= http.statusCode {
+                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                   let row = arr.first {
+                    completion(.success(row))
+                } else {
+                    completion(.failure(Self.makeError("Update response decode failed")))
+                }
+            } else {
+                completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
+            }
+        }.resume()
     }
 
-    // MARK: - Shared Insert Logic
-    private func insertProfile(
+    // MARK: - Create Profile (Unified)
+    public func createProfile(
         payload: [String: Any],
-        table: String,
-        defaultRole: String,
-        isParticipant: Bool,
-        maxRetries: Int,
+        maxRetries: Int = 3,
         completion: @escaping (Result<[String: Any], Error>) -> Void
     ) {
 
         sessionQueue.async {
 
-            // Must be logged in
             guard let session = self.currentSession else {
                 DispatchQueue.main.async {
                     completion(.failure(Self.makeError("Not authenticated")))
@@ -339,24 +413,12 @@ public final class AuthManager {
                 return
             }
 
-            // Build body
+            // Build body - NO USERNAME (let trigger handle it)
             var body = payload
             body["id"] = uid
-            body["role"] = body["role"] ?? defaultRole
+            body["is_profile_setup"] = true  // Mark profile as complete
 
-            // username generation if missing
-            if body["username"] == nil {
-                if isParticipant {
-                    let first = (body["first_name"] as? String) ?? "user"
-                    let last = (body["last_name"] as? String) ?? ""
-                    body["username"] = Self.generateParticipantUsername(first: first, last: last)
-                } else {
-                    let org = (body["org_name"] as? String) ?? "org"
-                    body["username"] = Self.generateOrgUsername(from: org)
-                }
-            }
-
-            // encode
+            // Encode
             guard let json = try? JSONSerialization.data(withJSONObject: body) else {
                 DispatchQueue.main.async {
                     completion(.failure(Self.makeError("Invalid JSON body")))
@@ -364,8 +426,9 @@ public final class AuthManager {
                 return
             }
 
-            let request = self.client.makePostgrestInsertRequest(
-                table: table,
+            let request = self.client.makePostgrestUpdateRequest(
+                table: "profiles",
+                userId: uid,
                 body: json,
                 accessToken: session.accessToken
             )
@@ -395,68 +458,12 @@ public final class AuthManager {
                     return
                 }
 
-                // username conflict → retry
+                // Handle errors
                 let text = String(data: data, encoding: .utf8) ?? "Error"
-
-                if http.statusCode == 409 && maxRetries > 0 {
-
-                    var retry = body
-
-                    if isParticipant {
-                        let first = (retry["first_name"] as? String) ?? "user"
-                        let last = (retry["last_name"] as? String) ?? ""
-                        retry["username"] = Self.generateParticipantUsername(first: first, last: last)
-                    } else {
-                        let org = (retry["org_name"] as? String) ?? "org"
-                        retry["username"] = Self.generateOrgUsername(from: org)
-                    }
-
-                    self.insertProfile(
-                        payload: retry,
-                        table: table,
-                        defaultRole: defaultRole,
-                        isParticipant: isParticipant,
-                        maxRetries: maxRetries - 1,
-                        completion: completion
-                    )
-                    return
-                }
-
-                fail("Insert failed: \(text)")
+                fail("Profile update failed: \(text)")
 
             }.resume()
         }
-    }
-
-    // MARK: - Username Generators
-    public static func generateOrgUsername(from org: String) -> String {
-
-        var slug = org.lowercased()
-            .replacingOccurrences(of: "[^a-z0-9]+", with: "-", options: .regularExpression)
-
-        while slug.contains("--") { slug = slug.replacingOccurrences(of: "--", with: "-") }
-        slug = slug.trimmingCharacters(in: CharacterSet(charactersIn: "-"))
-
-        if slug.isEmpty { slug = "org" }
-
-        return "org-\(slug)-\(randomHex(length: 6))"
-    }
-
-    public static func generateParticipantUsername(first: String, last: String) -> String {
-
-        let f = first.lowercased().replacingOccurrences(of: " ", with: "-")
-        let l = last.lowercased().replacingOccurrences(of: " ", with: "-")
-
-        return "\(f)-\(l)-\(randomHex(length: 6))"
-    }
-
-    public static func randomHex(length: Int) -> String {
-        var bytes = [UInt8](repeating: 0, count: (length + 1) / 2)
-        SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-
-        let hex = bytes.map { String(format: "%02x", $0) }.joined()
-        let end = hex.index(hex.startIndex, offsetBy: length)
-        return String(hex[..<end])
     }
 
     // MARK: - JWT Decode Helpers
@@ -484,6 +491,16 @@ public final class AuthManager {
         else { return [:] }
 
         return json
+    }
+
+    // MARK: - Random Hex Helper (kept for potential future use)
+    public static func randomHex(length: Int) -> String {
+        var bytes = [UInt8](repeating: 0, count: (length + 1) / 2)
+        SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+
+        let hex = bytes.map { String(format: "%02x", $0) }.joined()
+        let end = hex.index(hex.startIndex, offsetBy: length)
+        return String(hex[..<end])
     }
 
     // MARK: - Error Helpers

@@ -8,7 +8,6 @@ import CoreLocation
 
 class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelegate {
 
-    
     var userRole: UserRole?
     
     // MARK: - Auth Manager
@@ -100,6 +99,7 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
         setupTextFields()
         setupDropdownTables()
         addDropdownArrows()
+        addLocationRightIcon()
         setupSaveButton()
         setupLocation()
     }
@@ -160,6 +160,7 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
             tf.addTarget(self, action: #selector(textFieldDidEndEditing(_:)), for: .editingDidEnd)
 
+            // Disable keyboard for dropdown fields and location
             if tf != firstNameTextField && tf != middleNameTextField && tf != lastNameTextField {
                 tf.inputView = UIView()
             }
@@ -243,6 +244,27 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
         }
     }
 
+    // MARK: - Location Icon
+    private func addLocationRightIcon() {
+        let icon = UIImageView(image: UIImage(systemName: "location.fill"))
+        icon.tintColor = .gray
+        icon.contentMode = .scaleAspectFit
+
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
+
+        icon.frame = CGRect(
+            x: (40 - 20) / 2,
+            y: (24 - 20) / 2,
+            width: 20,
+            height: 20
+        )
+
+        container.addSubview(icon)
+
+        locationTextField.rightView = container
+        locationTextField.rightViewMode = .always
+    }
+
     // MARK: - Toggle Dropdowns
     @objc private func toggleRoles() { toggle(table: rolesTableView, field: rolesTextField) }
     @objc private func toggleGender() { toggle(table: genderTableView, field: genderTextField) }
@@ -266,6 +288,22 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
         rotateArrow(for: genderTextField, open: false)
         rotateArrow(for: academicYearTextField, open: false)
         rotateArrow(for: collegeTextField, open: false)
+    }
+
+    // MARK: - TextField Delegate
+    func textFieldShouldBeginEditing(_ tf: UITextField) -> Bool {
+        // Handle location field separately
+        if tf == locationTextField {
+            requestUserLocation()
+            return false
+        }
+        
+        // Allow only name fields to have keyboard
+        if tf == firstNameTextField || tf == middleNameTextField || tf == lastNameTextField {
+            return true
+        }
+        
+        return false
     }
 
     // MARK: - Validation
@@ -350,14 +388,6 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
 
-    func textFieldShouldBeginEditing(_ tf: UITextField) -> Bool {
-        if tf == locationTextField {
-            requestUserLocation()
-            return false
-        }
-        return true
-    }
-
     private func requestUserLocation() {
         guard !isRequestingLocation else { return }
         isRequestingLocation = true
@@ -367,12 +397,15 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
             locationManager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
-        default:
+        case .denied, .restricted:
+            showAlert("Enable Location", "Please enable location in Settings.")
+            isRequestingLocation = false
+        @unknown default:
             isRequestingLocation = false
         }
     }
 
-    // MARK: - Save → Create Profile in Supabase
+    // MARK: - Save → Update Profile in Supabase
     private func completeSetup() {
         guard let auth = authManager else {
             showAlert("Error", "Auth manager unavailable.")
@@ -409,11 +442,7 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
     private func buildAndSendProfile(email: String, auth: AuthManager) {
 
-        // username = firstname-lastname-hex6
-        let first = (firstNameTextField.text ?? "").lowercased()
-        let last = (lastNameTextField.text ?? "").lowercased()
-        let username = "\(first)-\(last)-\(AuthManager.randomHex(length: 6))"
-
+        // NO USERNAME - let database trigger generate it
         let payload: [String: Any] = [
             "email": email,
             "first_name": firstNameTextField.text ?? "",
@@ -424,11 +453,10 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
             "academic_year": selectedAcademicYear ?? "",
             "college": selectedCollege ?? "",
             "location": locationTextField.text ?? "",
-            "username": username,
             "role": "participant"
         ]
 
-        auth.createParticipantProfile(payload: payload, maxRetries: 3) { [weak self] result in
+        auth.createProfile(payload: payload, maxRetries: 3) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self else { return }
 
@@ -437,9 +465,9 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
                 switch result {
                 case .success(let row):
+                    print("Participant profile created successfully:", row)
 
                     UserDefaults.standard.set("participant", forKey: "UserRole")
-                    UserDefaults.standard.set(row, forKey: "ParticipantProfile")
 
                     // Move to participant home
                     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
@@ -502,7 +530,7 @@ extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableVie
             rolesTextField.text = selectedRoles.joined(separator: ", ")
             validateTextField(rolesTextField)
             tableView.reloadRows(at: [indexPath], with: .none)
-            validateAllFields()
+            validateAllFields()  // This is already here
             return
         }
 
@@ -525,13 +553,32 @@ extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableVie
         }
 
         closeAllDropdowns()
-        validateAllFields()
+        
+        // ADD VALIDATION FOR ALL FIELDS HERE
+        validateTextField(firstNameTextField)
+        validateTextField(middleNameTextField)
+        validateTextField(lastNameTextField)
+        validateTextField(rolesTextField)
+        validateTextField(genderTextField)
+        validateTextField(academicYearTextField)
+        validateTextField(collegeTextField)
+        validateTextField(locationTextField)
+        
+        validateAllFields()  // Final check
         tableView.reloadData()
     }
 }
 
 // MARK: - Location Delegate
 extension ParticipantProfileSetupViewController: CLLocationManagerDelegate {
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locs: [CLLocation]) {
         guard let loc = locs.first else { return }
         manager.stopUpdatingLocation()
@@ -540,8 +587,16 @@ extension ParticipantProfileSetupViewController: CLLocationManagerDelegate {
             guard let self, let place = places?.first else { return }
             self.locationTextField.text = "\(place.locality ?? ""), \(place.country ?? "")"
             self.validateTextField(self.locationTextField)
+            
+            // ADD THIS: Validate all fields to enable button if everything is filled
             self.validateAllFields()
+            
             self.isRequestingLocation = false
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        isRequestingLocation = false
+        showAlert("Location Error", "Unable to fetch location.")
     }
 }

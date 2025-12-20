@@ -2,33 +2,32 @@
 //  VerifyAccountViewController.swift
 //  Interact_app
 //
-//  Created by admin56 on 07/11/25.
-//
-
-//
-//  VerifyAccountViewController.swift
-//  Interact_app
-//
-//  Created by admin56 on 07/11/25.
-//
-
-//
-//  VerifyAccountViewController.swift
-//  Interact_app
-//
 
 import UIKit
 
 class VerifyAccountViewController: UIViewController {
 
-    // ⬅ Role passed from SignupViewController or SignupParticipantViewController
-
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var verifyButton: ButtonComponent!
+
+    // Email passed from SignupViewController for resend functionality
+    var userEmail: String?
+
+    // Auth manager
+    var authManager: AuthManager? {
+        if let scene = UIApplication.shared.connectedScenes.first,
+           let delegate = scene.delegate as? SceneDelegate {
+            return delegate.authManager
+        }
+        return nil
+    }
 
     private var timer: Timer?
     private var counter = 30
     private var canResend = false
+
+    // Spinner
+    private var spinner: UIActivityIndicatorView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,8 +43,8 @@ class VerifyAccountViewController: UIViewController {
             font: .systemFont(ofSize: 17, weight: .semibold)
         )
 
-        verifyButton.button.isEnabled = false
-        verifyButton.alpha = 0.5
+        verifyButton.button.isEnabled = true
+        verifyButton.alpha = 1.0
 
         verifyButton.onTap = { [weak self] in
             self?.verifiedTapped()
@@ -58,9 +57,31 @@ class VerifyAccountViewController: UIViewController {
         updateCountdownText()
     }
 
+    // MARK: - Loading Indicator
+    private func showLoading(_ show: Bool) {
+        if show {
+            if spinner == nil {
+                let s = UIActivityIndicatorView(style: .large)
+                s.translatesAutoresizingMaskIntoConstraints = false
+                s.hidesWhenStopped = true
+                view.addSubview(s)
+                NSLayoutConstraint.activate([
+                    s.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    s.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                ])
+                spinner = s
+            }
+            spinner?.startAnimating()
+            view.isUserInteractionEnabled = false
+        } else {
+            spinner?.stopAnimating()
+            view.isUserInteractionEnabled = true
+        }
+    }
+
     // MARK: - Timer Logic
     private func startTimer() {
-        counter = 1
+        counter = 30
         canResend = false
 
         timer?.invalidate()
@@ -83,17 +104,14 @@ class VerifyAccountViewController: UIViewController {
     }
 
     private func updateCountdownText() {
-        infoLabel.text = "Didn’t get the verification link? Try again in \(counter)s"
+        infoLabel.text = "Didn't get the verification link? Try again in \(counter)s"
         infoLabel.textColor = .gray
     }
 
     private func showResendText() {
         canResend = true
 
-        verifyButton.button.isEnabled = true
-        verifyButton.alpha = 1.0
-
-        let base = "Didn’t get the verification link? "
+        let base = "Didn't get the verification link? "
         let resend = "Resend"
 
         let attributed = NSMutableAttributedString(
@@ -122,26 +140,65 @@ class VerifyAccountViewController: UIViewController {
     // MARK: - Resend
     @objc private func infoLabelTapped() {
         guard canResend else { return }
-        print("Resend tapped")
+        guard let email = userEmail else {
+            presentAlert(title: "Error", message: "Email not found. Please try signing up again.")
+            return
+        }
 
-        verifyButton.button.isEnabled = false
-        verifyButton.alpha = 0.5
+        print("Resend tapped for email: \(email)")
+
+        guard let auth = authManager else {
+            presentAlert(title: "Error", message: "Auth manager not available")
+            return
+        }
 
         infoLabel.isUserInteractionEnabled = false
+        showLoading(true)
 
-        startTimer()
+        auth.resendVerificationEmail(email: email) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.showLoading(false)
 
-        // TODO: resend API
+                switch result {
+                case .success():
+                    self.presentAlert(title: "Email Sent", message: "Verification email has been resent. Please check your inbox.")
+                    self.startTimer() // Restart countdown
+
+                case .failure(let error):
+                    self.presentAlert(title: "Resend Failed", message: error.localizedDescription)
+                    // Still allow user to try again
+                    self.showResendText()
+                }
+            }
+        }
     }
 
-    // MARK: - Verified
+    // MARK: - Verified Button Tapped (Redirect to Login)
     private func verifiedTapped() {
-        print("I've Verified tapped")
-        let verifyVC = RoleSelectionViewController(
-            nibName: "RoleSelectionViewController",
-            bundle: nil
+        print("I've Verified tapped - redirecting to login")
+
+        let alert = UIAlertController(
+            title: "Email Verified?",
+            message: "Great! Please sign in again to continue with your verified account.",
+            preferredStyle: .alert
         )
-        self.navigationController?.pushViewController(verifyVC, animated: true)
+
+        alert.addAction(UIAlertAction(title: "Sign In", style: .default) { [weak self] _ in
+            // Pop back to login screen
+            self?.navigationController?.popToRootViewController(animated: true)
+        })
+
+        present(alert, animated: true)
     }
 
+    private func presentAlert(title: String, message: String) {
+        let a = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        a.addAction(UIAlertAction(title: "OK", style: .default))
+        present(a, animated: true)
+    }
+
+    deinit {
+        timer?.invalidate()
+    }
 }

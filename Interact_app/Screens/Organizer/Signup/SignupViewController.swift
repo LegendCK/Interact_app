@@ -212,9 +212,6 @@ import AuthenticationServices
 
 class SignupViewController: UIViewController, UITextFieldDelegate {
 
-    // Role passed from RoleSelectionViewController
-    var userRole: UserRole?
-
     @IBOutlet weak var textLabel1: UILabel!
     @IBOutlet weak var alreadyHaveAccLabel: UILabel!
     @IBOutlet weak var emailAddressTextField: UITextField!
@@ -224,7 +221,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var signUpWithAppleButton: ButtonComponent!
     @IBOutlet weak var signUpWithGoogleButton: ButtonComponent!
 
-    // authManager fetched from SceneDelegate if needed
+    // authManager fetched from SceneDelegate
     var authManager: AuthManager? {
         if let appScene = UIApplication.shared.connectedScenes.first,
            let sceneDelegate = appScene.delegate as? SceneDelegate {
@@ -233,6 +230,9 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         return nil
     }
 
+    // Spinner
+    private var spinner: UIActivityIndicatorView?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -240,7 +240,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         setupMainTitle()
         setupButtons()
 
-        // Hook sign up action to actually call signUp
+        // Hook sign up action
         verifyEmailButton.configure(title: "Sign up")
         verifyEmailButton.onTap = { [weak self] in
             self?.performSignUpAndShowVerify()
@@ -253,6 +253,28 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
 
     @objc func backToLoginTapped() {
         navigateBackToLogin()
+    }
+
+    // MARK: - Loading Indicator
+    private func showLoading(_ show: Bool) {
+        if show {
+            if spinner == nil {
+                let s = UIActivityIndicatorView(style: .large)
+                s.translatesAutoresizingMaskIntoConstraints = false
+                s.hidesWhenStopped = true
+                view.addSubview(s)
+                NSLayoutConstraint.activate([
+                    s.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    s.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                ])
+                spinner = s
+            }
+            spinner?.startAnimating()
+            view.isUserInteractionEnabled = false
+        } else {
+            spinner?.stopAnimating()
+            view.isUserInteractionEnabled = true
+        }
     }
 
     // MARK: - Text Fields Setup
@@ -378,19 +400,26 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
             return
         }
 
-        // If your ButtonComponent exposes `button` subview use that, otherwise adjust accordingly
         verifyEmailButton.button.isEnabled = false
+        showLoading(true)
 
         auth.signUp(email: email, password: pass) { [weak self] result in
             DispatchQueue.main.async {
-                self?.verifyEmailButton.button.isEnabled = true
+                guard let self = self else { return }
+                
+                self.verifyEmailButton.button.isEnabled = true
+                self.showLoading(false)
+                
                 switch result {
                 case .success():
-                    // Move to the verify screen which tells the user to check email
+                    print("Signup SUCCESS - email verification required")
+                    // Move to verify screen which tells user to check email
                     let verifyVC = VerifyAccountViewController(nibName: "VerifyAccountViewController", bundle: nil)
-                    self?.navigationController?.pushViewController(verifyVC, animated: true)
+                    verifyVC.userEmail = email // Pass email for resend functionality
+                    self.navigationController?.pushViewController(verifyVC, animated: true)
+                    
                 case .failure(let err):
-                    self?.presentAlert(title: "Sign Up Failed", message: err.localizedDescription)
+                    self.presentAlert(title: "Sign Up Failed", message: err.localizedDescription)
                 }
             }
         }
@@ -405,39 +434,91 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
 
         // disable the button to avoid duplicate taps
         signUpWithGoogleButton.button.isEnabled = false
+        showLoading(true)
 
         auth.signInWithGoogle(redirectTo: "interact://auth/callback", presentationContext: self) { [weak self] result in
             DispatchQueue.main.async {
-                self?.signUpWithGoogleButton.button.isEnabled = true
+                guard let self = self else { return }
+                
+                self.signUpWithGoogleButton.button.isEnabled = true
+                self.showLoading(false)
 
                 switch result {
                 case .success(_):
-                    // Google account already verified and signed in. Route to role selection or home.
-                    if let savedRoleString = UserDefaults.standard.string(forKey: "UserRole"),
-                       let savedRole = UserRole(rawValue: savedRoleString) {
-                        // go to saved home
-                        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                            switch savedRole {
-                            case .organizer:
-                                scene.changeRootViewController(MainTabBarController())
-                            case .participant:
-                                scene.changeRootViewController(ParticipantMainTabBarController())
-                            }
-                        }
-                    } else {
-                        // push role selection for onboarding
-                        let roleSelectionVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
-                        self?.navigationController?.pushViewController(roleSelectionVC, animated: true)
-                    }
+                    print("Google signup SUCCESS - email auto-verified")
+                    // Google accounts are auto-verified, check profile and route
+                    self.checkProfileAndRoute()
 
                 case .failure(let err):
-                    self?.presentAlert(title: "Google Sign Up Failed", message: err.localizedDescription)
+                    self.presentAlert(title: "Google Sign Up Failed", message: err.localizedDescription)
                 }
             }
         }
     }
 
-    // Renamed to avoid collision with other goToLoginScreen() definitions in the project
+    // MARK: - Check Profile and Route (Google only)
+    private func checkProfileAndRoute() {
+        guard let auth = authManager else { return }
+
+        showLoading(true)
+
+        auth.fetchProfile { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.showLoading(false)
+
+                switch result {
+                case .success(let profile):
+                    if let profile = profile {
+                        // Profile exists - check role and is_profile_setup
+                        let role = profile["role"] as? String
+                        let isProfileSetup = profile["is_profile_setup"] as? Bool ?? false
+
+                        if let roleStr = role, !roleStr.isEmpty, isProfileSetup {
+                            // Profile complete - navigate to home
+                            print("Profile complete, role: \(roleStr)")
+                            if let userRole = UserRole(rawValue: roleStr) {
+                                UserDefaults.standard.set(roleStr, forKey: "UserRole")
+                                self.routeToHome(role: userRole)
+                            } else {
+                                self.presentAlert(title: "Error", message: "Invalid role in profile")
+                            }
+                        } else {
+                            // Profile incomplete - go to role selection
+                            print("Profile incomplete, navigating to role selection")
+                            self.navigateToRoleSelection()
+                        }
+                    } else {
+                        // No profile found - go to role selection
+                        print("No profile found, navigating to role selection")
+                        self.navigateToRoleSelection()
+                    }
+
+                case .failure(let error):
+                    print("Failed to fetch profile:", error)
+                    self.presentAlert(title: "Error", message: "Unable to load profile. Please try again.")
+                }
+            }
+        }
+    }
+
+    // MARK: - Navigation
+    private func navigateToRoleSelection() {
+        let roleSelectionVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
+        navigationController?.pushViewController(roleSelectionVC, animated: true)
+    }
+
+    private func routeToHome(role: UserRole) {
+        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            switch role {
+            case .organizer:
+                scene.changeRootViewController(MainTabBarController())
+            case .participant:
+                scene.changeRootViewController(ParticipantMainTabBarController())
+            }
+        }
+    }
+
     private func navigateBackToLogin() {
         navigationController?.popViewController(animated: true)
     }
