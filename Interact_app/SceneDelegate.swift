@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    // Expose authManager to the app so controllers can retrieve it (or inject)
+    // Expose authManager to the app so controllers can retrieve it
     var authManager: AuthManager?
 
     func scene(_ scene: UIScene,
@@ -47,7 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     switch result {
                     case .success(_):
                         // If redirect produced a valid session, route user accordingly
-                        self?.routeAfterSignIn()
+                        self?.checkProfileAndRoute()
                     case .failure(let err):
                         // Log error and continue to normal initial flow
                         print("HandleRedirect at launch failed:", err.localizedDescription)
@@ -66,35 +66,124 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         addDevResetGesture()
     }
 
-    // MARK: - Default initial root setup (keeps your original logic)
+    // MARK: - Default initial root setup
     private func setupInitialRootNormally() {
-        // Decide initial root based on saved role
-        if let savedRoleString = UserDefaults.standard.string(forKey: "UserRole"),
-           let savedRole = UserRole(rawValue: savedRoleString) {
-
-            switch savedRole {
-            case .organizer:
-                let organizerHome = MainTabBarController()
-                window?.rootViewController = organizerHome
-
-            case .participant:
-                let participantHome = ParticipantMainTabBarController()
-                window?.rootViewController = participantHome
-            }
-
+        // Check if user has active session
+        if let auth = authManager, auth.currentSession != nil {
+            // User has session - check profile status from Supabase
+            print("Active session found, checking profile status...")
+            checkProfileAndRoute()
         } else {
-            // No saved role — show onboarding
-            let onboardingVC = OnboardingPageViewController(
-                transitionStyle: .scroll,
-                navigationOrientation: .horizontal,
-                options: nil
-            )
-            let nav = UINavigationController(rootViewController: onboardingVC)
-            window?.rootViewController = nav
+            // No session - show onboarding
+            print("No active session, showing onboarding")
+            showOnboarding()
         }
     }
 
-    // MARK: - Handle incoming deep links (forward to AuthManager)
+    // MARK: - Check Profile and Route
+    private func checkProfileAndRoute() {
+        guard let auth = authManager else {
+            showOnboarding()
+            return
+        }
+
+        // Fetch profile from Supabase to check actual state
+        auth.fetchProfile { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let profile):
+                    if let profile = profile {
+                        // Profile exists - check role and is_profile_setup
+                        let role = profile["role"] as? String
+                        let isProfileSetup = profile["is_profile_setup"] as? Bool ?? false
+
+                        print("Profile found - role: \(role ?? "nil"), setup: \(isProfileSetup)")
+
+                        if let roleStr = role, !roleStr.isEmpty {
+                            if isProfileSetup {
+                                // Profile complete - navigate to home
+                                if let userRole = UserRole(rawValue: roleStr) {
+                                    UserDefaults.standard.set(roleStr, forKey: "UserRole")
+                                    self.routeToHome(role: userRole)
+                                } else {
+                                    print("Invalid role in profile")
+                                    self.showOnboarding()
+                                }
+                            } else {
+                                // Role selected but profile not complete - go to profile setup
+                                print("Profile incomplete, navigating to profile setup")
+                                if let userRole = UserRole(rawValue: roleStr) {
+                                    UserDefaults.standard.set(roleStr, forKey: "UserRole")
+                                    self.navigateToProfileSetup(role: userRole)
+                                } else {
+                                    self.showOnboarding()
+                                }
+                            }
+                        } else {
+                            // No role set - go to role selection
+                            print("No role set, navigating to role selection")
+                            self.navigateToRoleSelection()
+                        }
+                    } else {
+                        // No profile found - go to role selection
+                        print("No profile found, navigating to role selection")
+                        self.navigateToRoleSelection()
+                    }
+
+                case .failure(let error):
+                    print("Failed to fetch profile:", error)
+                    // On error, clear session and show onboarding
+                    self.showOnboarding()
+                }
+            }
+        }
+    }
+
+    // MARK: - Navigation Methods
+    private func showOnboarding() {
+        let onboardingVC = OnboardingPageViewController(
+            transitionStyle: .scroll,
+            navigationOrientation: .horizontal,
+            options: nil
+        )
+        let nav = UINavigationController(rootViewController: onboardingVC)
+        changeRootViewController(nav, animated: false)
+    }
+
+    private func navigateToRoleSelection() {
+        let roleVC = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
+        let nav = UINavigationController(rootViewController: roleVC)
+        changeRootViewController(nav, animated: false)
+    }
+
+    private func navigateToProfileSetup(role: UserRole) {
+        switch role {
+        case .organizer:
+            let vc = OrgProfileSetupViewController(nibName: "OrgProfileSetupViewController", bundle: nil)
+            vc.userRole = .organizer
+            let nav = UINavigationController(rootViewController: vc)
+            changeRootViewController(nav, animated: false)
+
+        case .participant:
+            let vc = ParticipantProfileSetupViewController(nibName: "ParticipantProfileSetupViewController", bundle: nil)
+            vc.userRole = .participant
+            let nav = UINavigationController(rootViewController: vc)
+            changeRootViewController(nav, animated: false)
+        }
+    }
+
+    private func routeToHome(role: UserRole) {
+        switch role {
+        case .organizer:
+            changeRootViewController(MainTabBarController(), animated: false)
+        case .participant:
+            changeRootViewController(ParticipantMainTabBarController(), animated: false)
+        }
+    }
+
+    // MARK: - Handle incoming deep links
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let ctx = URLContexts.first else { return }
         let url = ctx.url
@@ -105,37 +194,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success(_):
-                    self?.routeAfterSignIn()
+                    self?.checkProfileAndRoute()
                 case .failure(let err):
                     print("handleRedirect failed:", err.localizedDescription)
-                    // Optionally show an alert or ignore
                 }
             }
         }
-    }
-
-    // MARK: - Routing after sign-in
-    /// Called when we have a valid persisted session (from OAuth redirect or sign-in).
-    /// If the user already has a saved role, we set home; otherwise show role selection to continue onboarding.
-    private func routeAfterSignIn() {
-        // If role already saved, go straight to the appropriate home
-        if let savedRoleString = UserDefaults.standard.string(forKey: "UserRole"),
-           let savedRole = UserRole(rawValue: savedRoleString) {
-            switch savedRole {
-            case .organizer:
-                let organizerHome = MainTabBarController()
-                changeRootViewController(organizerHome)
-            case .participant:
-                let participantHome = ParticipantMainTabBarController()
-                changeRootViewController(participantHome)
-            }
-            return
-        }
-
-        // No saved role — push RoleSelection so user picks org/participant and finishes profile
-        let roleSelection = RoleSelectionViewController(nibName: "RoleSelectionViewController", bundle: nil)
-        let nav = UINavigationController(rootViewController: roleSelection)
-        changeRootViewController(nav)
     }
 
     // MARK: - Hidden Developer Reset
@@ -144,32 +208,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let tripleTap = UITapGestureRecognizer(target: self, action: #selector(devReset))
         tripleTap.numberOfTapsRequired = 3
-        tripleTap.cancelsTouchesInView = false  // so it doesn't block real UI interaction
+        tripleTap.cancelsTouchesInView = false
 
         window.addGestureRecognizer(tripleTap)
     }
 
     @objc private func devReset() {
-        print("DEV RESET TRIGGERED — Clearing saved user role")
+        print("DEV RESET TRIGGERED — Clearing saved user data")
 
         // Clear saved login data
         UserDefaults.standard.removeObject(forKey: "UserRole")
+        
+        // Sign out
+        authManager?.signOut(serverSide: false) { _ in
+            print("Signed out")
+        }
 
         // Return to onboarding
-        let onboardingVC = OnboardingPageViewController(
-            transitionStyle: .scroll,
-            navigationOrientation: .horizontal,
-            options: nil
-        )
-        let nav = UINavigationController(rootViewController: onboardingVC)
-
-        changeRootViewController(nav, animated: true)
+        showOnboarding()
     }
 
     // MARK: - Smooth Root Change
     func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
         guard let window = self.window else { return }
-        // replace root
         window.rootViewController = vc
 
         if animated {

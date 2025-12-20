@@ -2,8 +2,6 @@
 //  RoleSelectionViewController.swift
 //  Interact_app
 //
-//  Created by admin56 on 07/11/25.
-//
 
 import UIKit
 
@@ -16,6 +14,18 @@ class RoleSelectionViewController: UIViewController {
     @IBOutlet weak var alreadyHaveAccLabel: UILabel!
 
     private var selectedRole: UserRole? = nil
+
+    // Auth manager
+    var authManager: AuthManager? {
+        if let scene = UIApplication.shared.connectedScenes.first,
+           let delegate = scene.delegate as? SceneDelegate {
+            return delegate.authManager
+        }
+        return nil
+    }
+
+    // Spinner
+    private var spinner: UIActivityIndicatorView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +40,29 @@ class RoleSelectionViewController: UIViewController {
     }
 
     @objc func backToLoginTapped() {
-        goToLoginScreen()
+        navigateBackToLogin()
+    }
+
+    // MARK: - Loading Indicator
+    private func showLoading(_ show: Bool) {
+        if show {
+            if spinner == nil {
+                let s = UIActivityIndicatorView(style: .large)
+                s.translatesAutoresizingMaskIntoConstraints = false
+                s.hidesWhenStopped = true
+                view.addSubview(s)
+                NSLayoutConstraint.activate([
+                    s.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                    s.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+                ])
+                spinner = s
+            }
+            spinner?.startAnimating()
+            view.isUserInteractionEnabled = false
+        } else {
+            spinner?.stopAnimating()
+            view.isUserInteractionEnabled = true
+        }
     }
 
     // MARK: - Setup UI
@@ -63,19 +95,7 @@ class RoleSelectionViewController: UIViewController {
 
         getStartButton.onTap = { [weak self] in
             guard let self = self, let role = self.selectedRole else { return }
-
-            switch role {
-
-            case .organizer:
-                let vc = OrgProfileSetupViewController(nibName: "OrgProfileSetupViewController", bundle: nil)
-                vc.userRole = .organizer
-                self.navigationController?.pushViewController(vc, animated: true)
-
-            case .participant:
-                let vc = ParticipantProfileSetupViewController(nibName: "ParticipantProfileSetupViewController", bundle: nil)
-                vc.userRole = .participant
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+            self.updateRoleAndProceed(role: role)
         }
     }
 
@@ -116,5 +136,70 @@ class RoleSelectionViewController: UIViewController {
         }
 
         setGetStartedEnabled(true)
+    }
+
+    // MARK: - Update Role in Database and Proceed
+    private func updateRoleAndProceed(role: UserRole) {
+        guard let auth = authManager else {
+            presentAlert(title: "Error", message: "Auth manager not available")
+            return
+        }
+
+        setGetStartedEnabled(false)
+        showLoading(true)
+
+        // Update role in profiles table
+        auth.updateProfileRole(role: role.rawValue) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                
+                self.setGetStartedEnabled(true)
+                self.showLoading(false)
+
+                switch result {
+                case .success(let updatedProfile):
+                    print("Role updated successfully:", updatedProfile)
+                    
+                    // Save to UserDefaults for quick access
+                    UserDefaults.standard.set(role.rawValue, forKey: "UserRole")
+                    
+                    // Navigate to respective profile setup screen
+                    self.navigateToProfileSetup(role: role)
+
+                case .failure(let error):
+                    print("Failed to update role:", error)
+                    self.presentAlert(
+                        title: "Update Failed",
+                        message: "Unable to save your role selection. Please try again. Error: \(error.localizedDescription)"
+                    )
+                }
+            }
+        }
+    }
+
+    // MARK: - Navigation
+    private func navigateToProfileSetup(role: UserRole) {
+        switch role {
+        case .organizer:
+            let vc = OrgProfileSetupViewController(nibName: "OrgProfileSetupViewController", bundle: nil)
+            vc.userRole = .organizer
+            navigationController?.pushViewController(vc, animated: true)
+
+        case .participant:
+            let vc = ParticipantProfileSetupViewController(nibName: "ParticipantProfileSetupViewController", bundle: nil)
+            vc.userRole = .participant
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+
+    private func navigateBackToLogin() {
+        // Pop back to login (assuming login is in the navigation stack)
+        navigationController?.popToRootViewController(animated: true)
+    }
+
+    private func presentAlert(title: String, message: String) {
+        let a = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        a.addAction(UIAlertAction(title: "OK", style: .default))
+        present(a, animated: true)
     }
 }

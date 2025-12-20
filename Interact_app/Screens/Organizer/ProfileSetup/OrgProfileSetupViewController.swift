@@ -2,8 +2,6 @@
 //  OrgProfileSetupViewController.swift
 //  Interact_app
 //
-//  Updated: fetch /auth/v1/user email before creating org profile
-//
 
 import UIKit
 import CoreLocation
@@ -290,7 +288,7 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
         return true
     }
 
-    // MARK: - Location Request (uses instance authorizationStatus — not the deprecated global function)
+    // MARK: - Location Request
     private func requestUserLocation() {
         guard !isRequestingLocation else { return }
         isRequestingLocation = true
@@ -421,11 +419,10 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
                 switch userResult {
                 case .success(let userObj):
                     let email = userObj["email"] as? String ?? ""
-
                     self.sendProfileCreateRequest(auth: auth, role: role, email: email)
 
                 case .failure:
-                    // Best-effort fallback: try decoding email from access token, if available
+                    // Best-effort fallback: try decoding email from access token
                     if let token = auth.currentSession?.accessToken,
                        let emailFromToken = AuthManager.extractEmail(fromAccessToken: token),
                        !emailFromToken.isEmpty {
@@ -443,33 +440,33 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
 
     // Helper to send profile payload
     private func sendProfileCreateRequest(auth: AuthManager, role: UserRole, email: String) {
-        // Build payload matching org_profiles columns
+        // Build payload matching profiles table columns
+        // NO USERNAME - let database trigger generate it
         var payload: [String: Any] = [
             "email": email,
             "org_name": organizationNameTextField.text ?? "",
-            "phone": phoneNumberTextField.text ?? "",
+            "org_phone": phoneNumberTextField.text ?? "",
             "org_type": orgTypeTextField.text ?? "",
             "location": locationTextField.text ?? "",
-            "social_handle": socialHandleTextField.text ?? ""
+            "social_handles": ["instagram": socialHandleTextField.text ?? ""], // JSONB field
+            "role": role.rawValue
         ]
 
-        // If your table has 'role' column include it, else omit it.
-        // We'll attempt to include if userRole exists.
-        payload["role"] = role.rawValue
-
-        auth.createOrgProfile(payload: payload, maxRetries: 3) { [weak self] result in
+        auth.createProfile(payload: payload, maxRetries: 3) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                // Hide spinner and re-enable UI (createOrgProfile will also have retried if necessary)
+                
                 self.showLoading(false)
                 self.setSaveButtonEnabled(true)
 
                 switch result {
                 case .success(let row):
-                    // Persist returned server profile locally if desired
-                    UserDefaults.standard.set(row, forKey: "OrganizationProfile")
+                    print("Organization profile created successfully:", row)
+                    
+                    // Save role to UserDefaults
                     UserDefaults.standard.set(role.rawValue, forKey: "UserRole")
 
+                    // Navigate to organizer home
                     let homeVC: UIViewController = (role == .organizer)
                         ? MainTabBarController()
                         : ParticipantMainTabBarController()
@@ -525,7 +522,6 @@ extension OrgProfileSetupViewController: UITableViewDelegate, UITableViewDataSou
 // MARK: - Location Manager
 extension OrgProfileSetupViewController: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // Use the instance authorizationStatus (iOS 14+)
         let status = manager.authorizationStatus
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             locationManager.startUpdatingLocation()
