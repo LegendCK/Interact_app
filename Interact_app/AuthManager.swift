@@ -41,20 +41,40 @@ public final class AuthManager {
 
     // MARK: - Persist Session
     private func persist(session: Session) {
+        // 1. Keychain storage
         keychain.set(session.accessToken, for: KeychainKeys.accessToken)
         if let r = session.refreshToken { keychain.set(r, for: KeychainKeys.refreshToken) }
         if let t = session.tokenType { keychain.set(t, for: KeychainKeys.tokenType) }
         if let exp = session.expiresAt { keychain.set(String(exp), for: KeychainKeys.expiresAt) }
+        
+        // 2. Optional UserDefaults storage for quick access (from Version 1)
+        // Only store if needed by other services
+        UserDefaults.standard.set(session.accessToken, forKey: "supabase_access_token")
+        
+        // Extract and save User ID
+        if let userId = Self.extractUserId(fromAccessToken: session.accessToken) {
+            UserDefaults.standard.set(userId, forKey: "supabase_user_id")
+        }
+        
         notifyListeners()
     }
 
     private func clearSession() {
+        // 1. Clear Keychain
         keychain.clearAll(keys: [
             KeychainKeys.accessToken,
             KeychainKeys.refreshToken,
             KeychainKeys.tokenType,
             KeychainKeys.expiresAt
         ])
+        
+        // 2. Clear UserDefaults
+        UserDefaults.standard.removeObject(forKey: "supabase_access_token")
+        UserDefaults.standard.removeObject(forKey: "supabase_user_id")
+        
+        // 3. Clear Profile Cache (from Version 2)
+        ProfileCache.clearAll()
+        
         notifyListeners()
     }
 
@@ -77,7 +97,6 @@ public final class AuthManager {
 
     // MARK: - Email/Password Sign Up
     public func signUp(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
-
         let request = client.makeSignUpRequest(email: email, password: password)
 
         URLSession.shared.dataTask(with: request) { data, resp, err in
@@ -97,11 +116,9 @@ public final class AuthManager {
 
     // MARK: - Sign In
     public func signIn(email: String, password: String, completion: @escaping (Result<Session, Error>) -> Void) {
-
         let request = client.makeSignInRequest(email: email, password: password)
 
         URLSession.shared.dataTask(with: request) { data, resp, err in
-
             if let err { completion(.failure(err)); return }
 
             guard let http = resp as? HTTPURLResponse, let data else {
@@ -109,7 +126,6 @@ public final class AuthManager {
             }
 
             if 200 ... 299 ~= http.statusCode {
-
                 let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
 
                 guard let access = json?["access_token"] as? String else {
@@ -134,7 +150,6 @@ public final class AuthManager {
             }
 
             completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
-
         }.resume()
     }
 
@@ -176,11 +191,9 @@ public final class AuthManager {
 
     // MARK: - Reset Password
     public func resetPassword(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
-
         let request = client.makeRecoverRequest(email: email)
 
         URLSession.shared.dataTask(with: request) { _, resp, err in
-
             if let err { completion(.failure(err)); return }
 
             guard let http = resp as? HTTPURLResponse else {
@@ -192,15 +205,14 @@ public final class AuthManager {
             } else {
                 completion(.failure(Self.makeError("Reset failed: \(http.statusCode)")))
             }
-
         }.resume()
     }
 
     // MARK: - Sign Out
     public func signOut(serverSide: Bool = false, completion: @escaping (Result<Void, Error>) -> Void) {
-
         guard let session = currentSession else {
-            completion(.success(())); return
+            completion(.success(()))
+            return
         }
 
         if serverSide {
@@ -221,7 +233,6 @@ public final class AuthManager {
         presentationContext: UIViewController?,
         completion: ((Result<Session, Error>) -> Void)? = nil
     ) {
-
         guard let url = client.makeAuthorizeURL(provider: "google", redirectTo: redirectTo) else {
             completion?(.failure(Self.makeError("Invalid OAuth URL")))
             return
@@ -233,7 +244,6 @@ public final class AuthManager {
             url: url,
             callbackURLScheme: scheme
         ) { callbackURL, error in
-
             if let error {
                 completion?(.failure(error)); return
             }
@@ -255,7 +265,6 @@ public final class AuthManager {
 
     // MARK: - OAuth Redirect Handler
     public func handleRedirect(url: URL, completion: ((Result<Session, Error>) -> Void)? = nil) {
-
         let raw = url.fragment ?? url.query ?? ""
         var params: [String: String] = [:]
 
@@ -288,7 +297,6 @@ public final class AuthManager {
 
     // MARK: - Fetch User
     public func getUser(completion: @escaping (Result<[String: Any], Error>) -> Void) {
-
         guard let session = currentSession else {
             completion(.failure(Self.makeError("No active session"))); return
         }
@@ -296,7 +304,6 @@ public final class AuthManager {
         let request = client.makeGetUserRequest(accessToken: session.accessToken)
 
         URLSession.shared.dataTask(with: request) { data, resp, err in
-
             if let err { completion(.failure(err)); return }
 
             guard let http = resp as? HTTPURLResponse, let data else {
@@ -310,12 +317,22 @@ public final class AuthManager {
             } else {
                 completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
             }
-
         }.resume()
     }
 
     // MARK: - Fetch Profile from Supabase
-    public func fetchProfile(completion: @escaping (Result<[String: Any]?, Error>) -> Void) {
+    public func fetchProfile(
+        forceRefresh: Bool = false,
+        completion: @escaping (Result<[String: Any]?, Error>) -> Void
+    ) {
+        // Try to return cached profile if not forcing refresh (from Version 2)
+        if !forceRefresh, let cachedProfile = ProfileCache.getProfile() {
+            print("✅ Returning cached profile (age: \(ProfileCache.getProfileCacheAge() ?? 0)s)")
+            completion(.success(cachedProfile))
+            return
+        }
+        
+        // Fetch fresh data from Supabase
         guard let session = currentSession else {
             completion(.failure(Self.makeError("No active session")))
             return
@@ -329,19 +346,55 @@ public final class AuthManager {
         let request = client.makeGetProfileRequest(userId: userId, accessToken: session.accessToken)
 
         URLSession.shared.dataTask(with: request) { data, resp, err in
-            if let err { completion(.failure(err)); return }
+            if let err {
+                completion(.failure(err))
+                return
+            }
 
             guard let http = resp as? HTTPURLResponse, let data else {
-                completion(.failure(Self.makeError("Invalid response"))); return
+                completion(.failure(Self.makeError("Invalid response")))
+                return
             }
 
             if 200 ... 299 ~= http.statusCode {
-                // PostgREST returns array of rows
-                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-                    // Return first row or nil if empty
-                    completion(.success(arr.first))
+                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                   let profileJSON = arr.first {
+                    // Cache the fresh profile (from Version 2)
+                    ProfileCache.saveProfile(profileJSON)
+                    print("✅ Profile fetched and cached")
+                    completion(.success(profileJSON))
                 } else {
                     completion(.failure(Self.makeError("Profile decode failed")))
+                }
+            } else {
+                completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
+            }
+        }.resume()
+    }
+
+    // MARK: - Fetch Public Profile by QR Token (from Version 2)
+    public func fetchPublicProfile(
+        qrToken: String,
+        completion: @escaping (Result<[String: Any]?, Error>) -> Void
+    ) {
+        let request = client.makeGetProfileByQRTokenRequest(token: qrToken)
+
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err {
+                completion(.failure(err))
+                return
+            }
+
+            guard let http = resp as? HTTPURLResponse, let data else {
+                completion(.failure(Self.makeError("Invalid response")))
+                return
+            }
+
+            if 200...299 ~= http.statusCode {
+                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                    completion(.success(arr.first))
+                } else {
+                    completion(.failure(Self.makeError("Decode failed")))
                 }
             } else {
                 completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
@@ -396,9 +449,7 @@ public final class AuthManager {
         maxRetries: Int = 3,
         completion: @escaping (Result<[String: Any], Error>) -> Void
     ) {
-
         sessionQueue.async {
-
             guard let session = self.currentSession else {
                 DispatchQueue.main.async {
                     completion(.failure(Self.makeError("Not authenticated")))
@@ -434,7 +485,6 @@ public final class AuthManager {
             )
 
             URLSession.shared.dataTask(with: request) { data, resp, err in
-
                 func fail(_ msg: String) {
                     DispatchQueue.main.async { completion(.failure(Self.makeError(msg))) }
                 }
@@ -445,9 +495,10 @@ public final class AuthManager {
                 }
 
                 if 200 ... 299 ~= http.statusCode {
-
                     if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
                        let row = arr.first {
+                        // Cache the new profile (from Version 2)
+                        ProfileCache.saveProfile(row)
                         DispatchQueue.main.async {
                             completion(.success(row))
                         }
@@ -461,9 +512,115 @@ public final class AuthManager {
                 // Handle errors
                 let text = String(data: data, encoding: .utf8) ?? "Error"
                 fail("Profile update failed: \(text)")
-
             }.resume()
         }
+    }
+
+    // MARK: - Update Profile (from Version 2)
+    public func updateProfile(
+        fields: [String: Any],
+        completion: @escaping (Result<[String: Any], Error>) -> Void
+    ) {
+        guard let session = currentSession else {
+            completion(.failure(Self.makeError("No active session")))
+            return
+        }
+        
+        guard let userId = Self.extractUserId(fromAccessToken: session.accessToken) else {
+            completion(.failure(Self.makeError("Unable to decode user ID")))
+            return
+        }
+        
+        guard let json = try? JSONSerialization.data(withJSONObject: fields) else {
+            completion(.failure(Self.makeError("Invalid JSON body")))
+            return
+        }
+        
+        let request = client.makePostgrestUpdateRequest(
+            table: "profiles",
+            userId: userId,
+            body: json,
+            accessToken: session.accessToken
+        )
+        
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err {
+                completion(.failure(err))
+                return
+            }
+            
+            guard let http = resp as? HTTPURLResponse, let data else {
+                completion(.failure(Self.makeError("Invalid response")))
+                return
+            }
+            
+            if 200...299 ~= http.statusCode {
+                if let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+                   let row = arr.first {
+                    // Update cache with fresh data
+                    ProfileCache.saveProfile(row)
+                    print("✅ Profile updated and cache refreshed")
+                    completion(.success(row))
+                } else {
+                    completion(.failure(Self.makeError("Update response decode failed")))
+                }
+            } else {
+                completion(.failure(Self.errorFromResponse(data, status: http.statusCode)))
+            }
+        }.resume()
+    }
+
+    // MARK: - Upload Profile Photo to Storage (from Version 2)
+    public func uploadProfilePhoto(
+        imageData: Data,
+        completion: @escaping (Result<String, Error>) -> Void
+    ) {
+        guard let session = currentSession else {
+            completion(.failure(Self.makeError("No active session")))
+            return
+        }
+        
+        guard let userId = Self.extractUserId(fromAccessToken: session.accessToken) else {
+            completion(.failure(Self.makeError("Unable to decode user ID")))
+            return
+        }
+        
+        // Create file path: userId/avatar.jpg
+        let fileName = "avatar.jpg"
+        let filePath = "\(userId)/\(fileName)"
+        
+        let request = client.makeStorageUploadRequest(
+            bucket: "profile-photos",
+            filePath: filePath,
+            fileData: imageData,
+            contentType: "image/jpeg",
+            accessToken: session.accessToken,
+            upsert: true
+        )
+        
+        URLSession.shared.dataTask(with: request) { data, resp, err in
+            if let err {
+                completion(.failure(err))
+                return
+            }
+            
+            guard let http = resp as? HTTPURLResponse else {
+                completion(.failure(Self.makeError("Invalid response")))
+                return
+            }
+            
+            if 200...299 ~= http.statusCode {
+                // Generate public URL
+                let publicURL = self.client.storagePublicURL(
+                    bucket: "profile-photos",
+                    filePath: filePath
+                )
+                completion(.success(publicURL.absoluteString))
+            } else {
+                let text = data.flatMap { String(data: $0, encoding: .utf8) } ?? "Upload failed"
+                completion(.failure(Self.makeError(text)))
+            }
+        }.resume()
     }
 
     // MARK: - JWT Decode Helpers
@@ -476,7 +633,6 @@ public final class AuthManager {
     }
 
     private static func decodeJWT(_ token: String) -> [String: Any] {
-
         let parts = token.split(separator: ".")
         guard parts.count >= 2 else { return [:] }
 
@@ -493,7 +649,7 @@ public final class AuthManager {
         return json
     }
 
-    // MARK: - Random Hex Helper (kept for potential future use)
+    // MARK: - Random Hex Helper (kept from Version 1)
     public static func randomHex(length: Int) -> String {
         var bytes = [UInt8](repeating: 0, count: (length + 1) / 2)
         SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
