@@ -24,32 +24,45 @@ class ParticipantEventCard: UICollectionViewCell {
     
     @IBOutlet weak var registerButton: ButtonComponent!
     
-    private var eventId: Int?
-        var onRegisterTap: ((Int, Bool) -> Void)?
-        var onShareTap: ((Int) -> Void)?
+    // MARK: - Properties
+        private var eventId: UUID?
         
+        // Callbacks
+        var onRegisterTap: ((UUID, Bool) -> Void)?
+        var onShareTap: ((UUID) -> Void)?
+        
+        private var isRegistered: Bool = false
+            
+        // MARK: - Lifecycle
         override func awakeFromNib() {
             super.awakeFromNib()
+            // Allow shadows to be visible outside bounds
             self.clipsToBounds = false
-            self.contentView.clipsToBounds = false 
+            self.contentView.clipsToBounds = false
             setupUI()
         }
-        
+            
         override func prepareForReuse() {
             super.prepareForReuse()
+            // Reset basic UI
             eventImage.image = nil
             eventTitle.text = nil
             eventDate.text = nil
             eventLocation.text = nil
             eventId = nil
+            
+            // Reset custom button closure to prevent reuse issues
             registerButton.onTap = nil
         }
-        
+            
+        // MARK: - Setup
         private func setupUI() {
             eventTitle.numberOfLines = 2
-            shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
             
-//          // ✅ ADD SHADOW TO CONTAINER VIEW (Add this code)
+            // Share Button (Standard UIButton)
+            shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+                
+            // Container Shadow
             containerView.layer.cornerRadius = 16
             containerView.layer.shadowColor = UIColor.black.cgColor
             containerView.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -57,75 +70,71 @@ class ParticipantEventCard: UICollectionViewCell {
             containerView.layer.shadowOpacity = 0.2
             containerView.layer.masksToBounds = false
             containerView.backgroundColor = .white
-            
-//            // Style image view
+                
+            // Image Styling
             eventImage.layer.cornerRadius = 16
+            // Only round top corners so it fits the card
             eventImage.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             eventImage.clipsToBounds = true
             eventImage.contentMode = .scaleAspectFill
         }
         
-        func configure(with event: Event) {
-            // Store event ID
-            self.eventId = event.id
-            
-            // Set event data
-            eventTitle.text = event.title
-            eventDate.text = event.date
-            eventLocation.text = event.location
-            
-            // Set event image
-            if let image = UIImage(named: event.imageName) {
-                eventImage.image = image
-            } else {
-                eventImage.image = UIImage(systemName: "calendar.badge.clock")
-                eventImage.tintColor = .systemBlue
-                eventImage.backgroundColor = .systemGray6
-            }
-            
-            // Configure register button using ButtonComponent
-            configureRegisterButton(for: event)
-        }
-        
-        private func configureRegisterButton(for event: Event) {
-            let isRegistered = event.isRegistered
-            
-            // Configure button appearance
-            let buttonTitle = isRegistered ? "Registered" : "Register Now"
-            let buttonColor = isRegistered ? UIColor.systemGreen : UIColor.systemBlue
-            let titleColor = UIColor.white
-            let borderColor = isRegistered ? UIColor.systemGreen.withAlphaComponent(0.3) : nil
-            
-            registerButton.configure(
-                title: buttonTitle,
-                titleColor: titleColor,
-                backgroundColor: buttonColor,
-                cornerRadius: 8,
-                font: .systemFont(ofSize: 16, weight: .semibold),
-                borderColor: borderColor,
-                borderWidth: isRegistered ? 1 : 0
-            )
-            
-            // Set button tap handler
-            registerButton.onTap = { [weak self] in
-                guard let self = self, let eventId = self.eventId else { return }
-                self.onRegisterTap?(eventId, isRegistered)
-            }
-        }
-        
-        @objc private func shareButtonTapped() {
-            guard let eventId = eventId else { return }
-            onShareTap?(eventId)
-        }
-        
-        // Helper struct to match the event model
-        struct Event {
-            let id: Int
-            let imageName: String
+        // MARK: - Configuration Data Struct
+        struct EventDisplayData {
+            let id: UUID
+            let imageUrl: String?
             let title: String
             let date: String
             let location: String
             let isRegistered: Bool
+        }
+        
+        // MARK: - Configure Method
+        func configure(with event: EventDisplayData) {
+            self.eventId = event.id
+            self.isRegistered = event.isRegistered
+                
+            // Text Data
+            eventTitle.text = event.title
+            eventDate.text = event.date
+            eventLocation.text = event.location
+                
+            // Image Loading (Using the extension we created earlier)
+            eventImage.loadImage(from: event.imageUrl, placeholder: UIImage(systemName: "photo"))
+            
+            // Configure Custom Button
+            setupRegisterButtonState()
+        }
+        
+        private func setupRegisterButtonState() {
+            let title = isRegistered ? "Registered" : "Register Now"
+            let bgColor = isRegistered ? UIColor.systemGreen : UIColor.systemBlue
+            let borderColor = isRegistered ? UIColor.systemGreen.withAlphaComponent(0.3) : nil
+            let borderWidth: CGFloat = isRegistered ? 1 : 0
+            
+            // 1. Configure visual style using your Component's API
+            registerButton.configure(
+                title: title,
+                titleColor: .white,
+                backgroundColor: bgColor,
+                cornerRadius: 8,
+                font: .systemFont(ofSize: 16, weight: .semibold),
+                borderColor: borderColor,
+                borderWidth: borderWidth
+            )
+            
+            // 2. Define the tap behavior
+            registerButton.onTap = { [weak self] in
+                guard let self = self, let id = self.eventId else { return }
+                // Trigger the callback passing the ID and the new state (toggle)
+                self.onRegisterTap?(id, !self.isRegistered)
+            }
+        }
+        
+        // MARK: - Actions
+        @objc private func shareButtonTapped() {
+            guard let eventId = eventId else { return }
+            onShareTap?(eventId)
         }
 
 }
