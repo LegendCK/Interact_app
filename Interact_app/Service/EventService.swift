@@ -44,8 +44,8 @@ final class EventService {
         let queryItems = [
             URLQueryItem(name: "select", value: "*"),
             URLQueryItem(name: "approval_status", value: "eq.approved"),
-            URLQueryItem(name: "start_date", value: "gte.\(nowISO)"),
-            URLQueryItem(name: "order", value: "start_date.asc")
+//            URLQueryItem(name: "start_date", value: "gte.\(nowISO)"),
+//            URLQueryItem(name: "order", value: "start_date.asc")
         ]
 
         return try await client.fetch(from: "events", queryItems: queryItems)

@@ -358,6 +358,9 @@ public extension SupabaseClient {
             )
         }
 
-        return try JSONDecoder().decode([T].self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode([T].self, from: data)
+
     }
 }

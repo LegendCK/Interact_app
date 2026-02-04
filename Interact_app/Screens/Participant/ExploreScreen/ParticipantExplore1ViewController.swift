@@ -6,7 +6,10 @@ final class ParticipantExplore1ViewController: UIViewController {
     @IBOutlet weak var startCreatingTeamButton: ButtonComponent!
     @IBOutlet weak var rolesCollectionView: UICollectionView!
     @IBOutlet weak var upcomingEventsCollection: UICollectionView!
-
+    
+    @IBOutlet weak var notificationsButton: UIButton!
+    @IBOutlet weak var seeAllRolesButton: UIButton!
+    
     // MARK: - Roles
     private let roles: [(String, String)] = [
         ("Designer", "paintpalette"),
@@ -72,6 +75,19 @@ final class ParticipantExplore1ViewController: UIViewController {
         setupRolesCollectionView()
         setupEventsCollectionView()
     }
+    
+    @IBAction func notificationsButtonTapped(_ sender: UIButton) {
+        let vc = NotificationsViewController()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    @IBAction func seeAllRolesButtonTapped(_ sender: UIButton) {
+        let vc = ConnectionsViewController()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 }
 
 // MARK: - Collection Setup
