@@ -174,14 +174,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    private func routeToHome(role: UserRole) {
+    func routeToHome(role: UserRole) {
+        guard let authManager = authManager else {
+            showOnboarding()
+            return
+        }
+
         switch role {
         case .organizer:
-            changeRootViewController(MainTabBarController(), animated: false)
+            changeRootViewController(
+                MainTabBarController(),
+                animated: false
+            )
+
         case .participant:
-            changeRootViewController(ParticipantMainTabBarController(), animated: false)
+            let tabBar = ParticipantMainTabBarController(
+                authManager: authManager
+            )
+            changeRootViewController(tabBar, animated: false)
         }
     }
+
 
     // MARK: - Handle incoming deep links
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -218,6 +231,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Clear saved login data
         UserDefaults.standard.removeObject(forKey: "UserRole")
+//        ProfileCache.clear()
+
         
         // Sign out
         authManager?.signOut(serverSide: false) { _ in

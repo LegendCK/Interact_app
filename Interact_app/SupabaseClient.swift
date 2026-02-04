@@ -86,6 +86,22 @@ public struct SupabaseClient {
         req.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         return req
     }
+    
+    public func makeGetProfileByQRTokenRequest(token: String) -> URLRequest {
+        var components = URLComponents(url: postgrestURL(for: "profiles"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "qr_public_token", value: "eq.\(token)"),
+            URLQueryItem(name: "select", value: "*")
+        ]
+
+        let url = components.url!
+        var req = URLRequest(url: url)
+        req.httpMethod = "GET"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(anonKey, forHTTPHeaderField: "apikey")
+        return req
+    }
+
 }
 
 // MARK: - OAuth helpers
@@ -191,6 +207,60 @@ public extension SupabaseClient {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue(anonKey, forHTTPHeaderField: "apikey")
         req.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        return req
+    }
+}
+
+// MARK: - Storage helpers
+public extension SupabaseClient {
+    
+    /// Build the Storage upload URL for a specific bucket and file path
+    /// POST /storage/v1/object/<bucket>/<filePath>
+    func storageUploadURL(bucket: String, filePath: String) -> URL {
+        return baseURL
+            .appendingPathComponent("/storage/v1/object")
+            .appendingPathComponent(bucket)
+            .appendingPathComponent(filePath)
+    }
+    
+    /// Build the public URL for an uploaded file
+    /// https://<project>.supabase.co/storage/v1/object/public/<bucket>/<filePath>
+    func storagePublicURL(bucket: String, filePath: String) -> URL {
+        return baseURL
+            .appendingPathComponent("/storage/v1/object/public")
+            .appendingPathComponent(bucket)
+            .appendingPathComponent(filePath)
+    }
+    
+    /// Create a URLRequest for uploading a file to Supabase Storage
+    /// - Parameters:
+    ///   - bucket: bucket name (e.g. "profile-photos")
+    ///   - filePath: path in bucket (e.g. "user_id/avatar.jpg")
+    ///   - fileData: image data to upload
+    ///   - contentType: MIME type (e.g. "image/jpeg")
+    ///   - accessToken: user's access token
+    ///   - upsert: if true, will overwrite existing file
+    func makeStorageUploadRequest(
+        bucket: String,
+        filePath: String,
+        fileData: Data,
+        contentType: String,
+        accessToken: String,
+        upsert: Bool = true
+    ) -> URLRequest {
+        let url = storageUploadURL(bucket: bucket, filePath: filePath)
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.httpBody = fileData
+        req.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        req.setValue(anonKey, forHTTPHeaderField: "apikey")
+        req.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        if upsert {
+            // x-upsert header tells Supabase to overwrite if file exists
+            req.setValue("true", forHTTPHeaderField: "x-upsert")
+        }
+        
         return req
     }
 }
