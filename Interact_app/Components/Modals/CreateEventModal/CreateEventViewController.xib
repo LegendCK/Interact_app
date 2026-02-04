@@ -14,17 +14,23 @@
                 <outlet property="contentStackView" destination="mVT-7a-bUU" id="q53-sJ-Ste"/>
                 <outlet property="createButton" destination="8xW-rM-z1u" id="Ra9-ZI-nII"/>
                 <outlet property="descriptionTextView" destination="p9Z-XX-gNn" id="NYQ-PI-PF5"/>
+                <outlet property="eligibilityCriteria" destination="S8Q-L8-IFu" id="u4P-xL-SJ1"/>
                 <outlet property="endDateTextField" destination="7wq-s8-bUn" id="Mqq-fK-DTK"/>
+                <outlet property="eventCapacity" destination="sXN-gF-HwG" id="1Nm-xZ-kbk"/>
                 <outlet property="eventNameTextField" destination="WFO-m7-xRw" id="nOG-fr-Xpg"/>
                 <outlet property="eventTypeSegmentedControl" destination="nqk-yw-GXb" id="MhN-CD-Dwe"/>
                 <outlet property="locationTextField" destination="aiR-Dc-rFL" id="2ae-ez-Kpl"/>
+                <outlet property="maxTeamSize" destination="mkF-QX-ncT" id="0Dq-56-eL6"/>
+                <outlet property="meetingLinkTextField" destination="3Jx-9E-0GJ" id="2vM-nr-DNF"/>
+                <outlet property="minTeamSize" destination="Xne-GW-vVx" id="lXt-Ox-uCf"/>
                 <outlet property="offlineDetailsStackView" destination="h97-9j-G6t" id="18u-qs-r94"/>
+                <outlet property="onlineDetailsStackView" destination="5BN-Mp-5fj" id="cVm-VK-tiw"/>
                 <outlet property="posterImageView" destination="WLY-dF-0Ju" id="FyD-y7-gse"/>
+                <outlet property="prizePool" destination="Jis-Ex-dNJ" id="ahs-29-vtx"/>
                 <outlet property="registrationDeadlineTextField" destination="WB9-5Y-Vj4" id="uze-cv-kBP"/>
                 <outlet property="rsvpSwitch" destination="0vI-Hk-fGx" id="yhp-7b-cpe"/>
                 <outlet property="scrollView" destination="fT7-9n-hWG" id="vpT-D3-lci"/>
                 <outlet property="startDateTextField" destination="HY3-5p-4bc" id="MhC-Rw-iNV"/>
-                <outlet property="teamSizeTextField" destination="Xne-GW-vVx" id="CWG-JV-MbN"/>
                 <outlet property="uploadImageButton" destination="PnP-Pj-eEA" id="iNc-aE-rRq"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="whatsappGrpLink" destination="PKJ-DY-ZXg" id="6z4-5L-Z7Z"/>
@@ -63,7 +69,7 @@
                     <rect key="frame" x="20" y="124" width="353" height="669"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="mVT-7a-bUU">
-                            <rect key="frame" x="0.0" y="0.0" width="353" height="856"/>
+                            <rect key="frame" x="0.0" y="0.0" width="353" height="1303"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1wP-Zz-kYj">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="130"/>
@@ -172,8 +178,21 @@
                                         </stackView>
                                     </subviews>
                                 </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="5BN-Mp-5fj">
+                                    <rect key="frame" x="0.0" y="500" width="353" height="44"/>
+                                    <subviews>
+                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Meeting Link (Optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Jx-9E-0GJ">
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="gmU-k3-B4r"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                </stackView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="fsL-Fd-Y0B">
-                                    <rect key="frame" x="0.0" y="500" width="353" height="120"/>
+                                    <rect key="frame" x="0.0" y="559" width="353" height="120"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description (Describe your event)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zz7-Qo-tMz">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="17"/>
@@ -194,23 +213,81 @@
                                     </subviews>
                                 </stackView>
                                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Registration Deadline" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WB9-5Y-Vj4">
-                                    <rect key="frame" x="0.0" y="635" width="353" height="44"/>
+                                    <rect key="frame" x="0.0" y="694" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="zwW-uv-AHb"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Team Size" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xne-GW-vVx">
-                                    <rect key="frame" x="0.0" y="694" width="353" height="44"/>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Minimum Team Size" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xne-GW-vVx">
+                                    <rect key="frame" x="0.0" y="753" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="ntp-F5-hda"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Whatsapp Link (Optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PKJ-DY-ZXg">
-                                    <rect key="frame" x="0.0" y="753" width="353" height="44"/>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Maximum Team Size" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mkF-QX-ncT">
+                                    <rect key="frame" x="0.0" y="812" width="353" height="44"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="Tq8-SU-LJI"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="9hn-ys-u6w">
+                                    <rect key="frame" x="0.0" y="871" width="353" height="120"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eligibility Criteria" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K4Z-Hb-ds8">
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" systemColor="systemGray2Color"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="S8Q-L8-IFu">
+                                            <rect key="frame" x="0.0" y="20" width="353" height="100"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="100" id="06D-tS-TIG"/>
+                                            </constraints>
+                                            <color key="textColor" systemColor="systemGray2Color"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="cVf-pf-BXR">
+                                    <rect key="frame" x="0.0" y="1006" width="353" height="120"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prize Pool" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aok-Xs-CTw">
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" systemColor="systemGray2Color"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Jis-Ex-dNJ">
+                                            <rect key="frame" x="0.0" y="20" width="353" height="100"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="100" id="uGC-hH-NAc"/>
+                                            </constraints>
+                                            <color key="textColor" systemColor="systemGray2Color"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                </stackView>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Capacity" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sXN-gF-HwG">
+                                    <rect key="frame" x="0.0" y="1141" width="353" height="44"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="aMr-ck-kLf"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Website Link (Optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PKJ-DY-ZXg">
+                                    <rect key="frame" x="0.0" y="1200" width="353" height="44"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="Ett-wl-ZWw"/>
                                     </constraints>
@@ -218,7 +295,7 @@
                                     <textInputTraits key="textInputTraits"/>
                                 </textField>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xW-rM-z1u" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="812" width="353" height="44"/>
+                                    <rect key="frame" x="0.0" y="1259" width="353" height="44"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="cXb-cp-RPO"/>
