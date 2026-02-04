@@ -467,13 +467,10 @@ class OrgProfileSetupViewController: UIViewController, UITextFieldDelegate {
                     UserDefaults.standard.set(role.rawValue, forKey: "UserRole")
 
                     // Navigate to organizer home
-                    let homeVC: UIViewController = (role == .organizer)
-                        ? MainTabBarController()
-                        : ParticipantMainTabBarController()
-
                     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                        sceneDelegate.changeRootViewController(homeVC)
+                        sceneDelegate.routeToHome(role: role)
                     }
+
 
                 case .failure(let error):
                     // Show server error

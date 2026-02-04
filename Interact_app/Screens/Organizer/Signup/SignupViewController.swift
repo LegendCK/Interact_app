@@ -509,14 +509,11 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
     }
 
     private func routeToHome(role: UserRole) {
-        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            switch role {
-            case .organizer:
-                scene.changeRootViewController(MainTabBarController())
-            case .participant:
-                scene.changeRootViewController(ParticipantMainTabBarController())
-            }
+        guard let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else {
+            return
         }
+
+        scene.routeToHome(role: role)
     }
 
     private func navigateBackToLogin() {

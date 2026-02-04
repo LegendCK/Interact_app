@@ -1,13 +1,22 @@
-//
-//  ParticipantMainTabBarController.swift
-//  Interact-UIKit
-//
-//  Created by admin73 on 07/11/25.
-//
-
 import UIKit
 
-class ParticipantMainTabBarController: UITabBarController {
+final class ParticipantMainTabBarController: UITabBarController {
+
+    // MARK: - Dependencies
+    private let authManager: AuthManager
+
+    // MARK: - Init
+
+    init(authManager: AuthManager) {
+        self.authManager = authManager
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Use init(authManager:) instead")
+    }
+
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,13 +24,23 @@ class ParticipantMainTabBarController: UITabBarController {
         setupAppearance()
     }
 
+    // MARK: - Setup Tabs
+
     private func setupTabs() {
-        // Create view controllers for each tab
+
         let exploreVC = ParticipantExplore1ViewController()
         let eventsVC = ParticipantEventsViewController()
         let leaderboardVC = ParticipantLeaderboardViewController()
         let chatVC = ParticipantChatsViewController()
-        let profileVC = ParticipantProfileViewController()
+
+        // ✅ Profile VC with dependency injection
+        let profileVC = ParticipantProfileViewController(
+            nibName: "ParticipantProfileViewController",
+            bundle: nil
+        )
+        profileVC.viewModel = ParticipantProfileViewModel(
+            authManager: authManager
+        )
 
         // Embed in navigation controllers
         let exploreNav = UINavigationController(rootViewController: exploreVC)
@@ -61,8 +80,7 @@ class ParticipantMainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "person.circle.fill")
         )
 
-        // Assign to tab bar
-        self.viewControllers = [
+        viewControllers = [
             exploreNav,
             eventsNav,
             leaderboardNav,
@@ -70,6 +88,8 @@ class ParticipantMainTabBarController: UITabBarController {
             profileNav
         ]
     }
+
+    // MARK: - Appearance
 
     private func setupAppearance() {
         tabBar.tintColor = .systemBlue

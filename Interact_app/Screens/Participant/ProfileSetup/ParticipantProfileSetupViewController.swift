@@ -471,8 +471,9 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
                     // Move to participant home
                     if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                        sceneDelegate.changeRootViewController(ParticipantMainTabBarController())
+                        sceneDelegate.routeToHome(role: .participant)
                     }
+
 
                 case .failure(let err):
                     self.showAlert("Profile Error", err.localizedDescription)
