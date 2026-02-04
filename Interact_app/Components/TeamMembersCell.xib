@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="66" id="KGk-i7-Jjw" customClass="TeamMembersCell" customModule="Interact_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="457" height="66"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="457" height="66"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfileImage" translatesAutoresizingMaskIntoConstraints="NO" id="ogs-TV-GZd">
+                        <rect key="frame" x="10" y="10" width="50" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="LOS-n5-NKP"/>
+                            <constraint firstAttribute="width" constant="50" id="VSy-QE-bVz"/>
+                        </constraints>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="0oP-hv-ET7">
+                        <rect key="frame" x="69.999999999999986" y="10" width="135.66666666666663" height="40.666666666666664"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Aashvi Swaroop" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XuM-bd-YqD">
+                                <rect key="frame" x="0.0" y="0.0" width="135.66666666666666" height="20.333333333333332"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frontend Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nPp-Gu-yMT">
+                                <rect key="frame" x="0.0" y="20.333333333333336" width="135.66666666666666" height="20.333333333333336"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qxQ-4g-B0Y">
+                        <rect key="frame" x="372" y="10" width="75" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="v9u-Lx-fwu"/>
+                        </constraints>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="qxQ-4g-B0Y" secondAttribute="trailing" constant="10" id="9Al-Rj-sEl"/>
+                    <constraint firstItem="qxQ-4g-B0Y" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Kdz-Ek-eED"/>
+                    <constraint firstItem="0oP-hv-ET7" firstAttribute="leading" secondItem="ogs-TV-GZd" secondAttribute="trailing" constant="10" id="KkH-A8-3gf"/>
+                    <constraint firstItem="qxQ-4g-B0Y" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="QBq-8G-NaG"/>
+                    <constraint firstItem="0oP-hv-ET7" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="YgD-gV-TvV"/>
+                    <constraint firstItem="0oP-hv-ET7" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="e2H-L6-DgA"/>
+                    <constraint firstItem="ogs-TV-GZd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="gaV-Iz-YAn"/>
+                    <constraint firstItem="ogs-TV-GZd" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="kD9-du-7Z0"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="profileImage" destination="ogs-TV-GZd" id="RQH-6v-RRF"/>
+                <outlet property="teamLeaderOrMemberButton" destination="qxQ-4g-B0Y" id="dtL-nq-hsC"/>
+                <outlet property="teamMemberName" destination="XuM-bd-YqD" id="mPm-zQ-TEd"/>
+                <outlet property="teamMemberTechnicalRole" destination="nPp-Gu-yMT" id="mfu-oi-J7d"/>
+            </connections>
+            <point key="canvasLocation" x="243.51145038167937" y="161.26760563380282"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="ProfileImage" width="80" height="80"/>
+    </resources>
+</document>

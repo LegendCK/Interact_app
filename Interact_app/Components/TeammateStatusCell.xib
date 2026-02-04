@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="66" id="KGk-i7-Jjw" customClass="TeammateStatusCell" customModule="Interact_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="457" height="66"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="457" height="66"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfileImage" translatesAutoresizingMaskIntoConstraints="NO" id="bwu-uE-WIB">
+                        <rect key="frame" x="10" y="10" width="50" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="0YW-6T-9s6"/>
+                            <constraint firstAttribute="height" constant="50" id="Xz7-ej-c43"/>
+                        </constraints>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="4OY-9x-COr">
+                        <rect key="frame" x="69.999999999999986" y="10" width="135.66666666666663" height="45"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Aashvi Swaroop" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KSn-Df-Mhd">
+                                <rect key="frame" x="0.0" y="0.0" width="135.66666666666666" height="22.666666666666668"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frontend Developer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFw-Gg-dq4">
+                                <rect key="frame" x="0.0" y="22.666666666666664" width="135.66666666666666" height="22.333333333333336"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="45" id="aZa-U6-7qr"/>
+                        </constraints>
+                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SHG-5F-BX2">
+                        <rect key="frame" x="372" y="10" width="75" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="cBY-DD-b9G"/>
+                        </constraints>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="4OY-9x-COr" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="25X-iv-qdd"/>
+                    <constraint firstItem="bwu-uE-WIB" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="9Lh-zq-3A0"/>
+                    <constraint firstItem="4OY-9x-COr" firstAttribute="leading" secondItem="bwu-uE-WIB" secondAttribute="trailing" constant="10" id="CXD-3I-VDR"/>
+                    <constraint firstAttribute="trailing" secondItem="SHG-5F-BX2" secondAttribute="trailing" constant="10" id="EOm-zR-xxb"/>
+                    <constraint firstItem="SHG-5F-BX2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="KxP-Xp-zYV"/>
+                    <constraint firstItem="4OY-9x-COr" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Ux3-5B-HcT"/>
+                    <constraint firstItem="bwu-uE-WIB" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="b2p-Rj-eW3"/>
+                    <constraint firstItem="SHG-5F-BX2" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="xaE-y1-nc3"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="profileImage" destination="bwu-uE-WIB" id="0nN-ls-S3U"/>
+                <outlet property="profileName" destination="KSn-Df-Mhd" id="2cx-si-pY0"/>
+                <outlet property="profileRole" destination="gFw-Gg-dq4" id="CMB-Xz-zlX"/>
+                <outlet property="profileStatus" destination="SHG-5F-BX2" id="oly-6K-y1I"/>
+            </connections>
+            <point key="canvasLocation" x="109.16030534351144" y="142.25352112676057"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="ProfileImage" width="80" height="80"/>
+    </resources>
+</document>
