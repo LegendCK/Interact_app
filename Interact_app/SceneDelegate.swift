@@ -29,6 +29,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         do {
             let config = try SupabaseConfig()
             let client = SupabaseClient(config: config)
+
+            // ✅ INJECT CLIENT INTO SERVICES
+            EventService.shared.client = client      // <--- INSERT THIS
+            ConnectionService.shared.client = client // <--- INSERT THIS
+            ProfileService.shared.client = client    // <--- INSERT THIS
+            TeamService.shared.client = client      
+
             let keychain = KeychainService()
             self.authManager = AuthManager(client: client, keychain: keychain)
         } catch {

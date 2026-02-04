@@ -16,7 +16,7 @@ public struct SupabaseClient {
         self.anonKey = config.anonKey
     }
 
-    fileprivate func authURL(path: String) -> URL {
+    public func authURL(path: String) -> URL {
         // Supabase auth endpoints are under /auth/v1/...
         return baseURL.appendingPathComponent("/auth/v1").appendingPathComponent(path)
     }
@@ -210,6 +210,68 @@ public extension SupabaseClient {
         return req
     }
 }
+
+
+// MARK: - Universal RPC Helper
+public extension SupabaseClient {
+
+    /// Universal RPC Caller: Handles Strings, UUIDs, Bools, or Custom Structs
+    func callRPC<T: Decodable>(
+        name: String,
+        params: [String: Any],
+        accessToken: String? = nil
+    ) async throws -> T {
+        
+        let url = postgrestURL(for: "rpc/\(name)")
+        let body = try? JSONSerialization.data(withJSONObject: params)
+        
+        // 1. Prepare Headers
+        var headers = ["Content-Type": "application/json"]
+        if let token = accessToken {
+            headers["Authorization"] = "Bearer \(token)"
+        }
+        
+        // 2. Make Request
+        // Ensure your makeRequest helper handles 'additionalHeaders'.
+        // If not, use request.setValue(...) manually here.
+        let request = makeRequest(url: url, method: "POST", body: body, additionalHeaders: headers)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // 3. Validation Step 1: Ensure it is an HTTP Response
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "SupabaseClient", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid server response"])
+        }
+        
+        // 4. Validation Step 2: Check Status Code
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let errorText = String(data: data, encoding: .utf8) ?? "Unknown DB Error"
+            
+            // Handle your specific "Already in Team" check
+            if errorText.contains("User already belongs to a team") {
+                throw NSError(domain: "TeamService", code: 409, userInfo: [NSLocalizedDescriptionKey: "You have already joined a team for this event."])
+            }
+            
+            // ✅ NOW 'httpResponse' is in scope, so this works:
+            throw NSError(domain: "SupabaseClient", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorText])
+        }
+        
+        // 5. Universal Decoding
+        do {
+            // This magic line converts the JSON to whatever Type (T) you asked for
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            print("⚠️ Decoding Error for RPC '\(name)': \(error)")
+            
+            // Fallback: If T is String, maybe the DB returned raw text?
+            if T.self == String.self, let rawString = String(data: data, encoding: .utf8) as? T {
+                return rawString
+            }
+            throw error
+        }
+    }
+}
+
 
 // MARK: - Storage helpers
 public extension SupabaseClient {

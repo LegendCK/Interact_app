@@ -12,6 +12,19 @@ class ButtonComponent: UIView {
     @IBOutlet weak var button: UIButton!
     
     var onTap: (() -> Void)?
+    
+    var isEnabled: Bool {
+            get {
+                return button.isEnabled
+            }
+            set {
+                button.isEnabled = newValue
+                // Optional: Adjust opacity for visual feedback
+                // Since you use UIButton.Configuration, the button will likely
+                // dim automatically, but setting alpha ensures the whole view looks disabled.
+                self.alpha = newValue ? 1.0 : 0.6
+            }
+        }
         
         // MARK: - Init
         override init(frame: CGRect) {
@@ -30,7 +43,22 @@ class ButtonComponent: UIView {
             view.frame = bounds
             view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             addSubview(view)
+            button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         }
+    
+    func updateTitle(_ title: String) {
+            // We must modify the existing configuration to preserve fonts/icons
+            guard var config = button.configuration else { return }
+            config.title = title
+            button.configuration = config
+        }
+
+        func updateBackgroundColor(_ color: UIColor) {
+            guard var config = button.configuration else { return }
+            config.baseBackgroundColor = color
+            button.configuration = config
+        }
+    
         
         // MARK: - Configure method
     func configure(
