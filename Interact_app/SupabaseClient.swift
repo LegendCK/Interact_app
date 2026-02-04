@@ -326,3 +326,38 @@ public extension SupabaseClient {
         return req
     }
 }
+
+// MARK: - Generic Fetch Helper
+public extension SupabaseClient {
+
+    func fetch<T: Decodable>(
+        from table: String,
+        queryItems: [URLQueryItem]
+    ) async throws -> [T] {
+
+        var components = URLComponents(url: postgrestURL(for: table), resolvingAgainstBaseURL: false)!
+        components.queryItems = queryItems
+
+        let url = components.url!
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+
+            let errorText = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw NSError(
+                domain: "SupabaseClient",
+                code: (response as? HTTPURLResponse)?.statusCode ?? 0,
+                userInfo: [NSLocalizedDescriptionKey: errorText]
+            )
+        }
+
+        return try JSONDecoder().decode([T].self, from: data)
+    }
+}
