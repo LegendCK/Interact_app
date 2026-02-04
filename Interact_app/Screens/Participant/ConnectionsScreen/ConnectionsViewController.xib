@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConnectionsViewController" customModule="Interact_app" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="QMi-5R-IRb" id="Cd2-FB-Oue"/>
+                <outlet property="searchBar" destination="wTX-P3-Gjs" id="WeB-n0-cqS"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <searchBar contentMode="redraw" placeholder="Search people, teams or roles" translatesAutoresizingMaskIntoConstraints="NO" id="wTX-P3-Gjs">
+                    <rect key="frame" x="16" y="118" width="361" height="64"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="D8b-eF-AAD"/>
+                    </connections>
+                </searchBar>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="QMi-5R-IRb">
+                    <rect key="frame" x="0.0" y="192" width="393" height="660"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bOT-mh-5bz">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="QMi-5R-IRb" secondAttribute="bottom" id="Gaa-iQ-ZaV"/>
+                <constraint firstItem="wTX-P3-Gjs" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" constant="-16" id="Qe6-6D-paL"/>
+                <constraint firstItem="QMi-5R-IRb" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="R63-Eh-xO2"/>
+                <constraint firstItem="wTX-P3-Gjs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="VcS-O2-yr8"/>
+                <constraint firstItem="wTX-P3-Gjs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="fMU-Ul-YTH"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QMi-5R-IRb" secondAttribute="trailing" id="qer-cj-Lnm"/>
+                <constraint firstItem="QMi-5R-IRb" firstAttribute="top" secondItem="wTX-P3-Gjs" secondAttribute="bottom" constant="10" id="xRx-vQ-Jmn"/>
+            </constraints>
+            <point key="canvasLocation" x="138.1679389312977" y="153.52112676056339"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
