@@ -25,7 +25,8 @@ class RSVPCell: UICollectionViewCell {
     
     @IBOutlet weak var foodButton: UIButton!
     
-    @IBOutlet weak var checkedInAt: UILabel!
+    @IBOutlet weak var checkedInAtLabel: UILabel!
+    
     
     @IBOutlet weak var foodStackView: UIStackView!
     
@@ -34,9 +35,10 @@ class RSVPCell: UICollectionViewCell {
     var onAttendanceTapped: ((Bool) -> Void)?
     var onFoodTapped: ((Bool) -> Void)?
     
-    private var participant: Participant?
     private var isAttended: Bool = false
     private var hasFood: Bool = false
+    private var checkedInDate: Date?
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -44,31 +46,45 @@ class RSVPCell: UICollectionViewCell {
         setupButtons()
     }
     
-    func configure(with participant: Participant, rsvpForFood: Bool) {
-        self.participant = participant
-        self.isAttended = participant.isAttended
-        self.hasFood = participant.hasFood
-        
-        nameLabel.text = participant.name ?? "Unknown"
-        teamLabel.text = participant.teamName ?? "No Team"
-        emailLabel.text = participant.email ?? "No Email"
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        isAttended = false
+        hasFood = false
+        checkedInDate = nil
+    }
 
-        // Format the date properly
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .short
-        dateFormatter.locale = Locale.current
-            
-        if let checkedInDate = participant.checkedInAt {
-            checkedInAt.text = "Checked in at: \(dateFormatter.string(from: checkedInDate))"
+    func configure(
+        name: String,
+        teamName: String?,
+        email: String?,
+        isAttended: Bool,
+        hasFood: Bool,
+        checkedInAt: Date?,
+        rsvpForFood: Bool
+    ) {
+        self.isAttended = isAttended
+        self.hasFood = hasFood
+        self.checkedInDate = checkedInAt
+
+        nameLabel.text = name
+        teamLabel.text = teamName ?? "No Team"
+        emailLabel.text = email ?? "No Email"
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+
+        if let checkInDate = checkedInAt {
+            checkedInAtLabel.text = "Checked in at: \(formatter.string(from: checkInDate))"
         } else {
-            checkedInAt.text = "Not checked in yet"
+            checkedInAtLabel.text = "Not checked in yet"
         }
-        
+
+
         foodStackView.isHidden = !rsvpForFood
         updateButtonAppearance()
     }
-    
+
     private func setupCardAppearance() {
         cardView.layer.cornerRadius = 12
         cardView.layer.shadowColor = UIColor.black.cgColor
@@ -86,7 +102,7 @@ class RSVPCell: UICollectionViewCell {
         
         attendanceLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         foodLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        checkedInAt.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        checkedInAtLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
     }
     
     private func setupButtons() {
@@ -137,15 +153,18 @@ class RSVPCell: UICollectionViewCell {
     }
     
     private func updateCheckInText() {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .short
-        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+
         if isAttended {
-            let checkInDate = participant?.checkedInAt ?? Date()
-            checkedInAt.text = "Checked in at: \(dateFormatter.string(from: checkInDate))"
+            let date = checkedInDate ?? Date()
+            checkedInAtLabel.text = "Checked in at: \(formatter.string(from: date))"
+            checkedInDate = date
         } else {
-            checkedInAt.text = "Not checked in"
+            checkedInAtLabel.text = "Not checked in"
+            checkedInDate = nil
         }
     }
+
 }

@@ -34,7 +34,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             EventService.shared.client = client      // <--- INSERT THIS
             ConnectionService.shared.client = client // <--- INSERT THIS
             ProfileService.shared.client = client    // <--- INSERT THIS
-            TeamService.shared.client = client      
+            TeamService.shared.client = client
+            RegistrationService.shared.client = client
 
             let keychain = KeychainService()
             self.authManager = AuthManager(client: client, keychain: keychain)

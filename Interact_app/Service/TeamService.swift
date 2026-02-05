@@ -468,3 +468,18 @@ class TeamService {
             return status
         }
 }
+
+extension TeamService {
+
+    func fetchTeamsForWinners(eventId: UUID) async throws -> [TeamWinnerDisplay] {
+        guard let token = UserDefaults.standard.string(forKey: "supabase_access_token") else {
+            throw NSError(domain: "Auth", code: 401)
+        }
+
+        return try await client!.callRPC(
+            name: "get_teams_for_winner_selection",
+            params: ["p_event_id": eventId.uuidString],
+            accessToken: token
+        )
+    }
+}

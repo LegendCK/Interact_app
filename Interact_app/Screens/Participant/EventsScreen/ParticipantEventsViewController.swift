@@ -67,41 +67,6 @@ class ParticipantEventsViewController: UIViewController {
                 collectionView.reloadData()
             }
         }
-
-        // MARK: - Network Calls
-//        @objc private func fetchEvents() {
-//            // Show refreshing state if triggered manually or via pull-to-refresh
-//            if !refreshControl.isRefreshing {
-//                // Optional: Show a loading spinner here if you have one
-//            }
-//            
-//            Task {
-//                do {
-//                    // 1. Call the Service
-//                    let fetchedEvents = try await EventService.shared.fetchUpcomingEvents()
-//                    
-//                    // 2. Map API Model -> View Model
-//                    // We default 'isRegistered' to false for now.
-//                    // In a real app, you would also fetch a "registrations" table to check this.
-//                    self.events = fetchedEvents.map { event in
-//                        EventViewModel(eventData: event, isRegistered: false)
-//                    }
-//                    
-//                    // 3. Update UI on Main Thread
-//                    DispatchQueue.main.async {
-//                        self.filteredEvents = self.events
-//                        self.collectionView.reloadData()
-//                        self.refreshControl.endRefreshing()
-//                    }
-//                } catch {
-//                    print("❌ Error fetching events: \(error)")
-//                    DispatchQueue.main.async {
-//                        self.refreshControl.endRefreshing()
-//                        self.showErrorAlert(message: error.localizedDescription)
-//                    }
-//                }
-//            }
-//        }
     
     // MARK: - Network Calls (Debug Version)
         @objc private func fetchEvents() {
@@ -335,6 +300,7 @@ class ParticipantEventsViewController: UIViewController {
                 
                 // 3. Pass Data
                 detailVC.event = selectedEvent
+                detailVC.mode = .participant
                 detailVC.hidesBottomBarWhenPushed = true
                 // 4. Push
                 self.navigationController?.pushViewController(detailVC, animated: true)

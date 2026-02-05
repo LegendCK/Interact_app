@@ -24,20 +24,30 @@ class ParticipantCardCell: UICollectionViewCell {
             setupCardAppearance()
         }
         
-        func configure(with participant: Participant) {
-            nameLabel.text = participant.name ?? "Unknown"
-            teamLabel.text = participant.teamName ?? "No Team"
-            emailLabel.text = participant.email ?? "No Email"
-            
-            if let registrationDate = participant.registeredAt {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .medium
-                formatter.timeStyle = .none
-                registrationDateLabel.text = "Registered: \(formatter.string(from: registrationDate))"
-            } else {
-                registrationDateLabel.text = "Registered: Unknown date"
-            }
-        }
+    func configure(
+        name: String,
+        teamName: String?,
+        email: String?,
+        joinedAt: Date
+    ) {
+        nameLabel.text = name
+        teamLabel.text = teamName ?? "No Team"
+        emailLabel.text = email ?? "No Email"
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        registrationDateLabel.text = "Registered: \(formatter.string(from: joinedAt))"
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        nameLabel.text = nil
+        teamLabel.text = nil
+        emailLabel.text = nil
+        registrationDateLabel.text = nil
+    }
+
         
         private func setupCardAppearance() {
             cardView.layer.cornerRadius = 12

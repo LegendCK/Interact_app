@@ -50,6 +50,51 @@ final class EventService {
 
         return try await client.fetch(from: "events", queryItems: queryItems)
     }
+    
+    func fetchPendingEvents() async throws -> [Event] {
+
+        guard
+            let client = client,
+            let token = UserDefaults.standard.string(forKey: "supabase_access_token")
+        else {
+            throw NSError(domain: "EventService", code: 401)
+        }
+
+        let queryItems = [
+            URLQueryItem(name: "select", value: "*"),
+            URLQueryItem(name: "approval_status", value: "eq.pending"),
+            URLQueryItem(name: "deleted_at", value: "is.null"),
+            URLQueryItem(name: "order", value: "start_date.asc")
+        ]
+
+        var components = URLComponents(
+            url: client.postgrestURL(for: "events"),
+            resolvingAgainstBaseURL: false
+        )!
+        components.queryItems = queryItems
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(client.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "EventService", code: 0)
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let errorText = String(data: data, encoding: .utf8) ?? "Unknown error"
+            print("❌ Supabase Error:", errorText)
+            throw NSError(domain: "EventService", code: httpResponse.statusCode)
+        }
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode([Event].self, from: data)
+    }
 
     // MARK: - Create Event (Organizer)
 

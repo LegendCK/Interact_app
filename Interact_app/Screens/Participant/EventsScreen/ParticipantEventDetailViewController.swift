@@ -11,7 +11,6 @@ class ParticipantEventDetailViewController: UIViewController {
     
     @IBOutlet var containerView: UIView!
     
-    @IBOutlet weak var registerButton: ButtonComponent!
     @IBOutlet weak var eventImage: UIImageView!
     
     @IBOutlet weak var eventName: UILabel!
@@ -22,21 +21,8 @@ class ParticipantEventDetailViewController: UIViewController {
     
     @IBOutlet weak var eventLocation: UILabel!
     
+    @IBOutlet weak var registerButton: ButtonComponent!
     
-    
-    
-    
-    
-//    @IBOutlet weak var eventName: UILabel!
-//    
-//    @IBOutlet weak var eventName: UILabel!
-    //    @IBOutlet weak var eventStartDate: UILabel!
-
-    //    @IBOutlet weak var eventLocation: UILabel!
-//    @IBOutlet weak var eventLocation: UILabel!
-    
-//    @IBOutlet weak var eventLocation: UILabel!
-    //    @IBOutlet weak var infoContainerView: UIView!
     @IBOutlet weak var infoContainerView: UIView!
     
     @IBOutlet weak var eligibilityCriteriaView: UIView!
@@ -54,15 +40,36 @@ class ParticipantEventDetailViewController: UIViewController {
     
     @IBOutlet weak var orgnaizerDetailContainer: UIView!
     
+    @IBOutlet weak var viewRegistrationsButton: ButtonComponent!
+    
+    @IBOutlet weak var viewRSVPbutton: ButtonComponent!
+    
+    @IBOutlet weak var announceWinnersButton: ButtonComponent!
+    
+    
+    
     // MARK: - Properties
         // This property will receive data from the previous screen
     var event: Event?
+    
+    enum DetailMode {
+        case participant
+        case organizer
+    }
+
+    var mode: DetailMode = .participant
+
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupInfo()
         setupUI()
+        
+        // Debug: Check if button exists
+            print("Button component exists: \(registerButton != nil)")
+            print("Button inside component exists: \(registerButton.button != nil)")
+            print("Button frame: \(registerButton.frame)")
     }
     
     
@@ -99,15 +106,15 @@ class ParticipantEventDetailViewController: UIViewController {
             eventImage.tintColor = .systemGray4
         }
 
-        
-        if Date() > event.registrationDeadline {
-            registerButton.configure(
-                title: "Registration Closed",
-                titleColor: .white,
-                backgroundColor: .systemGray
-            )
-            registerButton.isUserInteractionEnabled = false
-        }
+//        
+//        if Date() > event.registrationDeadline {
+//            registerButton.configure(
+//                title: "Registration Closed",
+//                titleColor: .white,
+//                backgroundColor: .systemGray
+//            )
+//            registerButton.isUserInteractionEnabled = false
+//        }
 
         }
     
@@ -144,13 +151,104 @@ class ParticipantEventDetailViewController: UIViewController {
             font: .systemFont(ofSize: 16, weight: .semibold),
         )
         
+        registerButton.button.removeTarget(self, action: #selector(didTapRegister), for: .touchUpInside)
+            // Then add the target
+        registerButton.button.addTarget(self, action: #selector(didTapRegister), for: .touchUpInside)
+        
         // Add target for button
             registerButton.onTap = { [weak self] in
                 self?.didTapRegister()
             }
+        
+        switch mode {
+        case .participant:
+            // Participant sees Register
+            registerButton.isHidden = false
+
+            viewRegistrationsButton.isHidden = true
+            viewRSVPbutton.isHidden = true
+            announceWinnersButton.isHidden = true
+
+        case .organizer:
+            // Organizer does NOT see Register
+            registerButton.isHidden = true
+
+            viewRegistrationsButton.isHidden = false
+            viewRSVPbutton.isHidden = false
+            announceWinnersButton.isHidden = false
+
+            setupOrganizerButtons()
+        }
+
     }
+    
+    private func setupOrganizerButtons() {
+        viewRegistrationsButton.configure(
+            title: "View Registrations",
+            titleColor: .white,
+            backgroundColor: .systemBlue,
+            cornerRadius: 8
+        )
+
+        viewRSVPbutton.configure(
+            title: "View RSVP",
+            titleColor: .white,
+            backgroundColor: .systemBlue,
+            cornerRadius: 8
+        )
+
+        announceWinnersButton.configure(
+            title: "Announce Winners",
+            titleColor: .white,
+            backgroundColor: .systemBlue,
+            cornerRadius: 8
+        )
+        
+        viewRegistrationsButton.onTap = { [weak self] in
+            self?.navigateToViewRegistrations()
+        }
+
+        viewRSVPbutton.onTap = { [weak self] in
+            self?.navigateToRSVP()
+        }
+
+        announceWinnersButton.onTap = { [weak self] in
+            self?.navigateToWinnerSelection()
+        }
+
+    }
+    
+    private func navigateToViewRegistrations() {
+        guard let eventId = event?.id else { return }
+
+        let vc = RegistrationsListViewController(eventId: eventId)
+        vc.title = "Approve Event"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+
+    private func navigateToRSVP() {
+        guard let eventId = event?.id else { return }
+
+        let vc = RSVPViewController(eventId: eventId)
+        vc.title = "Edit Event"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    private func navigateToWinnerSelection() {
+        guard let eventId = event?.id else { return }
+
+        let vc = WinnersSelectionViewController(eventId: eventId)
+        vc.title = "Announce Winners"
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+
+
     // MARK: - Actions
         @objc private func didTapRegister() {
+            
+            print("✅ Register button tapped! Event ID: \(event?.id)")
             guard let eventId = self.event?.id else { return }
             
             // 1. UI Feedback: Prevent double taps

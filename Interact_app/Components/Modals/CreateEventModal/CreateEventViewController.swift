@@ -77,33 +77,41 @@ class CreateEventViewController: UIViewController, UIImagePickerControllerDelega
             prizePool.layer.borderColor = UIColor.systemGray4.cgColor
         }
 
-        private func setupTextFields() {
-            let fields: [UITextField] = [
-                eventNameTextField,
-                startDateTextField,
-                endDateTextField,
-                registrationDeadlineTextField,
-                locationTextField,
-                meetingLinkTextField,
-                whatsappGrpLink,
-                minTeamSize,
-                maxTeamSize,
-                eventCapacity
-            ]
-
-            fields.forEach {
-                $0.delegate = self
-                $0.layer.borderWidth = 1
-                $0.layer.borderColor = UIColor.systemGray4.cgColor
-                $0.layer.cornerRadius = 10
-                $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 1))
-                $0.leftViewMode = .always
-            }
-
-            [startDateTextField, endDateTextField, registrationDeadlineTextField].forEach {
-                $0?.addTarget(self, action: #selector(dateFieldTapped(_:)), for: .editingDidBegin)
-            }
+    private func setupTextFields() {
+        let fields: [UITextField?] = [
+            eventNameTextField,
+            startDateTextField,
+            endDateTextField,
+            registrationDeadlineTextField,
+            locationTextField,
+            meetingLinkTextField,
+            whatsappGrpLink,
+            minTeamSize,
+            maxTeamSize,
+            eventCapacity
+        ]
+        
+        fields.forEach { textField in
+            guard let field = textField else { return }
+            
+            field.delegate = self
+            
+            // Fix: Set borderStyle to .none (not layer.borderStyle)
+            field.borderStyle = .none
+            field.layer.borderColor = UIColor.systemGray4.cgColor
+            field.layer.borderWidth = 1
+            field.layer.cornerRadius = 10
+            
+            // Fix: Use field.frame.height for dynamic padding
+            let leftPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.height))
+            field.leftView = leftPaddingView
+            field.leftViewMode = .always
         }
+        
+        [startDateTextField, endDateTextField, registrationDeadlineTextField].forEach { dateField in
+            dateField?.addTarget(self, action: #selector(dateFieldTapped(_:)), for: .editingDidBegin)
+        }
+    }
 
         private func setupCreateButton() {
             createButton.configure(title: "Create Event", backgroundColor: .systemBlue)
