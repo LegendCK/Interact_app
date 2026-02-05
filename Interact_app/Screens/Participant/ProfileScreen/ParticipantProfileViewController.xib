@@ -15,7 +15,7 @@
                 <outlet property="aboutView" destination="tUS-pW-wQb" id="VcO-5k-azC"/>
                 <outlet property="editAboutButton" destination="jGz-jO-WSF" id="RWp-EK-bvF"/>
                 <outlet property="editProfileButton" destination="wee-hJ-9Mm" id="U7m-Gj-36O"/>
-                <outlet property="editSkillsButton" destination="lm1-3h-huW" id="A4U-rK-jKK"/>
+                <outlet property="editSkillsButton" destination="lm1-3h-huW" id="m8j-rA-6xn"/>
                 <outlet property="educationLabel" destination="oal-Dc-GcX" id="uAf-Pc-KkJ"/>
                 <outlet property="innerRankingsView" destination="VgO-rH-ATF" id="qef-AQ-1C0"/>
                 <outlet property="locationLabel" destination="jsB-B7-RU4" id="ffV-eK-R4Z"/>
@@ -25,6 +25,7 @@
                 <outlet property="qrCodeButton" destination="mjX-xf-pni" id="KVT-mO-PdR"/>
                 <outlet property="rankingsView" destination="Dth-ut-Rjx" id="iZr-X3-djT"/>
                 <outlet property="recentEventsView" destination="Alz-YG-loH" id="MX1-Fr-dU3"/>
+                <outlet property="skillsCollectionView" destination="gib-vu-ZqQ" id="3aN-Of-rpF"/>
                 <outlet property="skillsView" destination="uhz-PV-jzD" id="apd-aD-Cwu"/>
                 <outlet property="totalPointsView" destination="G2W-eO-7eF" id="gbF-W4-nvV"/>
                 <outlet property="totalWinsView" destination="f30-Gh-wcz" id="3kp-rX-Qhy"/>
@@ -140,7 +141,7 @@
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="Iym-HO-Fxm">
                                             <rect key="frame" x="0.0" y="25.333333333333314" width="321" height="142.66666666666666"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                             <color key="textColor" white="0.32000000000000001" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -329,32 +330,35 @@
                                     <rect key="frame" x="16" y="16" width="321" height="98"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="GJc-Ce-BXy">
-                                            <rect key="frame" x="0.0" y="0.0" width="321" height="29.666666666666668"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="321" height="20.333333333333332"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Skills" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cQ-on-My3">
-                                                    <rect key="frame" x="0.0" y="0.0" width="41" height="29.666666666666668"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="41" height="20.333333333333332"/>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lm1-3h-huW">
-                                                    <rect key="frame" x="272.66666666666669" y="0.0" width="48.333333333333314" height="29.666666666666668"/>
+                                                    <rect key="frame" x="272.66666666666669" y="0.0" width="48.333333333333314" height="20.333333333333332"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" title="Edit">
                                                         <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="13"/>
                                                     </buttonConfiguration>
                                                     <connections>
-                                                        <action selector="editSkillsTapped:" destination="-1" eventType="touchUpInside" id="Tas-7s-8Dp"/>
+                                                        <action selector="editSkillsTapped:" destination="-1" eventType="touchUpInside" id="bxs-JY-EAd"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
                                         </stackView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="noA-Er-Nt0">
-                                            <rect key="frame" x="0.0" y="34.666666666666629" width="321" height="63.333333333333343"/>
-                                            <string key="text">GitHub Community SRM is the official student-led community affiliated with GitHub, spearheading the open-source revolution at SRMIST. GitHub Community SRM is the official student-led community.</string>
-                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                            <color key="textColor" red="0.2274509804" green="0.2274509804" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="gib-vu-ZqQ">
+                                            <rect key="frame" x="0.0" y="25.333333333333371" width="321" height="72.666666666666671"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Vkx-0A-6po">
+                                                <size key="itemSize" width="128" height="128"/>
+                                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                            </collectionViewFlowLayout>
+                                        </collectionView>
                                     </subviews>
                                 </stackView>
                             </subviews>
@@ -395,11 +399,8 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="dHh-jZ-WgG">
                                                     <rect key="frame" x="16" y="0.0" width="289" height="128.66666666666666"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="fallback" translatesAutoresizingMaskIntoConstraints="NO" id="rRe-fL-B7r">
-                                                            <rect key="frame" x="84.666666666666657" y="0.0" width="120" height="104.66666666666667"/>
-                                                        </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No recent events found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kka-Hf-D0t">
-                                                            <rect key="frame" x="62.666666666666686" y="110.66666666666663" width="164" height="18"/>
+                                                            <rect key="frame" x="62.666666666666686" y="0.0" width="164" height="128.66666666666666"/>
                                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -590,7 +591,6 @@
         <image name="arrow.left.circle" catalog="system" width="128" height="123"/>
         <image name="arrow.right.circle" catalog="system" width="128" height="123"/>
         <image name="ellipsis" catalog="system" width="128" height="37"/>
-        <image name="fallback" width="120" height="160"/>
         <image name="organizerLogo" width="60" height="60"/>
         <image name="person.circle.fill" catalog="system" width="128" height="123"/>
         <image name="qrcode" catalog="system" width="128" height="114"/>
