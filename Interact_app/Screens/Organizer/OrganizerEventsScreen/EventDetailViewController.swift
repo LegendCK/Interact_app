@@ -89,15 +89,12 @@ class EventDetailViewController: UIViewController {
             )
             
             viewRegistrationsButton.onTap = { [weak self] in
-                print("View Registrations tapped for: \(self?.event.eventName ?? "Unknown Event")")
-                
-                guard let self = self else { return }
-                
-                // For XIB-based ViewController
-                let registrationsVC = RegistrationsListViewController(nibName: "RegistrationsListViewController", bundle: nil)
-                registrationsVC.event = self.event
+                guard let self = self, let eventId = self.event?.id else { return }
+
+                let registrationsVC = RegistrationsListViewController(eventId: eventId)
                 self.navigationController?.pushViewController(registrationsVC, animated: true)
             }
+
            
             // View RSVP Button
             viewRSVPButton.configure(
@@ -107,14 +104,10 @@ class EventDetailViewController: UIViewController {
             
             // In your setupButtons() method, update the RSVP button:
             viewRSVPButton.onTap = { [weak self] in
-                print("View RSVP tapped for: \(self?.event.eventName ?? "Unknown Event")")
-                
-                guard let self = self else { return }
-                
-                // Navigate to RSVP View Controller
-                let rsvpVC = RSVPViewController(nibName: "RSVPViewController", bundle: nil)
-                rsvpVC.event = self.event
-                self.navigationController?.pushViewController(rsvpVC, animated: true)
+                guard let self = self, let eventId = self.event?.id else { return }
+
+                let registrationsVC = RSVPViewController(eventId: eventId)
+                self.navigationController?.pushViewController(registrationsVC, animated: true)
             }
             
             announceWinnersButton.configure(
@@ -123,15 +116,12 @@ class EventDetailViewController: UIViewController {
             )
             
             announceWinnersButton.onTap = { [weak self] in
-                print("Announce Winners Button Clicked")
-                
-                guard let self = self else { return }
-                
-                // Use the custom initializer
-                let winnersVC = WinnersSelectionViewController(event: self.event)
+                guard let self = self, let eventId = self.event?.id else { return }
+
+                let winnersVC = WinnersSelectionViewController(eventId: eventId)
                 self.navigationController?.pushViewController(winnersVC, animated: true)
             }
-            
+
             awaitingVerificationButton.configure(
                 title: "Awaiting Verification",
                 backgroundColor: .lightGray,

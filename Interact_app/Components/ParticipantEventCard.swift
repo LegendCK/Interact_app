@@ -107,10 +107,15 @@ class ParticipantEventCard: UICollectionViewCell {
         }
         
         private func setupRegisterButtonState() {
-            let title = isRegistered ? "Registered" : "Register Now"
-            let bgColor = isRegistered ? UIColor.systemGreen : UIColor.systemBlue
-            let borderColor = isRegistered ? UIColor.systemGreen.withAlphaComponent(0.3) : nil
-            let borderWidth: CGFloat = isRegistered ? 1 : 0
+//            let title = isRegistered ? "Registered" : "Register Now"
+//            let bgColor = isRegistered ? UIColor.systemGreen : UIColor.systemBlue
+//            let borderColor = isRegistered ? UIColor.systemGreen.withAlphaComponent(0.3) : nil
+//            let borderWidth: CGFloat = isRegistered ? 1 : 0
+            
+            let title = "Register Now"
+            let bgColor = UIColor.systemBlue
+//            let borderColor = isRegistered ? UIColor.systemGreen.withAlphaComponent(0.3) : nil
+//            let borderWidth: CGFloat = isRegistered ? 1 : 0
             
             // 1. Configure visual style using your Component's API
             registerButton.configure(
@@ -119,8 +124,8 @@ class ParticipantEventCard: UICollectionViewCell {
                 backgroundColor: bgColor,
                 cornerRadius: 8,
                 font: .systemFont(ofSize: 16, weight: .semibold),
-                borderColor: borderColor,
-                borderWidth: borderWidth
+//                borderColor: borderColor,
+//                borderWidth: borderWidth
             )
             
             // 2. Define the tap behavior

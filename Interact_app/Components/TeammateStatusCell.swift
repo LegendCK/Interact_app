@@ -55,11 +55,11 @@ class TeammateStatusCell: UITableViewCell {
             // Handle Status Button Appearance
             if member.status == "accepted" {
                 profileStatus.setTitle("Accepted", for: .normal)
-                profileStatus.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.2)
+//                profileStatus.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.2)
                 profileStatus.setTitleColor(.systemGreen, for: .normal)
             } else {
                 profileStatus.setTitle("Pending", for: .normal)
-                profileStatus.backgroundColor = UIColor.systemGray.withAlphaComponent(0.2)
+//                profileStatus.backgroundColor = UIColor.systemGray.withAlphaComponent(0.2)
                 profileStatus.setTitleColor(.black, for: .normal)
             }
         }

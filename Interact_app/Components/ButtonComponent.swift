@@ -12,16 +12,14 @@ class ButtonComponent: UIView {
     @IBOutlet weak var button: UIButton!
     
     var onTap: (() -> Void)?
-    
-    var isEnabled: Bool {
+        
+        var isEnabled: Bool {
             get {
                 return button.isEnabled
             }
             set {
                 button.isEnabled = newValue
                 // Optional: Adjust opacity for visual feedback
-                // Since you use UIButton.Configuration, the button will likely
-                // dim automatically, but setting alpha ensures the whole view looks disabled.
                 self.alpha = newValue ? 1.0 : 0.6
             }
         }
@@ -43,10 +41,24 @@ class ButtonComponent: UIView {
             view.frame = bounds
             view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             addSubview(view)
+            
+            // Wait until after the view is loaded to set up the button target
+            // We'll do this in awakeFromNib or layoutSubviews
+        }
+        
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            setupButtonTarget()
+        }
+        
+        private func setupButtonTarget() {
+            // Remove any existing targets first
+            button.removeTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+            // Add the target
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         }
-    
-    func updateTitle(_ title: String) {
+        
+        func updateTitle(_ title: String) {
             // We must modify the existing configuration to preserve fonts/icons
             guard var config = button.configuration else { return }
             config.title = title
@@ -58,55 +70,55 @@ class ButtonComponent: UIView {
             config.baseBackgroundColor = color
             button.configuration = config
         }
-    
         
         // MARK: - Configure method
-    func configure(
-        title: String,
-        titleColor: UIColor = .white,
-        backgroundColor: UIColor = .systemBlue,
-        cornerRadius: CGFloat = 10,
-        font: UIFont = .systemFont(ofSize: 16, weight: .medium),
-        image: UIImage? = nil,
-        imagePlacement: NSDirectionalRectEdge = .leading, // .leading or .trailing
-        imagePadding: CGFloat = 8,
-        contentInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20),
-        borderColor: UIColor? = nil,
-        borderWidth: CGFloat = 0
-    ) {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = backgroundColor
-        config.baseForegroundColor = titleColor
-        config.title = title
-        config.cornerStyle = .medium
-        config.contentInsets = contentInsets
+        func configure(
+            title: String,
+            titleColor: UIColor = .white,
+            backgroundColor: UIColor = .systemBlue,
+            cornerRadius: CGFloat = 10,
+            font: UIFont = .systemFont(ofSize: 16, weight: .medium),
+            image: UIImage? = nil,
+            imagePlacement: NSDirectionalRectEdge = .leading, // .leading or .trailing
+            imagePadding: CGFloat = 8,
+            contentInsets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20),
+            borderColor: UIColor? = nil,
+            borderWidth: CGFloat = 0
+        ) {
+            var config = UIButton.Configuration.filled()
+            config.baseBackgroundColor = backgroundColor
+            config.baseForegroundColor = titleColor
+            config.title = title
+            config.cornerStyle = .medium
+            config.contentInsets = contentInsets
 
-        if let image = image {
-            config.image = image
-            config.imagePlacement = imagePlacement
-            config.imagePadding = imagePadding
-        }
+            if let image = image {
+                config.image = image
+                config.imagePlacement = imagePlacement
+                config.imagePadding = imagePadding
+            }
 
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = font
-            return outgoing
-        }
+            config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                var outgoing = incoming
+                outgoing.font = font
+                return outgoing
+            }
 
-        // Apply configuration
-        button.configuration = config
-        button.layer.cornerRadius = cornerRadius
-        button.clipsToBounds = true
-        
-        if let borderColor = borderColor {
+            // Apply configuration
+            button.configuration = config
+            button.layer.cornerRadius = cornerRadius
+            button.clipsToBounds = true
+            
+            if let borderColor = borderColor {
                 button.layer.borderColor = borderColor.cgColor
                 button.layer.borderWidth = borderWidth
             } else {
                 button.layer.borderWidth = 0
             }
-    }
-
-    
+            
+            // IMPORTANT: Re-setup the target after configuration
+            setupButtonTarget()
+        }
     @IBAction func buttonTapped(_ sender: UIButton) {
         onTap?()
     }

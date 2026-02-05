@@ -8,9 +8,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSVPCell" customModule="Interact_UIKit" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RSVPCell" customModule="Interact_app" customModuleProvider="target"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="RSVPCell" id="gTV-IL-0wX" customClass="RSVPCell" customModule="Interact_UIKit" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="RSVPCell" id="gTV-IL-0wX" customClass="RSVPCell" customModule="Interact_app" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="417" height="150"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -126,7 +126,7 @@
                 <outlet property="attendanceButton" destination="SwU-iT-O9v" id="FAs-Ed-YhV"/>
                 <outlet property="attendanceLabel" destination="hkg-FR-WjU" id="YHX-xo-9hX"/>
                 <outlet property="cardView" destination="8BV-ZU-InP" id="F89-0c-nNo"/>
-                <outlet property="checkedInAt" destination="Vc2-fc-Gxb" id="8CW-5u-Zhj"/>
+                <outlet property="checkedInAtLabel" destination="Vc2-fc-Gxb" id="f8l-7o-A5G"/>
                 <outlet property="emailLabel" destination="Czd-fC-MUD" id="YZC-qx-Win"/>
                 <outlet property="foodButton" destination="BVS-T4-p8x" id="2Jb-dn-Ga0"/>
                 <outlet property="foodLabel" destination="emt-qs-xG9" id="t3i-l0-IUs"/>
@@ -141,7 +141,7 @@
         <image name="checkmark.square.fill" catalog="system" width="128" height="114"/>
         <image name="square" catalog="system" width="128" height="114"/>
         <systemColor name="linkColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

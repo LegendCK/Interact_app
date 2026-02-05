@@ -1,5 +1,5 @@
 import UIKit
-import CoreData
+
 
 class RegistrationsListViewController: UIViewController {
     
@@ -8,16 +8,24 @@ class RegistrationsListViewController: UIViewController {
     @IBOutlet weak var emptyStateLabel: UILabel!
     
     // MARK: - Properties
-    var event: UserEvent!
-    private var participants: [Participant] = []
-    private var filteredParticipants: [Participant] = []
+    var eventId: UUID!
+
+    private var participants: [EventParticipant] = []
+    private var filteredParticipants: [EventParticipant] = []
+
     private var isSearching = false
     private let searchController = UISearchController(searchResultsController: nil)
     
     // MARK: - Initialization (for XIB)
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//    }
+    
+    init(eventId: UUID) {
+        self.eventId = eventId
+        super.init(nibName: "RegistrationsListViewController", bundle: nil)
     }
+
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -77,12 +85,26 @@ class RegistrationsListViewController: UIViewController {
     }
     
     private func loadParticipants() {
-        guard let eventId = event.id else { return }
-        participants = CoreDataManager.shared.getParticipants(for: eventId)
-        filteredParticipants = participants // Initialize filtered array
-        collectionView.reloadData()
-        updateEmptyState()
+        guard let eventId = eventId else { return }
+
+        Task {
+            do {
+                let fetched = try await RegistrationService.shared.fetchEventParticipants(eventId: eventId)
+
+                DispatchQueue.main.async {
+                    self.participants = fetched
+                    self.filteredParticipants = fetched
+                    self.collectionView.reloadData()
+                    self.updateEmptyState()
+                    self.setupNavigationBar()
+                }
+
+            } catch {
+                print("❌ Failed to fetch participants:", error)
+            }
+        }
     }
+
     
     private func updateEmptyState() {
         let hasData = isSearching ? !filteredParticipants.isEmpty : !participants.isEmpty
@@ -99,10 +121,10 @@ class RegistrationsListViewController: UIViewController {
         if searchText.isEmpty {
             filteredParticipants = participants
         } else {
-            filteredParticipants = participants.filter { participant in
-                guard let name = participant.name else { return false }
-                return name.lowercased().contains(searchText.lowercased())
+            filteredParticipants = participants.filter {
+                $0.name.lowercased().contains(searchText.lowercased())
             }
+
         }
         collectionView.reloadData()
         updateEmptyState()
@@ -122,7 +144,13 @@ extension RegistrationsListViewController: UICollectionViewDataSource, UICollect
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ParticipantCardCell", for: indexPath) as! ParticipantCardCell
         
         let participant = isSearching ? filteredParticipants[indexPath.item] : participants[indexPath.item]
-        cell.configure(with: participant)
+        
+        cell.configure(
+            name: participant.name,
+            teamName: participant.teamName,
+            email: participant.email,
+            joinedAt: participant.joinedAt
+        )
         
         return cell
     }
@@ -138,7 +166,8 @@ extension RegistrationsListViewController: UICollectionViewDataSource, UICollect
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let participant = isSearching ? filteredParticipants[indexPath.item] : participants[indexPath.item]
-        print("Selected: \(participant.name ?? "")")
+        print("Selected: \(participant.name)")
+
     }
 }
 

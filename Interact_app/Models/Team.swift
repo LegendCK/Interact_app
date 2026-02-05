@@ -72,3 +72,19 @@ struct UserTeamStatus: Decodable {
     let my_role: String      // Returns "leader" or "member"
     let is_confirmed: Bool
 }
+
+struct TeamWinnerDisplay: Decodable {
+    let teamId: UUID
+    let teamName: String
+    let leaderName: String?
+    let totalMembers: Int
+
+    enum CodingKeys: String, CodingKey {
+        case teamId = "team_id"
+        case teamName = "team_name"
+        case leaderName = "leader_name"
+        case totalMembers = "total_members"
+    }
+}
+
+

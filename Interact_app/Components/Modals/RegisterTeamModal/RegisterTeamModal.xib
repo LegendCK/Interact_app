@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RegisterTeamModal" customModule="Interact_app" customModuleProvider="target">
             <connections>
-                <outlet property="continueTeamButton" destination="PMV-WC-lgG" id="OXD-yX-ae4"/>
+                <outlet property="continueTeamButton" destination="CBp-n8-D2R" id="5jg-Hy-XxY"/>
                 <outlet property="leaderEmail" destination="G9B-Eq-9eG" id="aK1-Gk-Kf5"/>
                 <outlet property="leaderName" destination="XOI-qk-p0V" id="j81-C1-t2i"/>
                 <outlet property="leaderPhoneNumber" destination="rjt-3T-20H" id="3ka-ye-VO6"/>
@@ -24,18 +24,24 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="lLf-kv-CBX">
-                    <rect key="frame" x="16" y="158" width="361" height="287"/>
+                    <rect key="frame" x="16" y="118" width="361" height="287"/>
                     <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start your hackathon team. You’ll add members next." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TUb-lc-1Uy">
+                            <rect key="frame" x="0.0" y="0.0" width="361" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Team Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2a5-nI-4IK">
-                            <rect key="frame" x="0.0" y="0.0" width="361" height="44"/>
+                            <rect key="frame" x="0.0" y="27" width="361" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="baq-DY-GBi"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XOI-qk-p0V">
-                            <rect key="frame" x="0.0" y="54" width="361" height="44"/>
+                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Your Name (Leader)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XOI-qk-p0V">
+                            <rect key="frame" x="0.0" y="81" width="361" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="3L6-0D-aSG"/>
                             </constraints>
@@ -43,7 +49,7 @@
                             <textInputTraits key="textInputTraits"/>
                         </textField>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G9B-Eq-9eG">
-                            <rect key="frame" x="0.0" y="108" width="361" height="44"/>
+                            <rect key="frame" x="0.0" y="135" width="361" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="r1K-mC-asM"/>
                             </constraints>
@@ -51,27 +57,20 @@
                             <textInputTraits key="textInputTraits"/>
                         </textField>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Phone Number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rjt-3T-20H">
-                            <rect key="frame" x="0.0" y="162" width="361" height="44"/>
+                            <rect key="frame" x="0.0" y="189" width="361" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="ZXw-Hv-XLw"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start your hackathon team. You’ll add members next." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TUb-lc-1Uy">
-                            <rect key="frame" x="0.0" y="216" width="361" height="17"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PMV-WC-lgG">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CBp-n8-D2R" customClass="ButtonComponent" customModule="Interact_app" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="243" width="361" height="44"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="44" id="LaA-98-sAE"/>
+                                <constraint firstAttribute="height" constant="44" id="1su-O1-LTx"/>
                             </constraints>
-                            <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="filled" title="Continue"/>
-                        </button>
+                        </view>
                     </subviews>
                 </stackView>
             </subviews>
@@ -79,7 +78,7 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="lLf-kv-CBX" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="4fG-cY-41I"/>
-                <constraint firstItem="lLf-kv-CBX" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="40" id="hUb-3N-Hvm"/>
+                <constraint firstItem="lLf-kv-CBX" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="hUb-3N-Hvm"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="lLf-kv-CBX" secondAttribute="trailing" constant="16" id="wfO-aw-MKL"/>
             </constraints>
             <point key="canvasLocation" x="138.1679389312977" y="153.52112676056339"/>

@@ -257,18 +257,23 @@ public extension SupabaseClient {
         }
         
         // 5. Universal Decoding
+        // 5. Universal Decoding
         do {
-            // This magic line converts the JSON to whatever Type (T) you asked for
-            return try JSONDecoder().decode(T.self, from: data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601   // ✅ IMPORTANT
+
+            return try decoder.decode(T.self, from: data)
+
         } catch {
             print("⚠️ Decoding Error for RPC '\(name)': \(error)")
-            
-            // Fallback: If T is String, maybe the DB returned raw text?
-            if T.self == String.self, let rawString = String(data: data, encoding: .utf8) as? T {
+
+            if T.self == String.self,
+               let rawString = String(data: data, encoding: .utf8) as? T {
                 return rawString
             }
             throw error
         }
+
     }
 }
 

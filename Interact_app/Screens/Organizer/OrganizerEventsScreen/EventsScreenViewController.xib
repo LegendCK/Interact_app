@@ -11,10 +11,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventsScreenViewController" customModule="Interact_app" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="EQv-Qe-9TM" id="pIO-VP-9en"/>
-                <outlet property="fallbackView" destination="omb-LQ-sIZ" id="Cq7-Zw-j2S"/>
+                <outlet property="containerView" destination="i5M-Pr-FkT" id="wb6-yV-OAg"/>
                 <outlet property="searchBar" destination="2sV-wG-rt5" id="9Qj-j2-xiX"/>
-                <outlet property="segmentedControl" destination="3eh-s5-W9y" id="T5E-cJ-G5A"/>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="segmentedControl" destination="3eh-s5-W9y" id="JkR-cb-Ef6"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="UXd-Xa-Efc"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import CoreData
+
 
 class WinnersSelectionViewController: UIViewController {
     
@@ -18,23 +18,27 @@ class WinnersSelectionViewController: UIViewController {
     @IBOutlet weak var emptyStateLabel: UILabel!
     
     // MARK: - Properties
-    var event: UserEvent!
-    private var teams: [Team] = []
-    private var selectedTeams: [Int: Team] = [:]
-    private var filteredTeams: [Team] = []
+//    var event: UserEvent!
+    var eventId: UUID!
+
+    private var teams: [TeamWinnerDisplay] = []
+    private var filteredTeams: [TeamWinnerDisplay] = []
+    private var selectedTeams: [Int: TeamWinnerDisplay] = [:]
+
     private var publishButton: UIBarButtonItem!
     private var isSearching = false
     private let searchController = UISearchController(searchResultsController: nil)
     
     // MARK: - Initialization
-    init(event: UserEvent) {
-        self.event = event
+    init(eventId: UUID) {
+        self.eventId = eventId
         super.init(nibName: "WinnersSelectionViewController", bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -84,12 +88,24 @@ class WinnersSelectionViewController: UIViewController {
     }
     
     private func loadTeams() {
-        guard let eventId = event.id else { return }
-        teams = CoreDataManager.shared.getTeams(for: eventId)
-        filteredTeams = teams
-        collectionView.reloadData()
-        updateEmptyState()
-        updateNavigationSubtitle()
+        guard let eventId = eventId else { return }
+
+        Task {
+            do {
+                let teams = try await TeamService.shared.fetchTeamsForWinners(eventId: eventId)
+
+                DispatchQueue.main.async {
+                    self.teams = teams
+                    self.filteredTeams = teams
+                    self.collectionView.reloadData()
+                    self.updateEmptyState()
+                    self.updateNavigationSubtitle()
+                }
+
+            } catch {
+                print("❌ Failed to fetch teams:", error)
+            }
+        }
     }
     
     private func updateEmptyState() {
@@ -107,9 +123,8 @@ class WinnersSelectionViewController: UIViewController {
         if searchText.isEmpty {
             filteredTeams = teams
         } else {
-            filteredTeams = teams.filter { team in
-                guard let teamName = team.teamName else { return false }
-                return teamName.lowercased().contains(searchText.lowercased())
+            filteredTeams = teams.filter {
+                $0.teamName.lowercased().contains(searchText.lowercased())
             }
         }
         collectionView.reloadData()
@@ -171,37 +186,34 @@ class WinnersSelectionViewController: UIViewController {
     }
     
     // MARK: - Selection Logic
-    private func getPrizeRank(for team: Team) -> Int {
+    private func getPrizeRank(for team: TeamWinnerDisplay) -> Int {
         for (rank, selectedTeam) in selectedTeams {
-            if selectedTeam.id == team.id {
+            if selectedTeam.teamId == team.teamId {
                 return rank
             }
         }
         return 0
     }
+
     
-    private func handleTeamSelection(_ team: Team) {
+    private func handleTeamSelection(_ team: TeamWinnerDisplay) {
         let currentRank = getPrizeRank(for: team)
-        
+
         if currentRank > 0 {
-            // Deselect - remove from selected teams
             selectedTeams.removeValue(forKey: currentRank)
-            print("Deselected: \(team.teamName ?? "") from rank \(currentRank)")
         } else {
-            // Select - assign next available rank
             let nextRank = selectedTeams.count + 1
             if nextRank <= 3 {
                 selectedTeams[nextRank] = team
-                print("Selected: \(team.teamName ?? "") as rank \(nextRank)")
             } else {
                 showMaxSelectionAlert()
                 return
             }
         }
-        
+
         updateUIAfterSelection()
     }
-    
+
     private func updateUIAfterSelection() {
         collectionView.reloadData()
         updateNavigationSubtitle()
@@ -239,24 +251,19 @@ class WinnersSelectionViewController: UIViewController {
     }
     
     private func publishWinners() {
-        guard let eventId = event.id else { return }
-        
-        // Convert selectedTeams to [UUID: Int16] for CoreData
-        var winners: [UUID: Int16] = [:]
+        guard let eventId = eventId else { return }
+
+        var winners: [(teamId: UUID, rank: Int)] = []
         for (rank, team) in selectedTeams {
-            if let teamId = team.id {
-                winners[teamId] = Int16(rank)
-            }
+            winners.append((teamId: team.teamId, rank: rank))
         }
-        
-        let success = CoreDataManager.shared.publishWinners(for: eventId, winners: winners)
-        
-        if success {
-            showSuccessAlert()
-        } else {
-            showErrorAlert()
-        }
+
+        print("📤 Publishing winners for event:", eventId)
+        print(winners)
+
+        showSuccessAlert() // TEMP: simulate success
     }
+
     
     private func showSuccessAlert() {
         let alert = UIAlertController(
@@ -296,8 +303,14 @@ extension WinnersSelectionViewController: UICollectionViewDataSource, UICollecti
         
         let team = isSearching ? filteredTeams[indexPath.item] : teams[indexPath.item]
         let prizeRank = getPrizeRank(for: team)
-        
-        cell.configure(with: team, prizeRank: prizeRank)
+
+        cell.configure(
+            teamName: team.teamName,
+            leaderName: team.leaderName ?? "Unknown Leader",
+            memberCount: team.totalMembers,
+            prizeRank: prizeRank
+        )
+
         return cell
     }
     

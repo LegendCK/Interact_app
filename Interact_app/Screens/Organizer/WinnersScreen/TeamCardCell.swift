@@ -62,13 +62,19 @@ class TeamCardCell: UICollectionViewCell {
         prizeBadgeContainer.isHidden = true
     }
     
-    func configure(with team: Team, prizeRank: Int) {
-        teamNameLabel.text = team.teamName ?? "Unknown Team"
-        teamLeaderLabel.text = "Lead: \(team.teamLeader ?? "Unknown Leader")" 
-        memberCountLabel.text = "\(team.memberCount) members"
-        
+    func configure(
+        teamName: String,
+        leaderName: String,
+        memberCount: Int,
+        prizeRank: Int
+    ) {
+        teamNameLabel.text = teamName
+        teamLeaderLabel.text = "Lead: \(leaderName)"
+        memberCountLabel.text = "\(memberCount) members"
+
         updateAppearance(for: prizeRank)
     }
+
     
     private func updateAppearance(for prizeRank: Int) {
         switch prizeRank {
