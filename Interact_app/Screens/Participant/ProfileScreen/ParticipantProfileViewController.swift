@@ -15,7 +15,8 @@ final class ParticipantProfileViewController: UIViewController {
     @IBOutlet weak var editAboutButton: UIButton!
     @IBOutlet weak var viewLeaderboardContainer: UIView!
     @IBOutlet weak var qrCodeButton: UIButton!
-
+    @IBOutlet weak var skillsCollectionView: UICollectionView!
+    
     // Profile content
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var aboutTextView: UITextView!
@@ -31,6 +32,11 @@ final class ParticipantProfileViewController: UIViewController {
     private var fullAboutText: String = ""
     private var isAboutExpanded = false
     private let aboutTruncateLimit = 150
+
+    // MARK: - Skills State
+    private var displayedSkills: [String] = []
+    private let maxVisibleSkills = 5
+    private var emptySkillsLabel: UILabel!
 
     // MARK: - Styling
     private var aboutBaseAttributes: [NSAttributedString.Key: Any] {
@@ -95,7 +101,6 @@ final class ParticipantProfileViewController: UIViewController {
 
             present(navController, animated: true)
         }
-
     }
 
     // MARK: - UI Setup
@@ -119,7 +124,7 @@ final class ParticipantProfileViewController: UIViewController {
         totalPointsView.layer.cornerRadius = 10
         totalWinsView.layer.cornerRadius = 10
 
-        // ✅ Make profile image container and image circular
+        //Make profile image container and image circular
         participantProfileImageContainer.layer.cornerRadius = participantProfileImageContainer.bounds.width / 2
         participantProfileImageContainer.clipsToBounds = true
         
@@ -147,7 +152,53 @@ final class ParticipantProfileViewController: UIViewController {
         aboutTextView.textAlignment = .justified
 
         editAboutButton.addTarget(self, action: #selector(editAboutTapped), for: .touchUpInside)
+        
+        //Configure Skills Collection View from XIB
+        setupSkillsCollectionView()
     }
+    
+    // MARK: - Skills Collection View Setup
+    private func setupSkillsCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = 8
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.sectionInset = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        
+        skillsCollectionView.collectionViewLayout = layout
+        skillsCollectionView.backgroundColor = .clear
+        skillsCollectionView.showsHorizontalScrollIndicator = false
+        skillsCollectionView.isScrollEnabled = false
+        skillsCollectionView.delegate = self
+        skillsCollectionView.dataSource = self
+        
+        skillsCollectionView.register(SkillPillCell.self,
+                                       forCellWithReuseIdentifier: SkillPillCell.reuseIdentifier)
+        
+        //Setup empty state label
+        emptySkillsLabel = UILabel()
+        emptySkillsLabel.text = "No skills added yet"
+        emptySkillsLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        emptySkillsLabel.textColor = UIColor(
+            red: 142/255,
+            green: 142/255,
+            blue: 147/255,
+            alpha: 1
+        )
+        emptySkillsLabel.textAlignment = .center
+        emptySkillsLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptySkillsLabel.isHidden = true
+        
+        skillsView.addSubview(emptySkillsLabel)
+        
+        NSLayoutConstraint.activate([
+            emptySkillsLabel.leadingAnchor.constraint(equalTo: skillsView.leadingAnchor, constant: 16),
+            emptySkillsLabel.trailingAnchor.constraint(equalTo: skillsView.trailingAnchor, constant: -16),
+            emptySkillsLabel.centerYAnchor.constraint(equalTo: skillsView.centerYAnchor)
+        ])
+    }
+    
     // MARK: - ViewModel Binding
     private func bindViewModel() {
 
@@ -165,7 +216,6 @@ final class ParticipantProfileViewController: UIViewController {
     }
 
     // MARK: - UI Update
-    // MARK: - UI Update
     private func updateUI() {
         guard let profile = viewModel.profile else { return }
 
@@ -179,6 +229,9 @@ final class ParticipantProfileViewController: UIViewController {
         
         // Load profile image
         loadProfileImage(from: profile.avatarUrl)
+        
+        //Update skills display
+        updateSkillsDisplay()
     }
 
     // MARK: - Load Profile Image
@@ -205,6 +258,34 @@ final class ParticipantProfileViewController: UIViewController {
                 self?.participantProfileImage.contentMode = .scaleAspectFill
             }
         }.resume()
+    }
+    
+    // MARK: - Update Skills Display
+    private func updateSkillsDisplay() {
+        guard let profile = viewModel.profile else { return }
+        
+        let skills = profile.skills
+        
+        if skills.isEmpty {
+            //Show empty state
+            displayedSkills = []
+            emptySkillsLabel.isHidden = false
+            skillsCollectionView.isHidden = true
+        } else {
+            //Show skills
+            emptySkillsLabel.isHidden = true
+            skillsCollectionView.isHidden = false
+            
+            if skills.count > maxVisibleSkills {
+                displayedSkills = Array(skills.prefix(maxVisibleSkills))
+                let remaining = skills.count - maxVisibleSkills
+                displayedSkills.append("+\(remaining)")
+            } else {
+                displayedSkills = skills
+            }
+        }
+        
+        skillsCollectionView.reloadData()
     }
 
     // MARK: - About Text Logic
@@ -263,7 +344,6 @@ final class ParticipantProfileViewController: UIViewController {
         }
 
         aboutTextView.attributedText = attributedText
-//        aboutTextView.textContainer.maximumNumberOfLines = isAboutExpanded ? 0 : 3
         aboutTextView.invalidateIntrinsicContentSize()
     }
 
@@ -320,16 +400,35 @@ final class ParticipantProfileViewController: UIViewController {
     // MARK: - Modal Presentation
     private func presentEditSkillsModal() {
         let skillsVC = EditSkillsModalTableViewController()
+        
+        // Pass current skills
+        if let currentSkills = viewModel.profile?.skills {
+            skillsVC.initialSkills = currentSkills
+        }
+        
+        // Callback to receive updated skills
+        skillsVC.onSkillsUpdated = { [weak self] updatedSkillNames in
+            guard let self = self else { return }
+            
+            // Save to Supabase
+            self.viewModel.updateProfile(fields: ["skills": updatedSkillNames]) { success in
+                if success {
+                    print("Skills updated successfully")
+                } else {
+                    print("Failed to save skills to Supabase")
+                }
+            }
+        }
+        
         let navController = UINavigationController(rootViewController: skillsVC)
-
         navController.modalPresentationStyle = .pageSheet
-
+        
         if let sheet = navController.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
-
+        
         present(navController, animated: true)
     }
 }
@@ -350,5 +449,36 @@ extension ParticipantProfileViewController: UITextViewDelegate {
             return false
         }
         return true
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+extension ParticipantProfileViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView,
+                       numberOfItemsInSection section: Int) -> Int {
+        return displayedSkills.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                       cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SkillPillCell.reuseIdentifier,
+            for: indexPath
+        ) as! SkillPillCell
+        
+        cell.configure(with: displayedSkills[indexPath.item])
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ParticipantProfileViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView,
+                       didSelectItemAt indexPath: IndexPath) {
+        // Tap any pill to open edit modal
+        presentEditSkillsModal()
     }
 }

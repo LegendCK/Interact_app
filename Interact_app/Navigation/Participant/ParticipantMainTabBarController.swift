@@ -28,12 +28,15 @@ final class ParticipantMainTabBarController: UITabBarController {
 
     private func setupTabs() {
 
-        let exploreVC = ParticipantExplore1ViewController()
+        let exploreVC = ParticipantExploreViewController()
+        exploreVC.viewModel = ParticipantProfileViewModel(
+            authManager: authManager
+        )
         let eventsVC = ParticipantEventsViewController()
         let leaderboardVC = ParticipantLeaderboardViewController()
         let chatVC = ParticipantChatsViewController()
 
-        // ✅ Profile VC with dependency injection
+        //Profile VC with dependency injection
         let profileVC = ParticipantProfileViewController(
             nibName: "ParticipantProfileViewController",
             bundle: nil

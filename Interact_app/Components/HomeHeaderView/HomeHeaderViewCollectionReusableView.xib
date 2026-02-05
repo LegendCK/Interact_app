@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomeHeaderViewCollectionReusableView" customModule="Interact_app" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="HomeHeaderViewCollectionReusableView" customModule="Interact_app" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ean-qT-GLw">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A8N-ES-26b">
+                            <rect key="frame" x="16" y="16" width="42" height="40"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MkZ-f8-BXW">
+                            <rect key="frame" x="264" y="16" width="40" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="JBx-k7-Sjc"/>
+                                <constraint firstAttribute="width" constant="40" id="LgO-u3-olG"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="bell" catalog="system"/>
+                        </button>
+                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="ykW-hI-sp0">
+                            <rect key="frame" x="16" y="72" width="288" height="12"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="A8N-ES-26b" firstAttribute="leading" secondItem="ean-qT-GLw" secondAttribute="leading" constant="16" id="3ed-OO-d7n"/>
+                        <constraint firstItem="ykW-hI-sp0" firstAttribute="leading" secondItem="ean-qT-GLw" secondAttribute="leading" constant="16" id="KR2-lv-MrX"/>
+                        <constraint firstAttribute="bottom" secondItem="ykW-hI-sp0" secondAttribute="bottom" constant="16" id="KSc-7X-TZS"/>
+                        <constraint firstItem="MkZ-f8-BXW" firstAttribute="centerY" secondItem="A8N-ES-26b" secondAttribute="centerY" id="Mey-wW-Pm4"/>
+                        <constraint firstAttribute="trailing" secondItem="MkZ-f8-BXW" secondAttribute="trailing" constant="16" id="bgQ-ug-WVw"/>
+                        <constraint firstItem="MkZ-f8-BXW" firstAttribute="top" secondItem="ean-qT-GLw" secondAttribute="top" constant="16" id="dY7-6h-VbH"/>
+                        <constraint firstItem="ykW-hI-sp0" firstAttribute="top" secondItem="A8N-ES-26b" secondAttribute="bottom" constant="16" id="eUu-cq-MPf"/>
+                        <constraint firstAttribute="trailing" secondItem="ykW-hI-sp0" secondAttribute="trailing" constant="16" id="xQ8-fJ-bNQ"/>
+                        <constraint firstItem="A8N-ES-26b" firstAttribute="top" secondItem="ean-qT-GLw" secondAttribute="top" constant="16" id="yKf-z1-khc"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstItem="VXr-Tz-HHm" firstAttribute="trailing" secondItem="ean-qT-GLw" secondAttribute="trailing" id="FXA-nG-2w9"/>
+                <constraint firstItem="ean-qT-GLw" firstAttribute="leading" secondItem="VXr-Tz-HHm" secondAttribute="leading" id="MKs-41-iJA"/>
+                <constraint firstAttribute="bottom" secondItem="ean-qT-GLw" secondAttribute="bottom" id="XaG-90-qLx"/>
+                <constraint firstItem="ean-qT-GLw" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="nyr-Ug-GVC"/>
+            </constraints>
+            <connections>
+                <outlet property="greetingsLabel" destination="A8N-ES-26b" id="cpz-B7-n63"/>
+                <outlet property="notificationButton" destination="MkZ-f8-BXW" id="nBs-49-bcb"/>
+                <outlet property="searchBar" destination="ykW-hI-sp0" id="Mf7-Ue-VlD"/>
+            </connections>
+            <point key="canvasLocation" x="44" y="102"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="bell" catalog="system" width="125" height="128"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
