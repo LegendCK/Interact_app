@@ -105,7 +105,7 @@ class ParticipantEventsViewController: UIViewController {
     
     // MARK: - Network Calls (Debug Version)
         @objc private func fetchEvents() {
-            print("🔵 Attempting to fetch events...") // Debug 1
+            print("Attempting to fetch events...") // Debug 1
             
             if !refreshControl.isRefreshing {
                 // Optional: Show spinner
@@ -116,7 +116,7 @@ class ParticipantEventsViewController: UIViewController {
                     // 1. Call the Service
                     let fetchedEvents = try await EventService.shared.fetchUpcomingEvents()
                     
-                    print("🟢 API Success! Fetched \(fetchedEvents.count) events.") // Debug 2
+                    print("API Success! Fetched \(fetchedEvents.count) events.") // Debug 2
                     
                     // 2. Map Data
                     self.events = fetchedEvents.map { event in
@@ -127,7 +127,7 @@ class ParticipantEventsViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.filteredEvents = self.events
                         
-                        print("📊 Reloading CollectionView with \(self.filteredEvents.count) items.") // Debug 3
+                        print("Reloading CollectionView with \(self.filteredEvents.count) items.") // Debug 3
                         
                         self.collectionView.reloadData()
                         self.refreshControl.endRefreshing()
@@ -136,7 +136,7 @@ class ParticipantEventsViewController: UIViewController {
                         print("📏 CollectionView Frame: \(self.collectionView.frame)")
                     }
                 } catch {
-                    print("❌ Error fetching events: \(error)")
+                    print("Error fetching events: \(error)")
                     DispatchQueue.main.async {
                         self.refreshControl.endRefreshing()
                         self.showErrorAlert(message: error.localizedDescription)

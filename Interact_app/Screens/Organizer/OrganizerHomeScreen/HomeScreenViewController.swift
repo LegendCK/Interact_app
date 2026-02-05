@@ -23,48 +23,10 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var seeAllButton: UIButton!
     
-    
-    
     // MARK: - Properties
     private var ongoingEvents: [UserEvent] = []
+    private var featuredEvents: [Event] = [] // Changed to Event model from Supabase
     private var backgroundGradientLayer: CAGradientLayer?
-    
-    enum EventStatus {
-        case active
-        case ended
-    }
-
-    struct Event {
-        let image: UIImage?
-        let title: String
-        let datetime: String
-        let venue: String
-        let status: EventStatus
-    }
-    
-    let events: [Event] = [
-        Event(
-            image: UIImage(named: "events"),
-            title: "Ossome Hacks 2.0",
-            datetime: "Fri, 31 Oct 2025 · 9:00 am – 6:00 pm",
-            venue: "SRMIST KTR, Chennai",
-            status: .active
-        ),
-        Event(
-            image: UIImage(named: "events"),
-            title: "AI Innovation Summit 2025",
-            datetime: "Mon, 21 Jul 2025 · 10:00 am – 5:00 pm",
-            venue: "Chennai Trade Center",
-            status: .ended
-        ),
-        Event(
-            image: UIImage(named: "events"),
-            title: "HackFest 2026",
-            datetime: "Fri, 15 Jan 2026 · 9:00 am – 9:00 pm",
-            venue: "Bangalore Tech Park",
-            status: .active
-        )
-    ]
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -76,12 +38,13 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         setupOngoingEventsCollectionView()
         setupSeeAllButton()
         
-        // Call this once when app launches
-//        CoreDataManager.shared.populateDummyParticipantsForAllEvents()
-//        CoreDataManager.shared.populateDummyTeamsForAllEvents()
-        let eventId = UUID(uuidString: "21596453-DB99-4B26-B051-D423ACFD3CAC")!
-        CoreDataManager.shared.deleteEventAndParticipants(by: eventId)
+        // Initialize Supabase client if needed
+        initializeSupabaseIfNeeded()
         
+        // Fetch featured events from Supabase
+        fetchFeaturedEvents()
+        
+        // Load ongoing events from CoreData
         loadOngoingEvents()
         updatePageControls()
         
@@ -102,6 +65,42 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         backgroundGradientLayer?.frame = view.bounds
+    }
+
+    // MARK: - Supabase Initialization
+    private func initializeSupabaseIfNeeded() {
+        if EventService.shared.client == nil {
+            print("⚠️ Initializing Supabase Client in Organizer Home.")
+            
+            do {
+                let config = try SupabaseConfig()
+                EventService.shared.client = SupabaseClient(config: config)
+                print("✅ Supabase Client initialized successfully.")
+            } catch {
+                print("❌ Failed to load Supabase Config: \(error)")
+            }
+        }
+    }
+    
+    // MARK: - Fetch Featured Events
+    private func fetchFeaturedEvents() {
+        Task {
+            do {
+                // Fetch events from Supabase
+                let fetchedEvents = try await EventService.shared.fetchUpcomingEvents()
+                
+                // Take only first 3-4 events for featured section
+                self.featuredEvents = Array(fetchedEvents.prefix(4))
+                
+                DispatchQueue.main.async {
+                    self.featuredEventsCollectionView.reloadData()
+                    self.updatePageControls()
+                }
+            } catch {
+                print("Error fetching featured events: \(error)")
+                // Optionally show error to user
+            }
+        }
     }
 
     // MARK: - Background
@@ -158,14 +157,14 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     private func setupSeeAllButton() {
-            // Add target action to the button
-            seeAllButton.addTarget(self, action: #selector(seeAllButtonTapped), for: .touchUpInside)
-        }
+        // Add target action to the button
+        seeAllButton.addTarget(self, action: #selector(seeAllButtonTapped), for: .touchUpInside)
+    }
     
     @objc private func seeAllButtonTapped() {
-            // Simply switch to Events tab (index 1)
-            tabBarController?.selectedIndex = 1
-        }
+        // Simply switch to Events tab (index 1)
+        tabBarController?.selectedIndex = 1
+    }
         
     
     // MARK: - Featured Events Collection View
@@ -222,33 +221,11 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         // Show/hide based on empty state
         verificationCard.isHidden = !ongoingEvents.isEmpty
         OngoingEventCollectionView.isHidden = ongoingEvents.isEmpty
-        
-//        OngoingEventCollectionView.backgroundView = ongoingEvents.isEmpty ? createEmptyStateView() : nil
     }
-    
-//    private func createEmptyStateView() -> UIView {
-//        let fallbackCard = VerificationCard()
-//        fallbackCard.translatesAutoresizingMaskIntoConstraints = false
-//        
-//        // Create a container view
-//        let containerView = UIView()
-//        containerView.addSubview(fallbackCard)
-//        
-//        // Set constraints between fallbackCard and containerView
-//        NSLayoutConstraint.activate([
-//            fallbackCard.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-//            fallbackCard.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-//            fallbackCard.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-//            fallbackCard.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-//            fallbackCard.heightAnchor.constraint(equalToConstant: 220)
-//        ])
-//        
-//        return containerView
-//    }
 
     // MARK: - Page Control Updates
     private func updatePageControls() {
-        featuredPageControl.numberOfPages = events.count
+        featuredPageControl.numberOfPages = featuredEvents.count
         ongoingPageControl.numberOfPages = ongoingEvents.count
         ongoingPageControl.isHidden = ongoingEvents.isEmpty
     }
@@ -256,7 +233,7 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     private func updateFeaturedPageControl() {
         let width = featuredEventsCollectionView.frame.width
         let page = Int((featuredEventsCollectionView.contentOffset.x + width / 2) / width)
-        featuredPageControl.currentPage = max(0, min(page, events.count - 1))
+        featuredPageControl.currentPage = max(0, min(page, featuredEvents.count - 1))
     }
     
     private func updateOngoingPageControl() {
@@ -277,9 +254,9 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: - Collection View DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == OngoingEventCollectionView {
-            return ongoingEvents.isEmpty ? 0 : ongoingEvents.count // Return 0 when empty to prevent cells
+            return ongoingEvents.isEmpty ? 0 : ongoingEvents.count
         }
-        return events.count
+        return featuredEvents.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -295,15 +272,40 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
             return cell
             
         } else {
+            // Featured Events - Using real data from Supabase
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EventCardCell", for: indexPath) as! EventCardCell
-            let event = events[indexPath.item]
-            cell.eventImageView.image = event.image
+            let event = featuredEvents[indexPath.item]
+            
+            // Configure with real event data
             cell.titleLabel.text = event.title
-            cell.dateLabel.text = event.datetime
-            cell.venueLabel.text = event.venue
+            cell.dateLabel.text = event.startDate.toEventString()
+            cell.venueLabel.text = event.locationType == .online ? "Online Event" : (event.location ?? "TBA")
             cell.shareButton.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
+            
+            // Load event image
+            if !event.thumbnailUrl.isEmpty, let imageUrl = URL(string: event.thumbnailUrl) {
+                loadEventImage(into: cell.eventImageView, from: imageUrl)
+            } else {
+                cell.eventImageView.image = UIImage(named: "event_placeholder")
+            }
+            
             return cell
         }
+    }
+    
+    // MARK: - Helper Methods
+    private func loadEventImage(into imageView: UIImageView, from url: URL) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil, let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    imageView.image = UIImage(named: "event_placeholder")
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                imageView.image = image
+            }
+        }.resume()
     }
 
     // MARK: - Layout
@@ -333,14 +335,12 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         if collectionView == OngoingEventCollectionView {
             return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         } else {
-            return UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16) }
+            return UIEdgeInsets(top: 0, left: 16, bottom: 8, right: 16)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if collectionView == OngoingEventCollectionView {
-            return 16
-        } else {
-            return 16 }
+        return 16
     }
 
     // MARK: - Navigation
@@ -350,5 +350,18 @@ class HomeScreenViewController: UIViewController, UICollectionViewDataSource, UI
         detailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailVC, animated: true)
     }
+    
+    // MARK: - Collection View Delegate
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Only handle tap for featured events collection view
+        if collectionView == featuredEventsCollectionView {
+            // Navigate to Participant Event Detail (since organizers can view participant events too)
+            let selectedEvent = featuredEvents[indexPath.item]
+            let detailVC = ParticipantEventDetailViewController(nibName: "ParticipantEventDetailViewController", bundle: nil)
+            detailVC.event = selectedEvent
+            detailVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(detailVC, animated: true)
+        }
+        // OngoingEventCollectionView tap is already handled by cell's onViewEventTapped closure
+    }
 }
-

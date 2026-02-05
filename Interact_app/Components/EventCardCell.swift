@@ -22,18 +22,7 @@ class EventCardCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        eventImageView.layer.cornerRadius = 8
-//        eventImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-//        eventImageView.clipsToBounds = true
-//
-//        contentView.layer.cornerRadius = 12
-//        contentView.layer.masksToBounds = true
-//        contentView.layer.shadowColor = UIColor.darkGray.withAlphaComponent(0.5).cgColor
-//        contentView.layer.shadowOpacity = 1
-//        contentView.layer.shadowOffset = CGSize(width: 0, height: 6)
-//        contentView.layer.shadowRadius = 8
-
-        // Initialization code
+        eventImageView.layer.cornerRadius = 12
         setupUI()
     }
     

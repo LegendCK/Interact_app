@@ -14,7 +14,7 @@ class ParticipantExploreViewController: UIViewController {
     // MARK: - ViewModel
     var viewModel: ParticipantProfileViewModel!
     
-    // MARK: - Data Arrays (temporary mock data)
+    // MARK: - Data Arrays
     private let roles = ["UI/UX", "Web Dev", "App Dev", "AI/ML", "Cyber"]
     private let roleIcons = ["paintbrush.fill", "laptopcomputer", "iphone", "cpu", "lock.shield.fill"]
     
@@ -26,16 +26,14 @@ class ParticipantExploreViewController: UIViewController {
         ("Dev Squad", 4, "ETHIndia 2025")
     ]
     
-    private var events: [(title: String, date: String, venue: String, image: String)] = [
-        ("HackNITR 5.0", "Feb 15-16, 2025", "NIT Rourkela", "Hackpril26"),
-        ("Smart India", "March 5, 2025", "Online", "Hackpril26"),
-        ("ETHIndia", "April 20-22, 2025", "Bengaluru", "Hackpril26")
-    ]
+    // Real Event data from Supabase
+    private var events: [Event] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         loadProfile()
+        fetchEvents()
     }
     
     // MARK: - Load Profile
@@ -48,6 +46,26 @@ class ParticipantExploreViewController: UIViewController {
         
         viewModel.onError = { [weak self] errorMessage in
             print("Profile error: \(errorMessage)")
+        }
+    }
+    
+    // MARK: - Fetch Events
+    private func fetchEvents() {
+        Task {
+            do {
+                // Fetch events from Supabase
+                let fetchedEvents = try await EventService.shared.fetchUpcomingEvents()
+                
+                // Take only first 3-4 events for home screen
+                self.events = Array(fetchedEvents.prefix(4))
+                
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            } catch {
+                print("Error fetching events for home screen: \(error)")
+                // Optionally show error to user
+            }
         }
     }
     
@@ -272,6 +290,21 @@ class ParticipantExploreViewController: UIViewController {
         return section
     }
     
+    // MARK: - Helper Methods
+    private func loadEventImage(into imageView: UIImageView, from url: URL) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil, let image = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    imageView.image = UIImage(named: "event_placeholder")
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                imageView.image = image
+            }
+        }.resume()
+    }
+    
     // MARK: - Navigation Actions
     @IBAction func notificationsButtonTapped(_ sender: UIButton) {
         let vc = NotificationsViewController()
@@ -291,8 +324,8 @@ class ParticipantExploreViewController: UIViewController {
     }
     
     private func seeAllEventsTapped() {
-        print("See all events tapped")
-        // Navigate to events list screen
+        // Navigate to Events tab
+        tabBarController?.selectedIndex = 1 // Adjust index based on your tab bar setup
     }
 }
 
@@ -337,13 +370,22 @@ extension ParticipantExploreViewController: UICollectionViewDataSource {
             return cell
             
         case 4:
-            // Events Section
+            // Events Section - Using real data from Supabase
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EventCardCell", for: indexPath) as! EventCardCell
             let event = events[indexPath.item]
+            
+            // Configure with real event data
             cell.titleLabel.text = event.title
-            cell.dateLabel.text = event.date
-            cell.venueLabel.text = event.venue
-            cell.eventImageView.image = UIImage(named: event.image)
+            cell.dateLabel.text = event.startDate.toEventString()
+            cell.venueLabel.text = event.locationType == .online ? "Online Event" : (event.location ?? "TBA")
+            
+            // Load event image
+            if !event.thumbnailUrl.isEmpty, let imageUrl = URL(string: event.thumbnailUrl) {
+                loadEventImage(into: cell.eventImageView, from: imageUrl)
+            } else {
+                cell.eventImageView.image = UIImage(named: "event_placeholder")
+            }
+            
             return cell
             
         default:
@@ -420,12 +462,24 @@ extension ParticipantExploreViewController: UICollectionViewDelegate {
         switch indexPath.section {
         case 1:
             print("Selected role: \(roles[indexPath.item])")
+            // TODO: Navigate to role filter or connections with that role
+            
         case 2:
             print("Selected partner banner")
+            // TODO: Navigate to partner details or website
+            
         case 3:
             print("Selected team: \(teams[indexPath.item].name)")
+            // TODO: Navigate to team details
+            
         case 4:
-            print("Selected event: \(events[indexPath.item].title)")
+            // Navigate to Event Detail
+            let selectedEvent = events[indexPath.item]
+            let detailVC = ParticipantEventDetailViewController(nibName: "ParticipantEventDetailViewController", bundle: nil)
+            detailVC.event = selectedEvent
+            detailVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(detailVC, animated: true)
+            
         default:
             break
         }
