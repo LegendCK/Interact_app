@@ -23,7 +23,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var middleNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
-    @IBOutlet weak var rolesTextField: UITextField!
+    @IBOutlet weak var primaryRoleTextField: UITextField!
+    @IBOutlet weak var secondaryRoleTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var academicYearTextField: UITextField!
     @IBOutlet weak var collegeTextField: UITextField!
@@ -32,7 +33,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     @IBOutlet weak var firstNameErrorLabel: UILabel!
     @IBOutlet weak var middleNameErrorLabel: UILabel!
     @IBOutlet weak var lastNameErrorLabel: UILabel!
-    @IBOutlet weak var rolesErrorLabel: UILabel!
+    @IBOutlet weak var primaryRoleErrorLabel: UILabel!
+    @IBOutlet weak var secondaryRoleErrorLabel: UILabel!
     @IBOutlet weak var genderErrorLabel: UILabel!
     @IBOutlet weak var academicYearErrorLabel: UILabel!
     @IBOutlet weak var collegeErrorLabel: UILabel!
@@ -64,13 +66,15 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     ]
 
     // MARK: - Dropdown Tables
-    private let rolesTableView = UITableView()
+    private let primaryRoleTableView = UITableView()
+    private let secondaryRoleTableView = UITableView()
     private let genderTableView = UITableView()
     private let academicYearTableView = UITableView()
     private let collegeTableView = UITableView()
 
     // MARK: - Selected Values
-    private var selectedRoles = Set<String>()
+    private var selectedPrimaryRole: String?
+    private var selectedSecondaryRole: String?
     private var selectedGender: String?
     private var selectedAcademicYear: String?
     private var selectedCollege: String?
@@ -79,7 +83,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     private var isFirstNameValid = false
     private var isMiddleNameValid = true
     private var isLastNameValid = false
-    private var isRolesValid = false
+    private var isPrimaryRoleValid = false
+    private var isSecondaryRoleValid = false
     private var isGenderValid = false
     private var isAcademicYearValid = false
     private var isCollegeValid = false
@@ -113,8 +118,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     private func hideAllErrorLabels() {
         [
             firstNameErrorLabel, middleNameErrorLabel, lastNameErrorLabel,
-            rolesErrorLabel, genderErrorLabel, academicYearErrorLabel,
-            collegeErrorLabel, locationErrorLabel
+            primaryRoleErrorLabel, secondaryRoleErrorLabel, genderErrorLabel,
+            academicYearErrorLabel, collegeErrorLabel, locationErrorLabel
         ].forEach { $0?.isHidden = true }
     }
 
@@ -142,7 +147,7 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     private func setupTextFields() {
         let fields = [
             firstNameTextField, middleNameTextField, lastNameTextField,
-            rolesTextField, genderTextField,
+            primaryRoleTextField, secondaryRoleTextField, genderTextField,
             academicYearTextField, collegeTextField, locationTextField
         ]
 
@@ -169,7 +174,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
     // MARK: - Dropdown Setup
     private func setupDropdownTables() {
-        let tables = [rolesTableView, genderTableView, academicYearTableView, collegeTableView]
+        let tables = [primaryRoleTableView, secondaryRoleTableView, genderTableView,
+                     academicYearTableView, collegeTableView]
 
         for table in tables {
             table.layer.cornerRadius = 8
@@ -185,7 +191,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
         setupDropdownConstraints()
 
-        rolesTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleRoles)))
+        primaryRoleTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(togglePrimaryRole)))
+        secondaryRoleTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleSecondaryRole)))
         genderTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleGender)))
         academicYearTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleAcademic)))
         collegeTextField.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleCollege)))
@@ -193,7 +200,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
     private func setupDropdownConstraints() {
         let map: [(UITableView, UITextField)] = [
-            (rolesTableView, rolesTextField),
+            (primaryRoleTableView, primaryRoleTextField),
+            (secondaryRoleTableView, secondaryRoleTextField),
             (genderTableView, genderTextField),
             (academicYearTableView, academicYearTextField),
             (collegeTableView, collegeTextField)
@@ -218,7 +226,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 
     // MARK: - Dropdown Arrows
     private func addDropdownArrows() {
-        [rolesTextField, genderTextField, academicYearTextField, collegeTextField].forEach {
+        [primaryRoleTextField, secondaryRoleTextField, genderTextField,
+         academicYearTextField, collegeTextField].forEach {
             addArrowIcon(to: $0!)
         }
     }
@@ -266,7 +275,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     }
 
     // MARK: - Toggle Dropdowns
-    @objc private func toggleRoles() { toggle(table: rolesTableView, field: rolesTextField) }
+    @objc private func togglePrimaryRole() { toggle(table: primaryRoleTableView, field: primaryRoleTextField) }
+    @objc private func toggleSecondaryRole() { toggle(table: secondaryRoleTableView, field: secondaryRoleTextField) }
     @objc private func toggleGender() { toggle(table: genderTableView, field: genderTextField) }
     @objc private func toggleAcademic() { toggle(table: academicYearTableView, field: academicYearTextField) }
     @objc private func toggleCollege() { toggle(table: collegeTableView, field: collegeTextField) }
@@ -279,12 +289,14 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     }
 
     private func closeAllDropdowns() {
-        rolesTableView.isHidden = true
+        primaryRoleTableView.isHidden = true
+        secondaryRoleTableView.isHidden = true
         genderTableView.isHidden = true
         academicYearTableView.isHidden = true
         collegeTableView.isHidden = true
 
-        rotateArrow(for: rolesTextField, open: false)
+        rotateArrow(for: primaryRoleTextField, open: false)
+        rotateArrow(for: secondaryRoleTextField, open: false)
         rotateArrow(for: genderTextField, open: false)
         rotateArrow(for: academicYearTextField, open: false)
         rotateArrow(for: collegeTextField, open: false)
@@ -309,7 +321,7 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
     // MARK: - Validation
     @objc func textFieldDidEndEditing(_ tf: UITextField) {
         validateTextField(tf)
-        validateAllFields()
+        _ = validateAllFields()
     }
 
     private func validateTextField(_ tf: UITextField) {
@@ -327,9 +339,19 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
             isLastNameValid = text.count >= 2
             updateError(lastNameErrorLabel, isLastNameValid, "Enter valid last name")
 
-        case rolesTextField:
-            isRolesValid = selectedRoles.count >= 1 && selectedRoles.count <= 3
-            updateError(rolesErrorLabel, isRolesValid, "Select 1–3 roles")
+        case primaryRoleTextField:
+            isPrimaryRoleValid = selectedPrimaryRole != nil
+            updateError(primaryRoleErrorLabel, isPrimaryRoleValid, "Select primary role")
+
+        case secondaryRoleTextField:
+            // Secondary role is optional, but if selected, must be different from primary
+            if selectedSecondaryRole != nil && selectedSecondaryRole == selectedPrimaryRole {
+                isSecondaryRoleValid = false
+                updateError(secondaryRoleErrorLabel, isSecondaryRoleValid, "Secondary role must differ from primary")
+            } else {
+                isSecondaryRoleValid = true
+                updateError(secondaryRoleErrorLabel, isSecondaryRoleValid, "")
+            }
 
         case genderTextField:
             isGenderValid = selectedGender != nil
@@ -361,7 +383,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
             isFirstNameValid &&
             isMiddleNameValid &&
             isLastNameValid &&
-            isRolesValid &&
+            isPrimaryRoleValid &&
+            isSecondaryRoleValid &&
             isGenderValid &&
             isAcademicYearValid &&
             isCollegeValid &&
@@ -448,7 +471,8 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
             "first_name": firstNameTextField.text ?? "",
             "middle_name": middleNameTextField.text ?? "",
             "last_name": lastNameTextField.text ?? "",
-            "roles": Array(selectedRoles),        // ARRAY column in Supabase
+            "primary_role": selectedPrimaryRole ?? "",
+            "secondary_role": selectedSecondaryRole ?? "",
             "gender": selectedGender ?? "",
             "academic_year": selectedAcademicYear ?? "",
             "college": selectedCollege ?? "",
@@ -486,8 +510,18 @@ class ParticipantProfileSetupViewController: UIViewController, UITextFieldDelega
 // MARK: - TableView
 extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableViewDataSource {
 
+    // MARK: - Helper Methods
+    private func getFilteredRolesForPrimary() -> [String] {
+        return roles.filter { $0 != selectedSecondaryRole }
+    }
+
+    private func getFilteredRolesForSecondary() -> [String] {
+        return roles.filter { $0 != selectedPrimaryRole }
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == rolesTableView { return roles.count }
+        if tableView == primaryRoleTableView { return getFilteredRolesForPrimary().count }
+        if tableView == secondaryRoleTableView { return getFilteredRolesForSecondary().count }
         if tableView == genderTableView { return genders.count }
         if tableView == academicYearTableView { return academicYears.count }
         return colleges.count
@@ -496,10 +530,17 @@ extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
-        if tableView == rolesTableView {
-            let role = roles[indexPath.row]
+        if tableView == primaryRoleTableView {
+            let filteredRoles = getFilteredRolesForPrimary()
+            let role = filteredRoles[indexPath.row]
             cell.textLabel?.text = role
-            cell.accessoryType = selectedRoles.contains(role) ? .checkmark : .none
+            cell.accessoryType = selectedPrimaryRole == role ? .checkmark : .none
+        }
+        else if tableView == secondaryRoleTableView {
+            let filteredRoles = getFilteredRolesForSecondary()
+            let role = filteredRoles[indexPath.row]
+            cell.textLabel?.text = role
+            cell.accessoryType = selectedSecondaryRole == role ? .checkmark : .none
         }
         else if tableView == genderTableView {
             cell.textLabel?.text = genders[indexPath.row]
@@ -516,22 +557,31 @@ extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableVie
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        if tableView == rolesTableView {
-            let role = roles[indexPath.row]
+        if tableView == primaryRoleTableView {
+            let filteredRoles = getFilteredRolesForPrimary()
+            let role = filteredRoles[indexPath.row]
+            selectedPrimaryRole = role
+            primaryRoleTextField.text = role
+            validateTextField(primaryRoleTextField)
+            // Re-validate secondary role in case they're the same
+            validateTextField(secondaryRoleTextField)
+            closeAllDropdowns()
+            primaryRoleTableView.reloadData()
+            secondaryRoleTableView.reloadData()
+            _ = validateAllFields()
+            return
+        }
 
-            if selectedRoles.contains(role) {
-                selectedRoles.remove(role)
-            } else if selectedRoles.count < 3 {
-                selectedRoles.insert(role)
-            } else {
-                showAlert("Limit Reached", "You can select up to 3 roles.")
-                return
-            }
-
-            rolesTextField.text = selectedRoles.joined(separator: ", ")
-            validateTextField(rolesTextField)
-            tableView.reloadRows(at: [indexPath], with: .none)
-            validateAllFields()  // This is already here
+        if tableView == secondaryRoleTableView {
+            let filteredRoles = getFilteredRolesForSecondary()
+            let role = filteredRoles[indexPath.row]
+            selectedSecondaryRole = role
+            secondaryRoleTextField.text = role
+            validateTextField(secondaryRoleTextField)
+            closeAllDropdowns()
+            primaryRoleTableView.reloadData()
+            secondaryRoleTableView.reloadData()
+            _ = validateAllFields()
             return
         }
 
@@ -554,18 +604,7 @@ extension ParticipantProfileSetupViewController: UITableViewDelegate, UITableVie
         }
 
         closeAllDropdowns()
-        
-        // ADD VALIDATION FOR ALL FIELDS HERE
-        validateTextField(firstNameTextField)
-        validateTextField(middleNameTextField)
-        validateTextField(lastNameTextField)
-        validateTextField(rolesTextField)
-        validateTextField(genderTextField)
-        validateTextField(academicYearTextField)
-        validateTextField(collegeTextField)
-        validateTextField(locationTextField)
-        
-        validateAllFields()  // Final check
+        _ = validateAllFields()
         tableView.reloadData()
     }
 }
@@ -590,7 +629,7 @@ extension ParticipantProfileSetupViewController: CLLocationManagerDelegate {
             self.validateTextField(self.locationTextField)
             
             // ADD THIS: Validate all fields to enable button if everything is filled
-            self.validateAllFields()
+            _ = self.validateAllFields()
             
             self.isRequestingLocation = false
         }
